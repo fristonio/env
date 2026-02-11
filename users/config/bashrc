@@ -1,0 +1,3 @@
+alias sbash="source ~/.bash_profile"
+
+sbash

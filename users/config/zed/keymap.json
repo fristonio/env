@@ -1,0 +1,72 @@
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "((VimControl && !menu) || (!Editor && !Terminal))",
+    "bindings": {
+      "ctrl-l": "workspace::ActivatePaneRight"
+    }
+  },
+  {
+    "context": "((VimControl && !menu) || (!Editor && !Terminal))",
+    "bindings": {
+      "ctrl-k": "workspace::ActivatePaneUp"
+    }
+  },
+  {
+    "context": "((VimControl && !menu) || (!Editor && !Terminal))",
+    "bindings": {
+      "ctrl-j": "workspace::ActivatePaneDown"
+    }
+  },
+  {
+    "context": "((VimControl && !menu) || (!Editor && !Terminal))",
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft"
+    }
+  },
+  {
+    "context": "((vim_mode == helix_normal || vim_mode == helix_select) && !menu)",
+    "bindings": {
+      "ctrl-c": null
+    }
+  },
+  {
+    "context": "(menu || Editor || Terminal)",
+    "bindings": {
+      "alt-l": "workspace::ActivatePaneRight"
+    }
+  },
+  {
+    "context": "(menu || Editor || Terminal)",
+    "bindings": {
+      "alt-k": "workspace::ActivatePaneUp"
+    }
+  },
+  {
+    "context": "(menu || Editor || Terminal)",
+    "bindings": {
+      "alt-j": "workspace::ActivatePaneDown"
+    }
+  },
+  {
+    "context": "(menu || Editor || Terminal)",
+    "bindings": {
+      "alt-h": "workspace::ActivatePaneLeft"
+    }
+  },
+  {
+    "context": "(Editor && mode == full)",
+    "bindings": {
+      "alt-z": "editor::ToggleSoftWrap"
+    }
+  },
+  {
+    "context": "Editor && showing_completions",
+    "bindings": {
+      "escape": "editor::Cancel",
+      "ctrl-c": "menu::Cancel",
+      "tab": "editor::ConfirmCompletion"
+    }
+  }
+]

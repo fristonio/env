@@ -1,0 +1,76 @@
+{ inputs, nixpkgs, catppuccin, ... }:
+
+name: {
+  system,
+  user,
+  darwin ? false,
+  userConfigAlias ? "",
+}:
+
+let
+  # Based on the input system determine the function to use.
+  nix-system = if darwin
+    then inputs.darwin.lib.darwinSystem
+    else nixpkgs.lib.nixosSystem;
+  home-manager = if darwin
+    then inputs.home-manager.darwinModules
+    else inputs.home-manager.nixosModules;
+
+  hardwareConfig = ./hardware/${name}.nix;
+  machineConfig = ./${name}.nix;
+
+  hostConfig = ./common/${if darwin then "darwin" else "nixos" }.nix;
+  commonConfig = ./common/config.nix;
+  userConfig = if userConfigAlias == ""
+    then ../users/${user}.nix
+    else ../users/${userConfigAlias}.nix;
+
+  catppuccinConfig = {
+    catppuccin.enable = true;
+    catppuccin.flavor = "mocha";
+  };
+
+in nix-system rec {
+
+  inherit system;
+
+  modules = [
+    # Allow unfree packages.
+    { nixpkgs.config.allowUnfree = true; }
+
+  ] ++ (nixpkgs.lib.optionals (!darwin) [
+    hardwareConfig
+  ]) ++ [
+
+    machineConfig
+    hostConfig
+    commonConfig
+
+  ] ++ (nixpkgs.lib.optionals (!darwin) [
+    catppuccin.nixosModules.catppuccin catppuccinConfig
+  ]) ++ [
+
+    home-manager.home-manager {
+      home-manager.useGlobalPkgs = true;
+      home-manager.useUserPackages = true;
+
+      home-manager.users.${user} = {
+        imports = [
+          userConfig
+          catppuccin.homeModules.catppuccin catppuccinConfig
+        ];
+      };
+
+      home-manager.extraSpecialArgs = {
+        username = user;
+      };
+    }
+  ];
+
+  specialArgs = {
+    system = system;
+    hostname = name;
+    username = user;
+  };
+
+}
