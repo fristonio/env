@@ -8,7 +8,7 @@
     # Enable the Linux builder so we can run Linux builds on our Mac.
     # This can be debugged by running `sudo ssh linux-builder`
     linux-builder = {
-      enable = false;
+      enable = false; # Disabled by default
       ephemeral = true;
       maxJobs = 4;
       config = ({ pkgs, ... }: {
@@ -22,7 +22,7 @@
         };
 
         environment.systemPackages = [
-          pkgs.htop
+          pkgs.btop
         ];
       });
     };

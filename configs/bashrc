@@ -3,7 +3,13 @@
 
 export LANG=en_US.UTF-8
 export EDITOR='hx'
-export PAGER="less -FirSwX";
+export PAGER="less -FirSwX"
+
+# Remove zsh default shell warnings on macos
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
+# Setting termifo in bashrc as I don't rely on terminal specific features anyways.
+export TERM=xterm-256color
 
 shopt -s histappend
 shopt -s checkwinsize
@@ -20,25 +26,34 @@ case "$(uname -s)" in
 esac
 export PATH="${PATH}:${HOME}/.local/bin"
 
-# Remove zsh default shell warnings on macos
-export BASH_SILENCE_DEPRECATION_WARNING=1
+## Shell aliases
 
-# Do not set TERM in bash configuration
-# export TERM=xterm-256color
+alias sbash='source ~/.bashrc'
 
-# Shell aliases
 alias l='ls -la --color=auto'
+alias ls='ls --color=auto'
+
 alias gs="git status"
 alias gl="git log --oneline --graph --abbrev-commit --decorate"
 
+## Helpful shell tooling
+
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init bash)"
+fi
+
+if command -v fzf &> /dev/null; then
+  eval "$(fzf --bash)"
+fi
+
 ## Configure bash prompt.
 
-export TERM_COLOR_NONE="\e[00m"
-export TERM_COLOR_BLUE="\e[0;34m"
-export TERM_COLOR_GREEN="\e[0;32m"
-export TERM_COLOR_YELLOW="\e[0;33m"
-export TERM_COLOR_RED="\e[0;31m"
-export TERM_COLOR_CYAN="\e[0;36m"
+export TERM_COLOR_NONE="\033[00m"
+export TERM_COLOR_BLUE="\033[0;34m"
+export TERM_COLOR_GREEN="\033[0;32m"
+export TERM_COLOR_YELLOW="\033[0;33m"
+export TERM_COLOR_RED="\033[0;31m"
+export TERM_COLOR_CYAN="\033[0;36m"
 
 function print_git_branch() {
     echo -e "${TERM_COLOR_BLUE}$(git branch 2> /dev/null | sed -e '/^[^*]/d' | sed -e 's/* \(.*\)/( \1)/')${TERM_COLOR_NONE}"
@@ -65,7 +80,7 @@ function print_main_prompt() {
 }
 
 # To enable hostname in prompt: export PROMPT_VERBOSE=1
-export PROMPT_VERBOSE=${PROMPT_VERBOSE:-}
+export PROMPT_VERBOSE=${PROMPT_VERBOSE:-1}
 
 PS1="\$(print_main_prompt) \$(print_shell_indidcator) \$(print_cwd) \$(print_git_branch)"
 PS1+="\n${BLUE_COLOR}ᗆ ${NO_COLOR}"

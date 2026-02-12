@@ -7,7 +7,15 @@ set encoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8
 set backspace=indent,eol,start
+
+" Fixing mode switching delays.
+set ttimeout
+set ttimeoutlen=1
 set ttyfast
+
+" Change cursor in insert vs other modes
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
 
 " Set no compatibility with vi
 set nocompatible
@@ -64,7 +72,7 @@ set smartindent
 " netrw is vim's builtin file explorer.
 let g:netrw_banner = 0         " Disable netrw banner, to view press I
 let g:netrw_keepdir = 0        " Keep current directory and browsing directory in sync.
-let g:netrw_winsize = 30       " Set width to 30% of the screen
+let g:netrw_winsize = 25       " Set width to 25% of the screen
 let g:netrw_left = 1           " Open to the left.
 let g:netrw_altv = 1           " Open splits to the right
 let g:netrw_liststyle = 3      " Use a tree-style view
@@ -79,7 +87,7 @@ set notimeout
 
 """""" General modes
 
-noremap <C-c> <Esc>:noh
+noremap <C-c> <Esc>:noh<CR>
 
 """""" NORMAL mode
 
@@ -147,29 +155,27 @@ nnoremap <C-n> :Lexplore<CR>
 """""" VISUAL mode
 
 " Move lines
-vnoremap <leader>d :m '>+1<CR>gv=gv
-vnoremap <leader>u :m '<-2<CR>gv=gv
+xnoremap <leader>d :m '>+1<CR>gv=gv
+xnoremap <leader>u :m '<-2<CR>gv=gv
 
 " Goto mode from helix
-vnoremap gn gt
 xnoremap gn gt
-vnoremap gp gT
 xnoremap gp gT
 
 " Move mode from helix
-vnoremap mm %
 xnoremap mm %
 
 " Move around in splits
-vnoremap <C-h> <C-w>h
-vnoremap <C-j> <C-w>j
-vnoremap <C-k> <C-w>k
-vnoremap <C-l> <C-w>l
-
 xnoremap <C-h> <C-w>h
 xnoremap <C-j> <C-w>j
 xnoremap <C-k> <C-w>k
 xnoremap <C-l> <C-w>l
+
+" Map helix x and X to select line
+nnoremap x V
+xnoremap x j
+nnoremap X V
+xnoremap X k
 
 """""" INSERT mode
 
@@ -181,6 +187,13 @@ inoremap ' ''<Left>
 
 " Smart newline for braces
 inoremap {<CR> {<CR>}<Esc>O
+
+" Skip over closing symbols if the next character is the matching one
+inoremap <expr> ) getline('.')[getpos('.')[2] - 1] == ')' ? '<Right>' : ')'
+inoremap <expr> ] getline('.')[getpos('.')[2] - 1] == ']' ? '<Right>' : ']'
+inoremap <expr> } getline('.')[getpos('.')[2] - 1] == '}' ? '<Right>' : '}'
+inoremap <expr> " getline('.')[getpos('.')[2] - 1] == '"' ? '<Right>' : '"'
+inoremap <expr> ' getline('.')[getpos('.')[2] - 1] == "'" ? '<Right>' : "'"
 
 """""" TERMINAL mode
 

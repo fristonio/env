@@ -1,7 +1,7 @@
 # ghostty +list-keybinds --default
 
-# theme = dark:catppuccin-frappe,light:catppuccin-latte
-theme = catppuccin-frappe.conf
+# List available themes: ghostty +list-themes
+theme = Catppuccin Frappe
 
 macos-option-as-alt = left
 
@@ -12,30 +12,52 @@ font-thicken = true
 
 font-size = 15
 
-auto-update = check
-
 quick-terminal-position = right
 quick-terminal-animation-duration = 0
+
+# Reload config
+keybind = alt+a>r=reload_config
 
 # KeyBindings
 keybind = alt+t=toggle_quick_terminal
 
+# Terminal split
 keybind = alt+a>v=new_split:right
-keybind = alt+a>h=new_split:down
+keybind = alt+a>s=new_split:down
 
+## Moving around splits
 keybind = alt+a>h=goto_split:left
 keybind = alt+a>j=goto_split:down
 keybind = alt+a>k=goto_split:up
 keybind = alt+a>l=goto_split:right
 
+## Optionally configure moving around splits with super as we
+## don't use it anyways.
+keybind = super+h=goto_split:left
+keybind = super+j=goto_split:down
+keybind = super+k=goto_split:up
+keybind = super+l=goto_split:right
+
 keybind = alt+a>z=toggle_split_zoom
 
-keybind = ctrl+alt+shift+h=resize_split:left,15
-keybind = ctrl+alt+shift+j=resize_split:down,15
-keybind = ctrl+alt+shift+k=resize_split:up,15
-keybind = ctrl+alt+shift+l=resize_split:right,15
+## Resizing splits
+keybind = alt+a>shift+h=resize_split:left,15
+keybind = alt+a>shift+j=resize_split:down,15
+keybind = alt+a>shift+k=resize_split:up,15
+keybind = alt+a>shift+l=resize_split:right,15
 
 keybind = super+shift+r=equalize_splits
+
+## Moving around tabs
+keybind = alt+a>a=last_tab
+keybind = alt+a>n=next_tab
+keybind = super+n=next_tab
+keybind = alt+a>p=previous_tab
+
+keybind = super+p=previous_tab
+keybind = super+t=new_tab
+
+keybind = alt+a>x=close_surface
 
 keybind = super+shift+f=write_screen_file:paste
 keybind = super+shift+o=write_screen_file:open

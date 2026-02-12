@@ -4,6 +4,7 @@ name: {
   system,
   user,
   darwin ? false,
+  gui ? false,
   userConfigAlias ? "",
 }:
 
@@ -27,7 +28,7 @@ let
 
   catppuccinConfig = {
     catppuccin.enable = true;
-    catppuccin.flavor = "mocha";
+    catppuccin.flavor = "frappe";
   };
 
 in nix-system rec {
@@ -56,6 +57,7 @@ in nix-system rec {
     home-manager.home-manager {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
+      home-manager.backupFileExtension = "bak";
 
       home-manager.users.${user} = {
         imports = [
@@ -66,6 +68,7 @@ in nix-system rec {
 
       home-manager.extraSpecialArgs = {
         username = user;
+        gui = (gui || darwin);
       };
     }
   ];

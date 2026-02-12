@@ -5,7 +5,10 @@
   # System level homebrew packages.
   homebrew = {
     enable = true;
-    casks  = [];
+    casks  = [
+      "ghostty"
+      "google-chrome"
+    ];
     brews = [];
   };
 

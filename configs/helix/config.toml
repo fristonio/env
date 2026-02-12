@@ -38,21 +38,9 @@ character = "▏"
 ## Key Remaps
 # Base keymap - https://github.com/helix-editor/helix/blob/master/book/src/keymap.md
 
-[keys.insert]
-"C-c" = "normal_mode"
-
-"A-down" = ["extend_to_line_bounds", "delete_selection", "paste_after"]
-"A-up" = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
-
 [keys.normal]
 ";" = "command_mode"
 "C-c" = "normal_mode"
-
-"A-down" = ["extend_to_line_bounds", "delete_selection", "paste_after"]
-"A-up" = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
-
-space.x = ":buffer-close"
-space.z = [":toggle soft-wrap.enable", ":redraw"]
 
 "C-h" = "jump_view_left"
 "C-j" = "jump_view_down"
@@ -60,6 +48,18 @@ space.z = [":toggle soft-wrap.enable", ":redraw"]
 "C-l" = "jump_view_right"
 
 X = ["extend_line_up", "extend_to_line_bounds"]
+
+"A-down" = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+"A-up" = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
+
+space.x = ":buffer-close"
+space.z = [":toggle soft-wrap.enable", ":redraw"]
+
+[keys.insert]
+"C-c" = "normal_mode"
+
+"A-down" = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+"A-up" = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
 
 [keys.select]
 ";" = "command_mode"

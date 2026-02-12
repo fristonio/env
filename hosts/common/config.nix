@@ -16,12 +16,6 @@
     vim
     bash
     tmux
-    helix
-    ripgrep
-    yazi
-    fd
-    jq
-    fzf
   ];
 
 }

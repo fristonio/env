@@ -2,12 +2,14 @@
 
 name: {
   system,
+  gui ? false,
   userConfigAlias ? "",
 }:
 
 let
 
   pkgs = nixpkgs.legacyPackages.${system};
+
   userConfig = if userConfigAlias == ""
     then ./${name}.nix
     else ./${userConfigAlias}.nix;
@@ -20,11 +22,12 @@ in home-manager.lib.homeManagerConfigurations {
 
     catppuccin.homeModules.catppuccin {
       catppuccin.enable = true;
-      catppuccin.flavor = "mocha";
+      catppuccin.flavor = "frappe";
     }
   ];
 
   extraSpecialArgs = {
     username = name;
+    gui = gui;
   };
 }

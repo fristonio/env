@@ -1,13 +1,13 @@
 [user]
-    name = Deepesh Pathak
-    email = deepeshpathak09@gmail.com
-    username = fristonio
+	name = Deepesh Pathak
+	email = deepeshpathak09@gmail.com
+	username = fristonio
 	signingkey = ~/.ssh/id_ed25519.pub
 
 [core]
-    editor = hx
-    fileMode = false
-    autocrlf = false
+	editor = vim
+	fileMode = false
+	autocrlf = false
 
 [pull]
 	ff = only
@@ -16,4 +16,7 @@
 	defaultBranch = main
 
 [branch]
-    sort = -committerdate
+	sort = -committerdate
+
+[gpg]
+	format = ssh
