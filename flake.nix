@@ -49,18 +49,15 @@
       };
     };
 
+    # For first time configuration on darwin systems.
+    # nix run nix-darwin/nix-darwin-25.11#darwin-rebuild -- switch
+    #
+    # Once instantiated darwin-rebuild can be used to activate the configuration.
+    # darwin-rebuild switch --flake .#macbook
     darwinConfigurations = {
       macbook = hostBuilder "macbook" {
         system = "aarch64-darwin";
         user   = "deepeshpathak";
-        darwin = true;
-
-        userConfigAlias = "fristonio";
-      };
-
-      macbook-work = hostBuilder "macbook" {
-        system = "aarch64-darwin";
-        user   = "dpathak";
         darwin = true;
 
         userConfigAlias = "fristonio";

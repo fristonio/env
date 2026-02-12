@@ -38,6 +38,7 @@ in nix-system rec {
     # Allow unfree packages.
     { nixpkgs.config.allowUnfree = true; }
 
+  # For darwin systems hardware is not managed by nix.
   ] ++ (nixpkgs.lib.optionals (!darwin) [
     hardwareConfig
   ]) ++ [
@@ -46,10 +47,12 @@ in nix-system rec {
     hostConfig
     commonConfig
 
+  # catppuccin nix flake doesn't support nix-darwin.
   ] ++ (nixpkgs.lib.optionals (!darwin) [
     catppuccin.nixosModules.catppuccin catppuccinConfig
   ]) ++ [
 
+    # If setting up the host manage home-manager directly for OS.
     home-manager.home-manager {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;

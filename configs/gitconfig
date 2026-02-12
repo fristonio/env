@@ -2,17 +2,18 @@
     name = Deepesh Pathak
     email = deepeshpathak09@gmail.com
     username = fristonio
-    # signingkey = D9AA53BEC9C33F71
-	signingkey = /Users/deepeshpathak/.ssh/id_rsa.pub
+	signingkey = ~/.ssh/id_ed25519.pub
+
 [core]
-    editor = vim
+    editor = hx
     fileMode = false
     autocrlf = false
-[commit]
-    gpgSign = true
+
 [pull]
 	ff = only
+
 [init]
 	defaultBranch = main
-[gpg]
-	format = ssh
+
+[branch]
+    sort = -committerdate

@@ -1,0 +1,342 @@
+""""""""""""""
+" Meta options
+""""""""""""""
+
+set visualbell
+set encoding=utf-8
+set fileencoding=utf-8
+set fileencodings=utf-8
+set backspace=indent,eol,start
+set ttyfast
+
+" Set no compatibility with vi
+set nocompatible
+
+" Enable file type detection.
+filetype on
+filetype plugin on
+filetype indent on
+
+" Disable backups and swap files.
+set noswapfile
+set nobackup
+
+" Disable spell checking. If enabling fix the highlighting in colorscheme at the bottom.
+set nospell
+set spelllang=en_us
+
+set mouse=a " Enable mouse usage (all modes) in terminals
+
+" Number of commands to save in the history
+set history=1000
+
+" Allow buffer switching with unsaved files.
+set hidden
+
+" Use system clipboard
+" set clipboard=unnamedplus
+
+""""""""""""""""
+" Editor options
+""""""""""""""""
+
+" Set default shift and tab width to 4 spaces.
+set shiftwidth=4
+set tabstop=4
+
+" While searching through a file incrementally highlight matching characters as typing.
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase " Search is case insensitive unless an upercase character is used.
+
+" Extra padding before line numbers
+set numberwidth=5
+
+" This option determines the number of context lines you would like to see
+" above and below the cursor
+set scrolloff=5
+
+" Set next line to auto indent
+set autoindent
+set smartindent
+
+" netrw is vim's builtin file explorer.
+let g:netrw_banner = 0         " Disable netrw banner, to view press I
+let g:netrw_keepdir = 0        " Keep current directory and browsing directory in sync.
+let g:netrw_winsize = 30       " Set width to 30% of the screen
+let g:netrw_left = 1           " Open to the left.
+let g:netrw_altv = 1           " Open splits to the right
+let g:netrw_liststyle = 3      " Use a tree-style view
+
+"""""""""""""
+" Keybindings
+"""""""""""""
+
+let mapleader = " "
+" Configure no timeout for leader mapped commands
+set notimeout
+
+"""""" General modes
+
+noremap <C-c> <Esc>:noh
+
+"""""" NORMAL mode
+
+" Open command mode with semicolon
+nnoremap ; :
+
+" Goto mode from helix
+nnoremap gh 0
+nnoremap gl $
+nnoremap gs ^
+nnoremap ge G
+nnoremap gn gt
+nnoremap gp gT
+
+" View mode from helix
+nnoremap zc zz
+nnoremap zt zt
+nnoremap zb zb
+nnoremap zj <C-e>
+nnoremap zk <C-y>
+
+" Indent line
+nnoremap < <<
+nnoremap > >>
+
+" Match mode from helix
+nnoremap mm %
+
+" Move line
+nnoremap <leader>d :m+1<CR>
+nnoremap <leader>u :m-2<CR>
+
+" Redo
+nnoremap U <C-r>
+
+" Window splits
+nnoremap <leader>w <C-w>
+nnoremap <C-w>v :vsplit<CR>
+nnoremap <C-w>s :split<CR>
+
+" Move around splits
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Open a new tab
+nnoremap <leader>t :tabnew<CR>
+nnoremap <leader>x :bd<CR>
+nnoremap <leader>q :q<CR>
+
+" Search mappings: These will make it so that going to the next one in a
+" search will center on the line it's found in.
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+" Clear highlights
+nnoremap , :noh<CR>
+
+" Open netrw file explorer
+nnoremap <Leader>f :Lexplore<CR>        " Open in current directory.
+nnoremap <leader>F :Lexplore %:p:h<CR>  " Open in directory of current file.
+nnoremap <C-n> :Lexplore<CR>
+
+"""""" VISUAL mode
+
+" Move lines
+vnoremap <leader>d :m '>+1<CR>gv=gv
+vnoremap <leader>u :m '<-2<CR>gv=gv
+
+" Goto mode from helix
+vnoremap gn gt
+xnoremap gn gt
+vnoremap gp gT
+xnoremap gp gT
+
+" Move mode from helix
+vnoremap mm %
+xnoremap mm %
+
+" Move around in splits
+vnoremap <C-h> <C-w>h
+vnoremap <C-j> <C-w>j
+vnoremap <C-k> <C-w>k
+vnoremap <C-l> <C-w>l
+
+xnoremap <C-h> <C-w>h
+xnoremap <C-j> <C-w>j
+xnoremap <C-k> <C-w>k
+xnoremap <C-l> <C-w>l
+
+"""""" INSERT mode
+
+" Auto close brackets and quotes
+inoremap ( ()<Left>
+inoremap [ []<Left>
+inoremap " ""<Left>
+inoremap ' ''<Left>
+
+" Smart newline for braces
+inoremap {<CR> {<CR>}<Esc>O
+
+"""""" TERMINAL mode
+
+tnoremap <Esc><Esc> <C-\><C-n>
+
+"""""""""
+" Visuals
+"""""""""
+
+syntax on
+set noshowmode
+set background=dark
+set laststatus=2 " Always show statusline.
+
+" Highlight active cursorline
+set cursorline
+
+" Enable relative numbering.
+set number " This is required to show the absolute number for current line.
+set relativenumber
+
+" List characters config. Use `:set list` to enable.
+" Alternate: set listchars=tab:»\ ,trail:·,nbsp:+,extends:→,precedes:←,space:·
+set listchars=tab:\ \ ┊,space:·
+
+" Color columns at 80 and 120 characters
+set colorcolumn=80,120
+
+"""""""""""""
+" Colorscheme
+"""""""""""""
+
+" OneDark theme color pallete
+let s:bg      = "#282c34"
+let s:fg      = "#abb2bf"
+let s:grey    = "#3e4452"
+let s:red     = "#e06c75"
+let s:green   = "#98c379"
+let s:yellow  = "#e5c07b"
+let s:blue    = "#61afef"
+let s:magenta = "#c678dd"
+let s:cyan    = "#56b6c2"
+let s:gutter  = "#4b5263"
+let s:comment = "#5c6370"
+let s:hlbg    = "#2c323c"
+
+function! ApplyTheme()
+  " Editor UI
+  exec "hi Normal       guifg=".s:fg." guibg=".s:bg
+  exec "hi CursorLine   guibg=".s:hlbg." gui=none cterm=none"
+  exec "hi CursorLineNr guifg=".s:fg." guibg=".s:hlbg." gui=bold cterm=none"
+  exec "hi StatusLine   guifg=".s:fg." guibg=".s:grey." gui=none"
+  exec "hi StatusLineNC guifg=".s:grey." guibg=".s:bg." gui=none"
+  exec "hi VertSplit    guifg=".s:grey." guibg=".s:bg." gui=none"
+  exec "hi LineNr       guifg=".s:gutter
+
+  " Search highlighting
+  exec "hi Search       guifg=".s:bg." guibg=".s:yellow." gui=none"
+  exec "hi IncSearch    guifg=".s:bg." guibg=".s:cyan." gui=none"
+  exec "hi Visual       guibg=".s:grey." guifg=".s:fg." gui=none"
+
+  " Syntax
+  exec "hi Comment      guifg=".s:comment." gui=italic"
+  exec "hi Constant     guifg=".s:yellow
+  exec "hi String       guifg=".s:green
+  exec "hi Identifier   guifg=".s:red
+  exec "hi Function     guifg=".s:blue
+  exec "hi Statement    guifg=".s:magenta
+  exec "hi PreProc      guifg=".s:yellow
+  exec "hi Type         guifg=".s:yellow
+  exec "hi Special      guifg=".s:cyan
+  exec "hi Error        guifg=".s:red." guibg=".s:bg." gui=bold"
+
+  " Command mode messages and colors
+  exec "hi WarningMsg   guifg=".s:yellow." guibg=".s:bg
+  exec "hi ErrorMsg     guifg=".s:red." guibg=".s:bg." gui=bold"
+  exec "hi MoreMsg      guifg=".s:green." guibg=".s:bg
+  exec "hi Question     guifg=".s:cyan." guibg=".s:bg
+
+  " listchars colors
+  " SpecialKey: controls 'tab' and 'trailing' characters
+  " NonText:    controls 'eol' and 'extends/precedes' characters
+  exec "hi SpecialKey   guifg=".s:gutter." guibg=NONE"
+  exec "hi NonText      guifg=".s:gutter." guibg=NONE"
+
+  " Vertical ruler(colorcolumn)
+  exec "hi ColorColumn  guibg=".s:hlbg." gui=none"
+
+  " TabLine: Inactive tabs
+  " TabLineFill: The rest of the tab bar (the 'empty' space)
+  " TabLineSel: The active tab
+  exec "hi TabLine      guifg=".s:comment." guibg=".s:bg." gui=none"
+  exec "hi TabLineFill  guifg=".s:grey." guibg=".s:bg." gui=none"
+  exec "hi TabLineSel   guifg=".s:blue." guibg=".s:bg." gui=bold"
+
+  " Statusline Blocks
+  exec "hi MyMode       guifg=".s:bg." guibg=".s:blue." gui=bold"
+  exec "hi MyFileInfo   guifg=".s:fg." guibg=".s:grey
+  exec "hi MyPos        guifg=".s:bg." guibg=".s:magenta." gui=bold"
+
+  " Terminal colors expect ANSI colors set in this array.
+  if has('terminal')
+    let g:terminal_ansi_colors = [
+      \ s:bg,      s:red,     s:green,  s:yellow,
+      \ s:blue,    s:magenta, s:cyan,   s:fg,
+      \ s:grey,    s:red,     s:green,  s:yellow,
+      \ s:blue,    s:magenta, s:cyan,   "#ffffff"
+      \ ]
+  endif
+
+  " Netrw (File Explorer) Styling
+  exec "highlight netrwDir       guifg=".s:blue." gui=bold"
+  exec "highlight netrwExe       guifg=".s:green
+  exec "highlight netrwLink      guifg=".s:cyan
+  exec "highlight netrwZip       guifg=".s:red
+  exec "highlight netrwClassify  guifg=".s:magenta
+  exec "highlight netrwList      guifg=".s:fg
+  exec "highlight netrwSymLink   guifg=".s:cyan
+  exec "highlight netrwCmdSep    guifg=".s:grey
+
+  " Remove weird ~ in the UI
+  exec "highlight EndOfBuffer guifg=".s:bg
+endfunction
+
+function! StatuslineMode()
+  let l:m = mode()
+  if l:m ==# 'n'      | exec "hi MyMode guibg=".s:blue    | return '  NORMAL '
+  elseif l:m ==# 'i'  | exec "hi MyMode guibg=".s:green   | return '  INSERT '
+  elseif l:m ==# 'v'  | exec "hi MyMode guibg=".s:magenta | return '  VISUAL '
+  elseif l:m ==# 'V'  | exec "hi MyMode guibg=".s:magenta | return '  V-LINE '
+  elseif l:m ==# 'R'  | exec "hi MyMode guibg=".s:red     | return '  REPLACE '
+  elseif l:m ==# 'c'  | exec "hi MyMode guibg=".s:yellow  | return '  COMMAND '
+  elseif l:m ==# 't'  | exec "hi MyMode guibg=".s:yellow  | return '  TERMINAL '
+  endif
+  return ' VIM ['.l:m.'] '
+endfunction
+
+function! ConfigureStatusLine()
+  set statusline=
+  set statusline+=%#MyMode#%{StatuslineMode()}  " Mode block
+  set statusline+=%#MyFileInfo#\ %f\            " File path
+  set statusline+=%m                            " Modified flag
+  set statusline+=%=                            " Right align separator
+  set statusline+=%#MyFileInfo#\ %y\            " File type
+  set statusline+=%#MyPos#\ %p%%\ %l:%c\        " Percentage and Line:Col
+endfunction
+
+" Enable truecolor support for vim if available.
+" Only configure theme and StatusLine if we have truecolor support.
+if exists('+termguicolors')
+  " Force 24-bit colors if terminal is not passing the info correctly.
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+
+  set termguicolors
+
+  call ApplyTheme()
+  call ConfigureStatusLine()
+endif

@@ -22,17 +22,8 @@
   time.hardwareClockInLocalTime = true;
   time.timeZone = "America/Vancouver";
 
-  fonts = {
-    fontDir.enable = true;
-    fontconfig.enable = true;
-
-    packages = with pkgs; [
-      fira-code
-      jetbrains-mono
-      nerd-fonts.fira-code
-      nerd-fonts.jetbrains-mono
-    ];
-  };
+  fonts.fontconfig.enable = true;
+  fonts.fontDir.enable = true;
 
   users.users.${username} = {
     isNormalUser = true;
