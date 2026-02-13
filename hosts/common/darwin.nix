@@ -18,7 +18,7 @@
   # what our home directory is.
   users.users.${username} = {
     home = "/Users/${username}";
-    shell = pkgs.bash;
+    shell = pkgs.bashInteractive;
   };
 
   security.pam.services.sudo_local.touchIdAuth = true;

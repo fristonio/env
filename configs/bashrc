@@ -22,7 +22,7 @@ export HISTSIZE=
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
 case "$(uname -s)" in
-  Darwin*) export PATH="/opt/homebrew/bin/:/opt/homebrew/sbin/:${PATH}";;
+  Darwin*) export PATH="${PATH}:/opt/homebrew/bin/:/opt/homebrew/sbin/";;
 esac
 export PATH="${PATH}:${HOME}/.local/bin"
 

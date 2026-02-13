@@ -68,6 +68,7 @@ in nix-system rec {
 
       home-manager.extraSpecialArgs = {
         username = user;
+        homeDirectory = user;
         gui = (gui || darwin);
       };
     }

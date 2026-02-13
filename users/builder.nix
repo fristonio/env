@@ -4,6 +4,7 @@ name: {
   system,
   gui ? false,
   userConfigAlias ? "",
+  homeDirectory ? "",
 }:
 
 let
@@ -13,8 +14,11 @@ let
   userConfig = if userConfigAlias == ""
     then ./${name}.nix
     else ./${userConfigAlias}.nix;
+  userHomeDirectory = if homeDirectory == ""
+    then name
+    else homeDirectory;
 
-in home-manager.lib.homeManagerConfigurations {
+in home-manager.lib.homeManagerConfiguration {
   inherit pkgs;
 
   modules = [
@@ -28,6 +32,7 @@ in home-manager.lib.homeManagerConfigurations {
 
   extraSpecialArgs = {
     username = name;
+    homeDirectory = userHomeDirectory;
     gui = gui;
   };
 }

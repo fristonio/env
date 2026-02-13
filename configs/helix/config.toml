@@ -24,6 +24,7 @@ insert = "bar"
 normal = "block"
 select = "underline"
 
+# Change using :set whitespace.render.space all
 [editor.whitespace.render]
 space = "none"
 tab = "all"

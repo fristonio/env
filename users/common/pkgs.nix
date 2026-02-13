@@ -20,6 +20,7 @@ in
     tree
     watch
     helix
+    gnumake
   ] ++ (lib.optionals gui [
     zed-editor
   ]) ++ (lib.optionals isDarwin [

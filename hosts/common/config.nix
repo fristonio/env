@@ -9,13 +9,14 @@
     nerd-fonts.jetbrains-mono
   ];
 
-  environment.shells = with pkgs; [ bashInteractive ];
+  environment.shells = with pkgs; [ bash ];
   environment.systemPackages = with pkgs; [
     git
     curl
     vim
     bash
     tmux
+    gnumake
   ];
 
 }

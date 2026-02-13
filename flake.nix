@@ -66,8 +66,10 @@
 
     # Available through 'home-manager --flake .#<username>'
     homeConfigurations = {
-      firstonio = userBuilder "fristonio" {
+      macbook-lima-vm = userBuilder "deepeshpathak" {
         system = "aarch64-linux";
+        userConfigAlias = "fristonio";
+        homeDirectory = "deepeshpathak.linux";
       };
     };
   };

@@ -1,4 +1,4 @@
-{ inputs, pkgs, config, lib, username, gui, ... }:
+{ inputs, pkgs, config, lib, username, homeDirectory, gui, ... }:
 
 let
   isDarwin = pkgs.stdenv.isDarwin;
@@ -12,15 +12,20 @@ in
     username = username;
 
     homeDirectory = if isDarwin
-      then "/Users/${username}"
-      else "/home/${username}";
+      then "/Users/${homeDirectory}"
+      else "/home/${homeDirectory}";
 
     stateVersion = "25.11";
   };
 
+  programs.command-not-found.enable = true;
   programs.bash = {
     enable = true;
     bashrcExtra = builtins.readFile ./../../configs/bashrc;
+    enableCompletion = false;
+    historyFileSize = null;
+    historySize = null;
+    shellOptions = [];
   };
 
   home.file = {
