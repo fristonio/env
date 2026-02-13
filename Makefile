@@ -1,4 +1,35 @@
+SHELL := bash
+
 default: help
+
+##@ Actions
+
+switch:
+	if [[ -z "$(f)" ]]; then \
+		echo "No configuration name provided"; \
+		make help; exit 1; \
+	fi
+	@echo "Adding files to git index"
+	git add . && git status
+
+
+darwin-switch: switch ## Switch the darwin configuration: f=<configuration-name>. Example: make macbook
+	echo "Switching darwin configuration for $(f)"
+	sudo darwin-rebuild switch --flake .#$(f)
+
+nixos-switch: ## Switch the nixos configuration: f=<configuration-name>. Example: make pacman
+	echo "Switching nixos configuration for $(f)"
+	sudo nixos-rebuild switch --flake .#$(f)
+
+home-switch: ## Switch the home manager configuration: f=<configuration-name>. Example: make macbook-lima-vm
+	echo "Switching home-manager configuration for $(f)"; \
+	home-manager switch -b bak --flake .#$(f); \
+
+patch-home-config: ## Apply any manual patch required.
+	cp ./configs/zed/settings.json "${HOME}/.config/zed"
+	cp ./configs/zed/keymap.json "${HOME}/.config/zed"
+
+.PHONY: switch darwin-switch nixos-switch home-switch patch-home-config
 
 ##@ Initialize environment
 

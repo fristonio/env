@@ -17,60 +17,67 @@
     catppuccin.url = "github:catppuccin/nix/release-25.11";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    home-manager,
-    darwin,
-    catppuccin,
-    ...
-  } @ inputs:
-  let
-    hostBuilder = import ./hosts/builder.nix {
-      inherit inputs nixpkgs catppuccin;
-    };
-
-    userBuilder = import ./users/builder.nix {
-      inherit inputs nixpkgs home-manager catppuccin;
-    };
-
-  in {
-    # NixOS configuration entrypoint
-    # Available through 'nixos-rebuild --flake .#<hostname>'
-    nixosConfigurations = {
-      vm-aarch64 = hostBuilder "vm" {
-        system = "aarch64-linux";
-        user = "fristonio";
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      darwin,
+      catppuccin,
+      ...
+    }@inputs:
+    let
+      hostBuilder = import ./hosts/builder.nix {
+        inherit inputs nixpkgs catppuccin;
       };
 
-      pacman = hostBuilder "pacman" {
-        system = "x86_64-linux";
-        user = "fristonio";
+      userBuilder = import ./users/builder.nix {
+        inherit
+          inputs
+          nixpkgs
+          home-manager
+          catppuccin
+          ;
+      };
+
+    in
+    {
+      # NixOS configuration entrypoint
+      # Available through 'nixos-rebuild --flake .#<hostname>'
+      nixosConfigurations = {
+        vm-aarch64 = hostBuilder "vm" {
+          system = "aarch64-linux";
+          user = "fristonio";
+        };
+
+        pacman = hostBuilder "pacman" {
+          system = "x86_64-linux";
+          user = "fristonio";
+        };
+      };
+
+      # For first time configuration on darwin systems.
+      # nix run nix-darwin/nix-darwin-25.11#darwin-rebuild -- switch
+      #
+      # Once instantiated darwin-rebuild can be used to activate the configuration.
+      # darwin-rebuild switch --flake .#macbook
+      darwinConfigurations = {
+        macbook = hostBuilder "macbook" {
+          system = "aarch64-darwin";
+          user = "deepeshpathak";
+          darwin = true;
+
+          userConfigAlias = "fristonio";
+        };
+      };
+
+      # Available through 'home-manager --flake .#<username>'
+      homeConfigurations = {
+        macbook-lima-vm = userBuilder "deepeshpathak" {
+          system = "aarch64-linux";
+          userConfigAlias = "fristonio";
+          homeDirectory = "deepeshpathak.linux";
+        };
       };
     };
-
-    # For first time configuration on darwin systems.
-    # nix run nix-darwin/nix-darwin-25.11#darwin-rebuild -- switch
-    #
-    # Once instantiated darwin-rebuild can be used to activate the configuration.
-    # darwin-rebuild switch --flake .#macbook
-    darwinConfigurations = {
-      macbook = hostBuilder "macbook" {
-        system = "aarch64-darwin";
-        user   = "deepeshpathak";
-        darwin = true;
-
-        userConfigAlias = "fristonio";
-      };
-    };
-
-    # Available through 'home-manager --flake .#<username>'
-    homeConfigurations = {
-      macbook-lima-vm = userBuilder "deepeshpathak" {
-        system = "aarch64-linux";
-        userConfigAlias = "fristonio";
-        homeDirectory = "deepeshpathak.linux";
-      };
-    };
-  };
 }

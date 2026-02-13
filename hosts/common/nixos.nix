@@ -1,4 +1,10 @@
-{ inputs, pkgs, hostname, username, ... }:
+{
+  inputs,
+  pkgs,
+  hostname,
+  username,
+  ...
+}:
 
 {
 
@@ -11,7 +17,10 @@
   networking = {
     hostName = hostname;
     networkmanager.enable = true;
-    nameservers = [ "1.1.1.1" "8.8.8.8" ];
+    nameservers = [
+      "1.1.1.1"
+      "8.8.8.8"
+    ];
     firewall.enable = false;
   };
 
@@ -42,6 +51,9 @@
     ];
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
   system.stateVersion = "25.11";
 }

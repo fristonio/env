@@ -1,4 +1,13 @@
-{ inputs, pkgs, config, lib, username, homeDirectory, gui, ... }:
+{
+  inputs,
+  pkgs,
+  config,
+  lib,
+  username,
+  homeDirectory,
+  gui,
+  ...
+}:
 
 let
   isDarwin = pkgs.stdenv.isDarwin;
@@ -11,9 +20,7 @@ in
   home = {
     username = username;
 
-    homeDirectory = if isDarwin
-      then "/Users/${homeDirectory}"
-      else "/home/${homeDirectory}";
+    homeDirectory = if isDarwin then "/Users/${homeDirectory}" else "/home/${homeDirectory}";
 
     stateVersion = "25.11";
   };
@@ -25,7 +32,7 @@ in
     enableCompletion = false;
     historyFileSize = null;
     historySize = null;
-    shellOptions = [];
+    shellOptions = [ ];
   };
 
   home.file = {
@@ -34,11 +41,15 @@ in
     ".vimrc".source = configPath "vimrc";
     ".tmux.conf".source = configPath "tmux.conf";
     ".gitconfig".source = configPath "gitconfig";
-  } // (
+  }
+  // (
 
-    if isDarwin then {
-      ".aerospace.toml".source = configPath "aerospace.toml";
-    } else {}
+    if isDarwin then
+      {
+        ".aerospace.toml".source = configPath "aerospace.toml";
+      }
+    else
+      { }
 
   );
 
@@ -48,18 +59,22 @@ in
       source = configPath "helix";
       recursive = true;
     };
-  } // (
-    if (gui || isDarwin) then {
-      "ghostty" = {
-        source = configPath "ghostty";
-        recursive = true;
-      };
+  }
+  // (
+    if (gui || isDarwin) then
+      {
+        "ghostty" = {
+          source = configPath "ghostty";
+          recursive = true;
+        };
 
-      # Zed expects mutable settings, for now do manual copy.
-      # "zed" = {
-      #   source = configPath "zed";
-      #   recursive = true;
-      # };
-    } else {}
+        # Zed expects mutable settings, for now do manual copy.
+        # "zed" = {
+        #   source = configPath "zed";
+        #   recursive = true;
+        # };
+      }
+    else
+      { }
   );
 }

@@ -1,4 +1,9 @@
-{ inputs, pkgs, gui, ... }:
+{
+  inputs,
+  pkgs,
+  gui,
+  ...
+}:
 
 let
   isDarwin = pkgs.stdenv.isDarwin;
@@ -6,29 +11,37 @@ let
 in
 {
 
-  home.packages = with pkgs; [
-    git
-    curl
-    vim
-    tmux
-    bat
-    btop
-    eza
-    fd
-    ripgrep
-    fzf
-    tree
-    watch
-    helix
-    gnumake
-  ] ++ (lib.optionals gui [
-    zed-editor
-  ]) ++ (lib.optionals isDarwin [
-    aerospace
-  ]) ++ (lib.optionals (isLinux && gui) [
-    # Installed through brew
-    ghostty
-    # Google chrome installed through homebrew on macos
-    google-chrome
-  ]);
+  home.packages =
+    with pkgs;
+    [
+      git
+      curl
+      vim
+      tmux
+      bat
+      btop
+      eza
+      fd
+      ripgrep
+      fzf
+      tree
+      watch
+      helix
+      gnumake
+
+      nixfmt
+
+    ]
+    ++ (lib.optionals gui [
+      zed-editor
+    ])
+    ++ (lib.optionals isDarwin [
+      aerospace
+    ])
+    ++ (lib.optionals (isLinux && gui) [
+      # Installed through brew
+      ghostty
+      # Google chrome installed through homebrew on macos
+      google-chrome
+    ]);
 }

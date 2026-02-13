@@ -1,15 +1,20 @@
-{ inputs, pkgs, username, ... }:
+{
+  inputs,
+  pkgs,
+  username,
+  ...
+}:
 
 {
 
   # System level homebrew packages.
   homebrew = {
     enable = true;
-    casks  = [
+    casks = [
       "ghostty"
       "google-chrome"
     ];
-    brews = [];
+    brews = [ ];
   };
 
   programs.bash.enable = true;

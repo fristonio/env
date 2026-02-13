@@ -1,6 +1,13 @@
-{ inputs, nixpkgs, home-manager, catppuccin, ... }:
+{
+  inputs,
+  nixpkgs,
+  home-manager,
+  catppuccin,
+  ...
+}:
 
-name: {
+name:
+{
   system,
   gui ? false,
   userConfigAlias ? "",
@@ -11,20 +18,18 @@ let
 
   pkgs = nixpkgs.legacyPackages.${system};
 
-  userConfig = if userConfigAlias == ""
-    then ./${name}.nix
-    else ./${userConfigAlias}.nix;
-  userHomeDirectory = if homeDirectory == ""
-    then name
-    else homeDirectory;
+  userConfig = if userConfigAlias == "" then ./${name}.nix else ./${userConfigAlias}.nix;
+  userHomeDirectory = if homeDirectory == "" then name else homeDirectory;
 
-in home-manager.lib.homeManagerConfiguration {
+in
+home-manager.lib.homeManagerConfiguration {
   inherit pkgs;
 
   modules = [
     userConfig
 
-    catppuccin.homeModules.catppuccin {
+    catppuccin.homeModules.catppuccin
+    {
       catppuccin.enable = true;
       catppuccin.flavor = "frappe";
     }
