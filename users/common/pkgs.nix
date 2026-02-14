@@ -1,5 +1,4 @@
 {
-  inputs,
   pkgs,
   gui,
   ...
@@ -18,28 +17,34 @@ in
       curl
       vim
       tmux
+      fzf
+      tree
+      watch
+      gnumake
+      file
+
       bat
       btop
       eza
       fd
       ripgrep
-      fzf
-      tree
-      watch
+      zoxide
+
       helix
-      gnumake
 
       nixfmt
-
+      nil
     ]
     ++ (lib.optionals gui [
       zed-editor
+      vscode
+      obsidian
     ])
     ++ (lib.optionals isDarwin [
       aerospace
     ])
     ++ (lib.optionals (isLinux && gui) [
-      # Installed through brew
+      # Installed through brew for darwin systems.
       ghostty
       # Google chrome installed through homebrew on macos
       google-chrome

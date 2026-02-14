@@ -5,13 +5,12 @@ default: help
 ##@ Actions
 
 switch:
-	if [[ -z "$(f)" ]]; then \
-		echo "No configuration name provided"; \
+	@if [[ -z "$(f)" ]]; then \
+		echo "No configuration name provided, use: f=<configuration-name>"; \
 		make help; exit 1; \
 	fi
 	@echo "Adding files to git index"
 	git add . && git status
-
 
 darwin-switch: switch ## Switch the darwin configuration: f=<configuration-name>. Example: make macbook
 	echo "Switching darwin configuration for $(f)"
@@ -31,7 +30,14 @@ patch-home-config: ## Apply any manual patch required.
 
 .PHONY: switch darwin-switch nixos-switch home-switch patch-home-config
 
+##@ Development
+format: ## Format the code.
+	@find . -type f -name '*.nix' -exec nixfmt {} \;
+
 ##@ Initialize environment
+
+show:
+	@nix flake show
 
 init-nix-darwin: ## Setup nix-darwin for macos setup
 	@echo "Installing nix (Determinate installer)"

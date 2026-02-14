@@ -75,7 +75,7 @@
       homeConfigurations = {
         macbook-lima-vm = userBuilder "deepeshpathak" {
           system = "aarch64-linux";
-          userConfigAlias = "fristonio";
+          userConfigAlias = "dev";
           homeDirectory = "deepeshpathak.linux";
         };
       };

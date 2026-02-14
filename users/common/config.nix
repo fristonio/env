@@ -1,7 +1,5 @@
 {
-  inputs,
   pkgs,
-  config,
   lib,
   username,
   homeDirectory,
@@ -21,7 +19,6 @@ in
     username = username;
 
     homeDirectory = if isDarwin then "/Users/${homeDirectory}" else "/home/${homeDirectory}";
-
     stateVersion = "25.11";
   };
 
