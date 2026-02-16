@@ -1,12 +1,15 @@
 {
   config,
   pkgs,
-  lib,
   username,
   ...
 }:
 
 {
+
+  imports = [
+    ./common/nixos-gui.nix
+  ];
 
   # Use Grub when dual booting and EFI partitions exist on multiple disks.
   # https://nixos.wiki/wiki/Dual_Booting_NixOS_and_Windows#EFI_with_multiple_disks
@@ -15,19 +18,18 @@
   boot.loader.grub = {
     enable = true;
     useOSProber = true;
-    device = [ "nodev" ];
+    device = "nodev";
     efiSupport = true;
     configurationLimit = 3;
   };
 
-  hardware.graphics = {
-    enable = true;
-  };
+  # Enable OpenGL
+  hardware.graphics.enable = true;
 
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = false;
-    open = true;
+    open = false;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
@@ -42,18 +44,11 @@
         ];
       };
     };
-
-    # Useful for vagrant setups.
-    virtualbox.host = {
-      enable = true;
-      enableExtensionPack = true;
-    };
   };
 
   environment.systemPackages = with pkgs; [
     dnsmasq
     qemu
-    vagrant
   ];
 
   users.users.${username} = {

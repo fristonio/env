@@ -1,5 +1,4 @@
 {
-  inputs,
   pkgs,
   hostname,
   username,
@@ -13,6 +12,10 @@
     # Add any missing dynamic libraries for unpackaged programs
     # here, NOT in environment.systemPackages
   ];
+
+  # Convert keyboard mappings
+  services.xserver.xkb.options = "caps:escape";
+  console.useXkbConfig = true;
 
   networking = {
     hostName = hostname;
@@ -37,7 +40,14 @@
   time.hardwareClockInLocalTime = true;
   time.timeZone = "America/Vancouver";
 
-  fonts.fontconfig.enable = true;
+  fonts.fontconfig = {
+    defaultFonts = {
+      serif = ["Noto Serif"];
+      sansSerif = ["Noto Sans"];
+      monospace = ["JetBrainsMono Nerd Font Mono"];
+      emoji = ["JetBrainsMono Nerd Font"];
+    };
+  };
   fonts.fontDir.enable = true;
 
   users.users.${username} = {

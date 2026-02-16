@@ -19,6 +19,5 @@
 
     # Tools
     tldr
-    nushell
   ];
 }

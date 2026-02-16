@@ -4,16 +4,17 @@
 theme = Catppuccin Frappe
 
 macos-option-as-alt = left
+window-decoration = false
 
 # Enable shell integration
 shell-integration = bash
 
 # brew install --cask font-jetbrains-mono
-font-family = "JetBrains Mono"
+font-family = "JetBrains Mono Medium"
 font-feature = "-liga"
 font-thicken = true
 
-font-size = 15
+font-size = 14
 
 quick-terminal-position = right
 quick-terminal-animation-duration = 0
@@ -44,10 +45,10 @@ keybind = super+l=goto_split:right
 keybind = alt+a>z=toggle_split_zoom
 
 ## Resizing splits
-keybind = alt+a>shift+h=resize_split:left,15
-keybind = alt+a>shift+j=resize_split:down,15
-keybind = alt+a>shift+k=resize_split:up,15
-keybind = alt+a>shift+l=resize_split:right,15
+keybind = alt+a>shift+h=resize_split:left,25
+keybind = alt+a>shift+j=resize_split:down,25
+keybind = alt+a>shift+k=resize_split:up,25
+keybind = alt+a>shift+l=resize_split:right,25
 
 keybind = super+shift+r=equalize_splits
 
