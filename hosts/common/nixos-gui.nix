@@ -1,17 +1,29 @@
-{config, pkgs, username, ...}:
+{
+  config,
+  pkgs,
+  username,
+  ...
+}:
 
 {
   hardware.graphics.enable = true;
 
   # Load nvidia driver for Xorg and wayland
-  services.xserver.videoDrivers = ["displaylink" "nvidia" "modesetting"];
+  services.xserver.videoDrivers = [
+    "displaylink"
+    "nvidia"
+    "modesetting"
+  ];
   services.power-profiles-daemon.enable = true;
 
   # Enable polkit to let application esclate previliges if required.
   security.polkit.enable = true;
 
   services.dbus.enable = true;
-  users.users.${username}.extraGroups = [ "video" "input" ];
+  users.users.${username}.extraGroups = [
+    "video"
+    "input"
+  ];
 
   # Niri depndencies:
   # Use gnome-keyring as the secret service.

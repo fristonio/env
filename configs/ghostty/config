@@ -4,7 +4,7 @@
 theme = Catppuccin Frappe
 
 macos-option-as-alt = left
-window-decoration = false
+# window-decoration = false
 
 # Enable shell integration
 shell-integration = bash

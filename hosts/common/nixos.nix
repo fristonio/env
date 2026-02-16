@@ -42,10 +42,10 @@
 
   fonts.fontconfig = {
     defaultFonts = {
-      serif = ["Noto Serif"];
-      sansSerif = ["Noto Sans"];
-      monospace = ["JetBrainsMono Nerd Font Mono"];
-      emoji = ["JetBrainsMono Nerd Font"];
+      serif = [ "Noto Serif" ];
+      sansSerif = [ "Noto Sans" ];
+      monospace = [ "JetBrainsMono Nerd Font Mono" ];
+      emoji = [ "JetBrainsMono Nerd Font" ];
     };
   };
   fonts.fontDir.enable = true;

@@ -1,5 +1,7 @@
 SHELL := bash
 
+NUSHELL_CMD_RUN := nu --config shell/config.nu --env-config shell/env.nu -c
+
 default: help
 
 ##@ Actions
@@ -24,11 +26,11 @@ home-switch: ## Switch the home manager configuration: f=<configuration-name>. E
 	echo "Switching home-manager configuration for $(f)"; \
 	home-manager switch -b bak --flake .#$(f); \
 
-patch-home-config: ## Apply any manual patch required.
-	cp ./configs/zed/settings.json "${HOME}/.config/zed"
-	cp ./configs/zed/keymap.json "${HOME}/.config/zed"
+configs: ## Sync environment configs to home directory.
+	$(NUSHELL_CMD_RUN) 'sync-env-configs -b'
+	$(NUSHELL_CMD_RUN) 'init-nushell-autoloads'
 
-.PHONY: switch darwin-switch nixos-switch home-switch patch-home-config
+.PHONY: switch darwin-switch nixos-switch home-switch configs
 
 ##@ Development
 format: ## Format the code.

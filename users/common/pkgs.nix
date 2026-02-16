@@ -8,8 +8,6 @@
   programs = {
     bat.enable = true;
     btop.enable = true;
-
-    nushell.enable = true;
   };
 
   home.packages = with pkgs; [
@@ -29,6 +27,7 @@
     zoxide
 
     helix
+    nushell
 
     nixfmt
     nil

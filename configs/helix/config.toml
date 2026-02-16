@@ -36,6 +36,9 @@ newline = "none"
 render = true
 character = "▏"
 
+[editor.lsp]
+auto-signature-help = false
+
 ## Key Remaps
 # Base keymap - https://github.com/helix-editor/helix/blob/master/book/src/keymap.md
 

@@ -3,7 +3,6 @@
   lib,
   username,
   homeDirectory,
-  gui,
   ...
 }:
 
@@ -22,7 +21,6 @@ in
     stateVersion = "25.11";
   };
 
-  programs.command-not-found.enable = true;
   programs.bash = {
     enable = true;
     bashrcExtra = builtins.readFile ./../../configs/bashrc;
@@ -43,10 +41,12 @@ in
   };
 
   xdg.enable = true;
-  xdg.configFile = {
-    "helix" = {
-      source = configPath "helix";
-      recursive = true;
-    };
-  };
+
+  # Manging dotfiles through symlinks for faster feedback loop.
+  # xdg.configFile = {
+  #   "helix" = {
+  #     source = configPath "helix";
+  #     recursive = true;
+  #   };
+  # };
 }
