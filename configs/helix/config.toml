@@ -9,6 +9,7 @@ trim-final-newlines = true
 trim-trailing-whitespace = true
 popup-border = "none" # popup, menu, all
 cursorline = true
+line-number = "relative"
 
 [editor.statusline]
 mode.normal = "󰬕 NORMAL"
