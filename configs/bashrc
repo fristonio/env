@@ -60,9 +60,9 @@ function print_git_branch() {
 }
 
 function print_shell_indidcator() {
-  INDICATOR_COLOR="${TERM_COLOR_BLUE}"
+  INDICATOR_COLOR="${TERM_COLOR_RED}"
   if [ $? -eq 0 ]; then
-    INDICATOR_COLOR="${TERM_COLOR_RED}"
+    INDICATOR_COLOR="${TERM_COLOR_BLUE}"
   fi
   echo -e "${INDICATOR_COLOR}\$${TERM_COLOR_NONE}"
 }

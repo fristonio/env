@@ -14,7 +14,7 @@ font-family = "JetBrains Mono Medium"
 font-feature = "-liga"
 font-thicken = true
 
-font-size = 14
+font-size = 15
 
 quick-terminal-position = right
 quick-terminal-animation-duration = 0

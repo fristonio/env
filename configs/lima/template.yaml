@@ -1,0 +1,82 @@
+# From: https://github.com/lima-vm/lima/blob/master/templates/default.yaml
+
+# To create the VM using template:
+# $ limactl create --name=dev --cpus=6 --memory=12 template.yaml
+
+minimumLimaVersion: 2.0.0
+os: "Linux"
+
+base:
+- template:_images/ubuntu
+
+# VM type: "qemu", "vz" (on macOS 13 and later), or "default".
+# The vmType can be specified only on creating the instance.
+# The vmType of existing instances cannot be changed.
+# Builtin default: "vz" (on macOS 13.5 and later), "qemu" (on others)
+vmType: null
+
+# Arch: "default", "x86_64", "aarch64".
+# Builtin default: "default" (corresponds to the host architecture)
+arch: null
+
+# Builtin default: min(4, host CPU cores)
+cpus: 6
+
+# Builtin default: min("4GiB", half of host memory)
+memory: "8GiB"
+
+# Builtin default: "100GiB"
+disk: "128GiB"
+
+user:
+  name: "lima"
+  comment: "Lima VM User"
+  uid: null
+  home: "/home/{{.User}}"
+  shell: "/bin/bash"
+
+# Mount type for above mounts, such as "reverse-sshfs" (from sshocker), "9p" (QEMU’s virtio-9p-pci, aka virtfs),
+# or "virtiofs" (experimental on Linux; needs `vmType: vz` on macOS).
+# Builtin default: "default" (resolved to be "9p" for QEMU since Lima v1.0 on non-Windows, "virtiofs" for vz)
+mountType: null
+
+# Enable inotify support for mounted directories (EXPERIMENTAL)
+# Builtin default: Disabled by default
+mountInotify: true
+
+mounts:
+- location: "~"
+  writable: false
+
+- location: "{{.Home}}/workspace"
+  mountPoint: "{{.Home}}/workspace"
+  writable: true
+
+- location: "{{.Home}}/.env"
+  mountPoint: "{{.Home}}/.env"
+  writable: true
+
+ssh:
+  localPort: null
+  loadDotSSHPubKeys: false
+  forwardAgent: false
+  forwardX11: false
+  forwardX11Trusted: false
+
+  # Enable SSH over vsock.
+  # Builtin default: true for vz, false for other vmTypes
+  overVsock: null
+
+# Upgrade the instance on boot. Reboot after upgrade if required
+# Builtin default: false
+upgradePackages: null
+
+# When the "nestedVirtualization" feature is enabled:
+# - Allows running a VM inside the guest VM.
+# - The guest VM must configure QEMU with the `-cpu host` parameters to run a nested VM:
+#   qemu-system-aarch64 -accel kvm -cpu host -M virt
+# - Without specifying `-cpu host`, nested virtualization may fail with the error:
+#   qemu-system-aarch64: kvm_init_vcpu: kvm_arch_init_vcpu failed (0): Invalid argument
+# - Only supported on Apple M3 or later with `vmType: vz`.
+# Builtin default: false
+nestedVirtualization: null

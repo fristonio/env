@@ -81,7 +81,7 @@ def sync-env-configs [
       let config_out = ({optional: false} | merge $entry.meta)
       {
         src: ($env_dir | path join $entry.src | path expand),
-        dest: ($home_dir | path join $config_out.dest | path expand),
+        dest: ($home_dir | path join $config_out.dest | path expand --no-symlink),
         optional: $config_out.optional
       }
     }
@@ -102,9 +102,12 @@ def sync-env-configs [
     return
   }
 
-  let conflicts_symlinks = ($conflicts | where ($it.dest | path type) == "symlink")
+  let conflicts_symlinks = (
+    $conflicts
+    | where (($it.dest | path type) == "symlink") and (($it.dest | path expand) != $it.src)
+  )
   if ($conflicts_symlinks | is-not-empty) {
-    log critical "Destination is already a symlink"
+    log critical "Destination is already a symlink to different file"
     log error $"Remove these links manually: ($conflicts_symlinks.dest | str join ', ')"
     return
   }

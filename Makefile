@@ -1,30 +1,45 @@
 SHELL := bash
 
+ENV_DIR := ~/.env
 NUSHELL_CMD_RUN := nu --config shell/config.nu --env-config shell/env.nu -c
 
 default: help
+
+VM_NAME := zen
+
+create-vm: ## Create lima development vm
+	limactl create --name=$(VM_NAME) ./configs/lima/template.yaml
+	limactl start $(VM_NAME)
+
+	limactl shell $(VM_NAME) make -C "$(ENV_DIR)" help
+	limactl shell $(VM_NAME) make -C "$(ENV_DIR)" init-nix
+
+setup-vm: ## Setup the development vm
+	limactl shell $(VM_NAME) make -C "$(ENV_DIR)" init-home-manager f=lima-vm-aarch64
+	limactl shell $(VM_NAME) make -C "$(ENV_DIR)" home-switch f=lima-vm-aarch64
+	limactl shell $(VM_NAME) make -C "$(ENV_DIR)" configs
 
 ##@ Actions
 
 switch:
 	@if [[ -z "$(f)" ]]; then \
 		echo "No configuration name provided, use: f=<configuration-name>"; \
-		make help; exit 1; \
+		exit 1; \
 	fi
 	@echo "Adding files to git index"
 	git add . && git status
 
-darwin-switch: switch ## Switch the darwin configuration: f=<configuration-name>. Example: make macbook
-	echo "Switching darwin configuration for $(f)"
+darwin-switch: switch ## Switch the darwin configuration: f=<configuration-name>. Example: make darwin-switch f=macbook
+	@echo "Switching darwin configuration for $(f)"
 	sudo darwin-rebuild switch --flake .#$(f)
 
-nixos-switch: ## Switch the nixos configuration: f=<configuration-name>. Example: make pacman
-	echo "Switching nixos configuration for $(f)"
+nixos-switch: switch ## Switch the nixos configuration: f=<configuration-name>. Example: make nixos-switch f=pacman
+	@echo "Switching nixos configuration for $(f)"
 	sudo nixos-rebuild switch --flake .#$(f)
 
-home-switch: ## Switch the home manager configuration: f=<configuration-name>. Example: make macbook-lima-vm
-	echo "Switching home-manager configuration for $(f)"; \
-	home-manager switch -b bak --flake .#$(f); \
+home-switch: switch ## Switch the home manager configuration: f=<configuration-name>. Example: make home-switch f=macbook-lima-vm
+	@echo "Switching home-manager configuration for $(f)"
+	home-manager switch -b bak --flake .#$(f)
 
 configs: ## Sync environment configs to home directory.
 	$(NUSHELL_CMD_RUN) 'sync-env-configs -b'
@@ -38,7 +53,7 @@ format: ## Format the code.
 
 ##@ Initialize environment
 
-show:
+show: ## Show flake information.
 	@nix flake show
 
 init-nix-darwin: ## Setup nix-darwin for macos setup
@@ -52,17 +67,17 @@ init-nix-darwin: ## Setup nix-darwin for macos setup
 
 	@echo "nix-darwin installed, to activate run: 'sudo darwin-rebuild switch --flake .#<configuration>'"
 
-
-init-home-manager: ## Setup home manager in standalone mode
+init-nix: ## Setup nix on linux hosts
 	@echo "Installing nix"
-	# curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh -s -- --daemon && exec bash
+	curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh -s -- --daemon && exec bash
 	nix --version
 
 	@echo "Enabling nix flakes"
 	echo "experimental-features = nix-command flakes" | sudo tee -a /etc/nix/nix.conf
 
+init-home-manager: ## Setup home manager in standalone mode
 	@echo "Installing home-manager in standalone mode"
-	nix run home-manager/release-25.11 -- switch --flake .#
+	nix run home-manager/release-25.11 -- switch -b backup --flake .#$(f)
 	home-manager --version
 
 	@echo "Home Manager installed, to activate run: home-manager switch --flake .#<configuration>"

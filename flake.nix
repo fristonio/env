@@ -73,6 +73,11 @@
 
       # Available through 'home-manager --flake .#<username>'
       homeConfigurations = {
+        lima-vm-aarch64 = userBuilder "lima" {
+          system = "aarch64-linux";
+          userConfigAlias = "dev";
+        };
+
         macbook-lima-vm = userBuilder "deepeshpathak" {
           system = "aarch64-linux";
           userConfigAlias = "dev";
