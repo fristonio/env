@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
@@ -16,12 +17,18 @@
 
     catppuccin.url = "github:catppuccin/nix/release-25.11";
     niri-flake.url = "github:sodiboo/niri-flake";
+
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs =
     {
       self,
       nixpkgs,
+      nixpkgs-unstable,
       home-manager,
       darwin,
       catppuccin,
@@ -30,13 +37,20 @@
     }@inputs:
     let
       hostBuilder = import ./hosts/builder.nix {
-        inherit inputs nixpkgs catppuccin niri-flake;
+        inherit
+          inputs
+          nixpkgs
+          nixpkgs-unstable
+          catppuccin
+          niri-flake
+          ;
       };
 
       userBuilder = import ./users/builder.nix {
         inherit
           inputs
           nixpkgs
+          nixpkgs-unstable
           home-manager
           catppuccin
           ;

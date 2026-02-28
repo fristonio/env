@@ -1,6 +1,7 @@
 {
   inputs,
   nixpkgs,
+  nixpkgs-unstable,
   home-manager,
   catppuccin,
   ...
@@ -17,13 +18,14 @@ name:
 let
 
   pkgs = nixpkgs.legacyPackages.${system};
+  pkgsUnstable = nixpkgs-unstable.legacyPackages.${system};
 
   userConfig = if userConfigAlias == "" then ./${name}.nix else ./${userConfigAlias}.nix;
   userHomeDirectory = if homeDirectory == "" then name else homeDirectory;
 
 in
 home-manager.lib.homeManagerConfiguration {
-  inherit pkgs;
+  inherit pkgs pkgsUnstable;
 
   modules = [
     userConfig

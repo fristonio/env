@@ -5,7 +5,7 @@ NUSHELL_CMD_RUN := nu --config shell/config.nu --env-config shell/env.nu -c
 
 default: help
 
-VM_NAME := zen
+VM_NAME := dev
 
 create-vm: ## Create lima development vm
 	limactl create --name=$(VM_NAME) ./configs/lima/template.yaml

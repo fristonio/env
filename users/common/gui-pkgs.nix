@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  pkgsUnstable,
   ...
 }:
 
@@ -13,33 +14,25 @@ in
 {
 
   programs = lib.mkIf isLinux {
-    waybar.enable = true;
-
     fuzzel.enable = true;
-    wleave.enable = true;
     firefox.enable = true;
   };
 
-  services = lib.mkIf isLinux {
-    mako.enable = true;
-  };
-
   home.packages =
-    with pkgs;
     [
-      zed-editor
-      vscode
-      obsidian
+      pkgs.zed-editor
+      pkgs.vscode
+      pkgs.obsidian
     ]
     ++ (lib.optionals isDarwin [
-      aerospace
+      pkgs.aerospace
     ])
     ++ (lib.optionals isLinux [
-      apple-cursor
+      pkgs.apple-cursor
       # Installed through brew for darwin systems.
-      ghostty
+      pkgs.ghostty
       # Google chrome installed through homebrew on macos
-      google-chrome
+      pkgs.google-chrome
     ]);
 
   home.file = lib.mkIf isDarwin {
@@ -64,4 +57,5 @@ in
     #   recursive = true;
     # };
   };
+
 }

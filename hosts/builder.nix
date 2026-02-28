@@ -1,6 +1,7 @@
 {
   inputs,
   nixpkgs,
+  nixpkgs-unstable,
   catppuccin,
   niri-flake,
   ...
@@ -20,6 +21,8 @@ let
   nix-system = if darwin then inputs.darwin.lib.darwinSystem else nixpkgs.lib.nixosSystem;
   home-manager =
     if darwin then inputs.home-manager.darwinModules else inputs.home-manager.nixosModules;
+
+  pkgsUnstable = nixpkgs-unstable.legacyPackages.${system};
 
   hardwareConfig = ./hardware/${name}.nix;
   machineConfig = ./${name}.nix;
@@ -81,6 +84,7 @@ nix-system rec {
       };
 
       home-manager.extraSpecialArgs = {
+        inherit pkgsUnstable;
         username = user;
         homeDirectory = user;
       };
@@ -88,6 +92,8 @@ nix-system rec {
   ];
 
   specialArgs = {
+    inherit inputs;
+
     system = system;
     hostname = name;
     username = user;

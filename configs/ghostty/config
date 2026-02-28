@@ -4,17 +4,17 @@
 theme = Catppuccin Frappe
 
 macos-option-as-alt = left
-# window-decoration = false
+window-decoration = false
 
 # Enable shell integration
 shell-integration = bash
 
 # brew install --cask font-jetbrains-mono
-font-family = "JetBrains Mono Medium"
+font-family = "JetBrains Mono ExtraBold"
 font-feature = "-liga"
 font-thicken = true
 
-font-size = 15
+font-size = 11
 
 quick-terminal-position = right
 quick-terminal-animation-duration = 0

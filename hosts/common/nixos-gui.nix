@@ -1,10 +1,16 @@
 {
   pkgs,
+  inputs,
   username,
   ...
 }:
 
 {
+
+  imports = [
+    inputs.noctalia.nixosModules.default
+  ];
+
   services.xserver.enable = true;
 
   # Load nvidia driver for Xorg and wayland
@@ -53,5 +59,7 @@
 
     # To run X11 apps on wayland.
     xwayland-satellite
+
+    inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 }

@@ -1,5 +1,6 @@
 {
   pkgs,
+  pkgsUnstable,
   ...
 }:
 
@@ -10,26 +11,28 @@
     btop.enable = true;
   };
 
-  home.packages = with pkgs; [
-    git
-    curl
-    vim
-    tmux
-    fzf
-    tree
-    watch
-    gnumake
-    file
+  home.packages = [
+    pkgsUnstable.lima
 
-    eza
-    fd
-    ripgrep
-    zoxide
+    pkgs.git
+    pkgs.curl
+    pkgs.vim
+    pkgs.tmux
+    pkgs.fzf
+    pkgs.tree
+    pkgs.watch
+    pkgs.gnumake
+    pkgs.file
 
-    helix
-    nushell
+    pkgs.eza
+    pkgs.fd
+    pkgs.ripgrep
+    pkgs.zoxide
 
-    nixfmt
-    nil
+    pkgs.helix
+    pkgs.nushell
+
+    pkgs.nixfmt
+    pkgs.nil
   ];
 }
