@@ -45,10 +45,10 @@ keybind = super+l=goto_split:right
 keybind = alt+a>z=toggle_split_zoom
 
 ## Resizing splits
-keybind = alt+a>shift+h=resize_split:left,25
-keybind = alt+a>shift+j=resize_split:down,25
-keybind = alt+a>shift+k=resize_split:up,25
-keybind = alt+a>shift+l=resize_split:right,25
+keybind = alt+a>shift+h=resize_split:left,100
+keybind = alt+a>shift+j=resize_split:down,100
+keybind = alt+a>shift+k=resize_split:up,100
+keybind = alt+a>shift+l=resize_split:right,100
 
 keybind = super+shift+r=equalize_splits
 

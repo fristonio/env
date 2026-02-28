@@ -2,6 +2,17 @@
 // from the command palette.
 [
   {
+    "context": "Pane",
+    "bindings": {
+      "ctrl-w": [
+        "pane::CloseActiveItem",
+        {
+          "close_pinned": false
+        }
+      ]
+    }
+  },
+  {
     "context": "((VimControl && !menu) || (!Editor && !Terminal))",
     "bindings": {
       "ctrl-l": "workspace::ActivatePaneRight"

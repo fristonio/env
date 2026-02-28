@@ -24,6 +24,8 @@
     pkgs.gnumake
     pkgs.file
 
+    pkgs.jq
+
     pkgs.eza
     pkgs.fd
     pkgs.ripgrep

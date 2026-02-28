@@ -25,7 +25,7 @@ let
 
 in
 home-manager.lib.homeManagerConfiguration {
-  inherit pkgs pkgsUnstable;
+  inherit pkgs;
 
   modules = [
     userConfig
@@ -38,6 +38,8 @@ home-manager.lib.homeManagerConfiguration {
   ];
 
   extraSpecialArgs = {
+    inherit pkgsUnstable;
+
     username = name;
     homeDirectory = userHomeDirectory;
     gui = gui;

@@ -94,6 +94,11 @@
           userConfigAlias = "dev";
         };
 
+        lima-vm-x86_64 = userBuilder "lima" {
+          system = "x86_64-linux";
+          userConfigAlias = "dev";
+        };
+
         macbook-lima-vm = userBuilder "deepeshpathak" {
           system = "aarch64-linux";
           userConfigAlias = "dev";

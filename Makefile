@@ -69,13 +69,13 @@ init-nix-darwin: ## Setup nix-darwin for macos setup
 
 init-nix: ## Setup nix on linux hosts
 	@echo "Installing nix"
-	curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh -s -- --daemon && exec bash
+	curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh -s -- --daemon
 	nix --version
 
 	@echo "Enabling nix flakes"
 	echo "experimental-features = nix-command flakes" | sudo tee -a /etc/nix/nix.conf
 
-init-home-manager: ## Setup home manager in standalone mode
+init-home-manager: switch ## Setup home manager in standalone mode
 	@echo "Installing home-manager in standalone mode"
 	nix run home-manager/release-25.11 -- switch -b backup --flake .#$(f)
 	home-manager --version

@@ -18,22 +18,21 @@ in
     firefox.enable = true;
   };
 
-  home.packages =
-    [
-      pkgs.zed-editor
-      pkgs.vscode
-      pkgs.obsidian
-    ]
-    ++ (lib.optionals isDarwin [
-      pkgs.aerospace
-    ])
-    ++ (lib.optionals isLinux [
-      pkgs.apple-cursor
-      # Installed through brew for darwin systems.
-      pkgs.ghostty
-      # Google chrome installed through homebrew on macos
-      pkgs.google-chrome
-    ]);
+  home.packages = [
+    pkgs.zed-editor
+    pkgs.vscode
+    pkgs.obsidian
+  ]
+  ++ (lib.optionals isDarwin [
+    pkgs.aerospace
+  ])
+  ++ (lib.optionals isLinux [
+    pkgs.apple-cursor
+    # Installed through brew for darwin systems.
+    pkgs.ghostty
+    # Google chrome installed through homebrew on macos
+    pkgs.google-chrome
+  ]);
 
   home.file = lib.mkIf isDarwin {
     "aerospace.toml".source = configPath "aerospace.toml";
