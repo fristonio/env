@@ -24,15 +24,14 @@
   };
 
   # Enable OpenGL
-  hardware.graphics.enable = true;
+  # hardware.graphics.enable = true;
 
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = false;
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
+  # hardware.nvidia = {
+  #   modesetting.enable = true;
+  #   open = false;
+  #   nvidiaSettings = true;
+  #   package = config.boot.kernelPackages.nvidiaPackages.stable;
+  # };
 
   virtualisation = {
     docker = {

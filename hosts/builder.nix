@@ -2,6 +2,7 @@
   inputs,
   nixpkgs,
   catppuccin,
+  niri-flake,
   ...
 }:
 
@@ -39,8 +40,11 @@ nix-system rec {
   inherit system;
 
   modules = [
-    # Allow unfree packages.
-    { nixpkgs.config.allowUnfree = true; }
+    {
+      # Allow unfree packages.
+      nixpkgs.config.allowUnfree = true;
+      nixpkgs.overlays = [ niri-flake.overlays.niri ];
+    }
 
     # For darwin systems hardware is not managed by nix.
   ]

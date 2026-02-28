@@ -35,6 +35,7 @@ in
       aerospace
     ])
     ++ (lib.optionals isLinux [
+      apple-cursor
       # Installed through brew for darwin systems.
       ghostty
       # Google chrome installed through homebrew on macos
@@ -43,6 +44,12 @@ in
 
   home.file = lib.mkIf isDarwin {
     "aerospace.toml".source = configPath "aerospace.toml";
+  };
+
+  home.pointerCursor = {
+    package = pkgs.apple-cursor;
+    name = "macOS";
+    size = 24;
   };
 
   xdg.configFile = {

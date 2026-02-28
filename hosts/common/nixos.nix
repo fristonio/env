@@ -7,6 +7,8 @@
 
 {
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
     # Add any missing dynamic libraries for unpackaged programs

@@ -15,6 +15,7 @@
     };
 
     catppuccin.url = "github:catppuccin/nix/release-25.11";
+    niri-flake.url = "github:sodiboo/niri-flake";
   };
 
   outputs =
@@ -24,11 +25,12 @@
       home-manager,
       darwin,
       catppuccin,
+      niri-flake,
       ...
     }@inputs:
     let
       hostBuilder = import ./hosts/builder.nix {
-        inherit inputs nixpkgs catppuccin;
+        inherit inputs nixpkgs catppuccin niri-flake;
       };
 
       userBuilder = import ./users/builder.nix {

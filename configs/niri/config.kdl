@@ -49,7 +49,7 @@ layout {
 
 // This line starts waybar, a commonly used bar for Wayland compositors.
 // spawn-at-startup "waybar"
-spawn-at-startup "swaybg -m fill -i ~/.env/static/wallpaper.png"
+spawn-sh-at-startup "swaybg -m fill -i ~/.env/static/wallpaper.png"
 
 hotkey-overlay {
     skip-at-startup
@@ -67,6 +67,21 @@ animations {
 window-rule {
     geometry-corner-radius 12
     clip-to-geometry true
+}
+
+cursor {
+    xcursor-theme "macOS"
+    xcursor-size 24
+}
+
+output "HDMI-A-1" {
+    position x=0 y=0
+    mode "2560x1440"
+}
+
+output "DVI-I-2" {
+    position x=2560 y=0
+    mode "2560x1440"
 }
 
 binds {

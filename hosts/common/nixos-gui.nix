@@ -1,19 +1,19 @@
 {
-  config,
   pkgs,
   username,
   ...
 }:
 
 {
-  hardware.graphics.enable = true;
+  services.xserver.enable = true;
 
   # Load nvidia driver for Xorg and wayland
   services.xserver.videoDrivers = [
     "displaylink"
-    "nvidia"
-    "modesetting"
+    # "modesetting"
+    # "nvidia"
   ];
+  systemd.services.dlm.wantedBy = [ "multi-user.target" ];
   services.power-profiles-daemon.enable = true;
 
   # Enable polkit to let application esclate previliges if required.
@@ -23,6 +23,8 @@
   users.users.${username}.extraGroups = [
     "video"
     "input"
+    "render"
+    "tty"
   ];
 
   # Niri depndencies:
@@ -30,7 +32,19 @@
   services.gnome.gnome-keyring.enable = true;
 
   # Niri is the main gui component.
+  # Niri package alraedy enables required xdg portals.
   programs.niri.enable = true;
+  programs.niri.package = pkgs.niri-unstable;
+
+  # Enable display manager.
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+  };
+
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+  };
 
   # Display link setup
   environment.systemPackages = with pkgs; [
