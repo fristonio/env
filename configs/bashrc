@@ -21,8 +21,9 @@ export HISTSIZE=
 # Remove zsh default shell warningin on macos
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+PROMPT_ICON=""
 case "$(uname -s)" in
-  Darwin*) export PATH="${PATH}:/opt/homebrew/bin/:/opt/homebrew/sbin/";;
+  Darwin*) export PATH="${PATH}:/opt/homebrew/bin/:/opt/homebrew/sbin/"; PROMPT_ICON="";;
 esac
 export PATH="${PATH}:${HOME}/.local/bin"
 
@@ -46,13 +47,22 @@ if command -v fzf &> /dev/null; then
   eval "$(fzf --bash)"
 fi
 
+if command -v eza &> /dev/null; then
+  alias l='eza -l'
+  alias ls='eza'
+  alias ll='eza -la'
+  alias li='eza -l --icons'
+  alias tree='eza --tree'
+fi
+
 ## Configure bash prompt.
 
 export TERM_COLOR_NONE="\033[00m"
-export TERM_COLOR_BLUE="\033[0;34m"
+export TERM_COLOR_RED="\033[0;31m"
 export TERM_COLOR_GREEN="\033[0;32m"
 export TERM_COLOR_YELLOW="\033[0;33m"
-export TERM_COLOR_RED="\033[0;31m"
+export TERM_COLOR_BLUE="\033[0;34m"
+export TERM_COLOR_MAGENTA="\033[0;35m"
 export TERM_COLOR_CYAN="\033[0;36m"
 
 function print_git_branch() {
@@ -76,11 +86,11 @@ function print_main_prompt() {
   if ! [ -z "${PROMPT_VERBOSE}" ]; then
     HOST_INFO="${TERM_COLOR_CYAN}@${HOSTNAME}${TERM_COLOR_NONE}"
   fi
-  echo -e "${TERM_COLOR_BLUE}[${TERM_COLOR_GREEN}${USER}${HOST_INFO}${TERM_COLOR_BLUE}]${TERM_COLOR_NONE}"
+  echo -e "${TERM_COLOR_BLUE}[${TERM_COLOR_GREEN}${USER}${HOST_INFO} ${TERM_COLOR_MAGENTA}${PROMPT_ICON}${TERM_COLOR_BLUE}]${TERM_COLOR_NONE}"
 }
 
 # To enable hostname in prompt: export PROMPT_VERBOSE=1
 export PROMPT_VERBOSE=${PROMPT_VERBOSE:-1}
 
 PS1="\$(print_main_prompt) \$(print_shell_indidcator) \$(print_cwd) \$(print_git_branch)"
-PS1+="\n${BLUE_COLOR}ᗆ ${NO_COLOR}"
+PS1+="\n${TERM_COLOR_BLUE}ᗆ ${TERM_COLOR_NONE}"

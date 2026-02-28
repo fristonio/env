@@ -5,7 +5,7 @@
 $env.config.history.file_format = "sqlite"
 $env.config.history.max_size = 1_000_000
 
-$env.config.show_banner = "short"
+$env.config.show_banner = "none"
 
 $env.config.edit_mode = "vi"
 $env.config.buffer_editor = "vim"
@@ -27,10 +27,15 @@ alias ll = ls -la
 alias gs = git status
 alias gl = git log --oneline --graph --abbrev-commit --decorate
 
+if (which eza | is-not-empty) {
+  alias li = eza -l --icons
+  alias tree = eza --tree
+}
+
 # Create the prompt
 def create_left_prompt [] {
     let host = (sys host).hostname
-    let main_prompt = $"(ansi blue)[(ansi cyan)($host)(ansi blue)](ansi magenta)@nu(ansi reset)"
+    let main_prompt = $"(ansi blue)[(ansi cyan)($host) (ansi magenta)(ansi reset)(ansi blue)](ansi reset)"
 
     mut cmd_indicator = $"(ansi blue)$(ansi reset)"
     if ($env.LAST_EXIT_CODE != 0) {
@@ -49,13 +54,13 @@ def create_left_prompt [] {
 
 def create_right_prompt [] {
   let current_time = (date now | format date "%H:%M:%S %p")
-  $"(ansi blue)[(ansi green)($current_time)(ansi blue)](ansi reset)"
+  $"(ansi magenta)  (ansi blue)[(ansi green)($current_time)(ansi blue)](ansi reset)"
 }
 
 $env.PROMPT_COMMAND = { || create_left_prompt }
 $env.PROMPT_COMMAND_RIGHT = { || create_right_prompt }
 
-$env.PROMPT_INDICATOR = "ᗆ "
-$env.PROMPT_INDICATOR_VI_INSERT = "ᗆ "
+$env.PROMPT_INDICATOR = $"(ansi cyan)ᗆ (ansi reset)"
+$env.PROMPT_INDICATOR_VI_INSERT = $"(ansi cyan)ᗆ (ansi reset)"
 $env.PROMPT_INDICATOR_VI_NORMAL = ": "
 $env.PROMPT_MULTILINE_INDICATOR = "::: "

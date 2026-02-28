@@ -20,7 +20,8 @@
     # Languages
 
     ## C/C++/Rust/Zig
-    clang
+    (gcc // { meta.priority = 1; }) # cpp provided by gcc conflicts with clang. Assign priority to avoid conflict.
+    (clang // { meta.priority = 10; })
     clang-tools
     lldb
     llvm
