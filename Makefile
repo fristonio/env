@@ -5,20 +5,6 @@ NUSHELL_CMD_RUN := nu --config shell/config.nu --env-config shell/env.nu -c
 
 default: help
 
-VM_NAME := dev
-
-create-vm: ## Create lima development vm
-	limactl create --name=$(VM_NAME) ./configs/lima/template.yaml
-	limactl start $(VM_NAME)
-
-	limactl shell $(VM_NAME) make -C "$(ENV_DIR)" help
-	limactl shell $(VM_NAME) make -C "$(ENV_DIR)" init-nix
-
-setup-vm: ## Setup the development vm
-	limactl shell $(VM_NAME) make -C "$(ENV_DIR)" init-home-manager f=lima-vm-aarch64
-	limactl shell $(VM_NAME) make -C "$(ENV_DIR)" home-switch f=lima-vm-aarch64
-	limactl shell $(VM_NAME) make -C "$(ENV_DIR)" configs
-
 ##@ Actions
 
 switch:
@@ -56,13 +42,13 @@ format: ## Format the code.
 show: ## Show flake information.
 	@nix flake show
 
-init-nix-darwin: ## Setup nix-darwin for macos setup
+init-nix-darwin: switch ## Setup nix-darwin for macos setup
 	@echo "Installing nix (Determinate installer)"
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install && exec bash
 	nix --version
 
 	@echo "Setting up nix-darwin"
-	sudo nix run nix-darwin/nix-darwin-25.11#darwin-rebuild -- switch
+	sudo nix run nix-darwin/nix-darwin-25.11#darwin-rebuild -- switch --flake .#$(f)
 	darwin-version
 
 	@echo "nix-darwin installed, to activate run: 'sudo darwin-rebuild switch --flake .#<configuration>'"

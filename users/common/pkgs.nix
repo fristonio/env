@@ -25,6 +25,7 @@
     pkgs.file
 
     pkgs.jq
+    pkgs.yq
 
     pkgs.eza
     pkgs.fd

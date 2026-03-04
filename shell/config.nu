@@ -20,18 +20,6 @@ $env.config.completions.use_ls_colors = false
 $env.config.footer_mode = "auto"
 $env.config.ls.use_ls_colors = false
 
-# Standard aliases
-alias l = ls -a
-alias ll = ls -la
-
-alias gs = git status
-alias gl = git log --oneline --graph --abbrev-commit --decorate
-
-if (which eza | is-not-empty) {
-  alias li = eza -l --icons
-  alias tree = eza --tree
-}
-
 # Create the prompt
 def create_left_prompt [] {
     let host = (sys host).hostname

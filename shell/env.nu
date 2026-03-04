@@ -10,6 +10,7 @@ const env_configs = {
     "shell/config.nu": { dest: ".config/nushell/config.nu" },
     "shell/env.nu":    { dest: ".config/nushell/env.nu" },
     "shell/dev.nu":    { dest: ".config/nushell/dev.nu" },
+    "shell/aliases.nu":    { dest: ".config/nushell/aliases.nu" },
 
     "configs/helix/config.toml": { dest: ".config/helix/config.toml" },
     "configs/ghostty/config":    { dest: ".config/ghostty/config" },

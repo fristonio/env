@@ -3,18 +3,22 @@
 # List available themes: ghostty +list-themes
 theme = Catppuccin Frappe
 
+# Mac
 macos-option-as-alt = left
-window-decoration = false
+window-decoration = true
+
+# Linux
+# window-decoration = false
 
 # Enable shell integration
 shell-integration = bash
 
 # brew install --cask font-jetbrains-mono
-font-family = "JetBrains Mono ExtraBold"
+font-family = "JetBrains Mono Medium"
 font-feature = "-liga"
 font-thicken = true
 
-font-size = 11
+font-size = 15
 
 quick-terminal-position = right
 quick-terminal-animation-duration = 0

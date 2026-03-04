@@ -1,6 +1,17 @@
 use std/log
 
 @category "dev"
+def configure-linux-vm [] {
+  'net.ipv4.ip_forward=1
+net.ipv6.conf.all.forwarding=1
+fs.file-max=1000000
+fs.inotify.max_user_watches=524288
+fs.inotify.max_user_instances=8192
+' | sudo tee /etc/sysctl.d/vm-sysctl.conf
+  sudo sysctl -p
+}
+
+@category "dev"
 def setup-vm [name: string = "dev"] {
   let lima_template = ($env.ENV_DIR | path join "configs/lima/template.yaml")
   let vmstate = (limactl list -f json
@@ -34,11 +45,15 @@ def setup-vm [name: string = "dev"] {
     limactl shell $name bash -c "curl -fsSL https://test.docker.com | sudo sh"
     limactl shell $name bash -c "sudo usermod \$USER --append --group docker"
     limactl restart $name
-
-    limactl shell $name make -C $env.ENV_DIR configs
   }
 
-  let flake_name = $"lima-vm-(uname | get machine)"
+
+  mut vm_arch = (uname | get machine);
+  $vm_arch = match $vm_arch {
+    "arm64" => "aarch64"
+    _ => $vm_arch
+  }
+  mut flake_name = $"lima-vm-($vm_arch)"
   let flake_path = $"($env.ENV_DIR)#($flake_name)"
   log info $"Setting up home configuration for: ($flake_name)"
   try {
@@ -47,11 +62,6 @@ def setup-vm [name: string = "dev"] {
   } catch {
     limactl shell $name nix run home-manager/release-25.11 -- switch -b backup --flake $flake_path
   }
-}
 
-if (which kubectl | is-not-empty) {
-  alias k = kubectl
-  alias ksys = kubectl -n kube-system
-  alias kexec = kubectl exec -it
-  alias ksysexec = kubectl -n kube-system exec -it
+  limactl shell $name make -C $env.ENV_DIR configs
 }

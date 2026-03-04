@@ -79,5 +79,10 @@
       "ctrl-c": "menu::Cancel",
       "tab": "editor::ConfirmCompletion"
     }
+  },
+  {
+    "bindings": {
+      "cmd-shift-a": "agent::Toggle"
+    }
   }
 ]
