@@ -5,6 +5,9 @@ export LANG=en_US.UTF-8
 export EDITOR='hx'
 export PAGER="less -FirSwX"
 
+# Required for nushell on macos
+export XDG_CONFIG_HOME=~/.config
+
 # Remove zsh default shell warnings on macos
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
@@ -83,7 +86,7 @@ function print_main_prompt() {
 }
 
 # To enable hostname in prompt: export PROMPT_VERBOSE=1
-export PROMPT_VERBOSE=${PROMPT_VERBOSE:-1}
+# export PROMPT_VERBOSE=${PROMPT_VERBOSE:-1}
 
 PS1="\$(print_main_prompt) \$(print_shell_indidcator) \$(print_cwd) \$(print_git_branch)"
 PS1+="\n${TERM_COLOR_BLUE}ᗆ ${TERM_COLOR_NONE}"

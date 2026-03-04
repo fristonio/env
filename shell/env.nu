@@ -1,16 +1,28 @@
 $env.ENV_DIR = ($env.HOME | path join ".env")
 $env.ENV_LOCAL = ($env.ENV_DIR | path join "local")
 
-const env_configs = {
+@category "env"
+def nuscript-path [
+  name: string
+  --autoload (-a)
+] {
+  if $autoload {
+    ($nu.user-autoload-dirs | path join $name)
+  } else {
+    ($nu.default-config-dir | path join $name)
+  }
+}
+
+let env_configs = {
     "configs/bashrc":    { dest: ".bashrc", optional: true },
     "configs/vimrc":     { dest: ".vimrc", optional: true },
     "configs/gitconfig": { dest: ".gitconfig", optional: true }
     "configs/tmux.conf": { dest: ".tmux.conf", optional: true },
 
-    "shell/config.nu": { dest: ".config/nushell/config.nu" },
-    "shell/env.nu":    { dest: ".config/nushell/env.nu" },
-    "shell/dev.nu":    { dest: ".config/nushell/dev.nu" },
-    "shell/aliases.nu":    { dest: ".config/nushell/aliases.nu" },
+    "shell/config.nu": { dest: (nuscript-path "config.nu") },
+    "shell/env.nu":    { dest: (nuscript-path "env.nu") },
+    "shell/dev.nu":    { dest: (nuscript-path -a "dev.nu") },
+    "shell/aliases.nu":    { dest: (nuscript-path -a "aliases.nu") },
 
     "configs/helix/config.toml": { dest: ".config/helix/config.toml" },
     "configs/ghostty/config":    { dest: ".config/ghostty/config" },
@@ -20,16 +32,6 @@ const env_configs = {
     # TODO: Seperate out darwin vs linux stuff.
     # "configs/aerospace.toml":  { dest: ".aerospace.toml", optional: true },
     # "configs/niri/config.kdl": { dest: ".config/niri/config.kdl", optional: true },
-}
-
-@category "env"
-def nuscript [name: string] {
-  let script_path = ($nu.default-config-dir | path join $"($name).nu")
-  if not ($script_path | path exists) {
-    print $"(ansi yellow)Cannot find script: ($script_path)(ansi reset)"
-    return
-  }
-  $script_path
 }
 
 @category "env"
