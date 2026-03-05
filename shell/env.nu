@@ -2,6 +2,11 @@ $env.ENV_DIR = ($env.HOME | path join ".env")
 $env.ENV_LOCAL = ($env.ENV_DIR | path join "local")
 
 @category "env"
+def showcmds [] {
+  help commands | where command_type == "custom" and category != ""
+}
+
+@category "env"
 def nuscript-path [
   name: string
   --autoload (-a)
@@ -82,41 +87,39 @@ def sync-env-configs [
     | transpose src meta
     | each { |entry|
       let config_out = ({optional: false} | merge $entry.meta)
-      {
+      mut out = {
         src: ($env_dir | path join $entry.src | path expand),
         dest: ($home_dir | path join $config_out.dest | path expand --no-symlink),
-        optional: $config_out.optional
+        skip: (not $all and ($config_out.optional == true)),
+        error: ""
       }
+
+      if not ($out.src | path exists) {
+        $out.error = $"Source file missing: ($out.src)"
+      } else if ($out.dest | path exists) {
+        if (($out.dest | path type) == "symlink") and (($out.dest | path expand) == $out.src) {
+          log info $"Config file already exist with correct symlink, will be skipped: ($out.src)"
+          $out.skip = true
+        } else if (not $backup) {
+          $out.error = $"Destination file already exist: ($out.dest) \(Use -b, --backup\)"
+        }
+      }
+
+      $out
     }
-    | where $all or ($it.optional == false)
   )
 
-  let missing_sources = ($configs_list | where not ($it.src | path exists))
-  if ($missing_sources | is-not-empty) {
-    log critical "Missing source files"
-    log error $"Source files not found: ($missing_sources.src | str join ', ')"
-    return
-  }
-
-  let conflicts = ($configs_list | where ($it.dest | path exists))
-  if (not $backup and ($conflicts | is-not-empty)) {
-    log critical "Destination files already exist"
-    log error "Use --backup (-b) to overwrite and create .bak files"
-    return
-  }
-
-  let conflicts_symlinks = (
-    $conflicts
-    | where (($it.dest | path type) == "symlink") and (($it.dest | path expand) != $it.src)
-  )
-  if ($conflicts_symlinks | is-not-empty) {
-    log critical "Destination is already a symlink to different file"
-    log error $"Remove these links manually: ($conflicts_symlinks.dest | str join ', ')"
+  let $invalid_configs = ($configs_list | where not $it.skip and $it.error != "")
+  if ($invalid_configs | is-not-empty) {
+    log critical "Unable to sync configs"
+    ($invalid_configs | each { |entry| log error $entry.error })
     return
   }
 
   def format-path [path: string] { $path | str replace $home_dir ~ }
-  $configs_list | each { |entry|
+  $configs_list
+  | where $it.skip == false
+  | each { |entry|
     let log_prefix = if $dry_run { $"(ansi yellow)[DRY] (ansi reset)" } else { "" }
 
     let dest_dir = ($entry.dest | path dirname)
