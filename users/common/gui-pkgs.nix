@@ -38,7 +38,7 @@ in
     "aerospace.toml".source = configPath "aerospace.toml";
   };
 
-  home.pointerCursor = {
+  home.pointerCursor = lib.mkIf isLinux {
     package = pkgs.apple-cursor;
     name = "macOS";
     size = 24;
