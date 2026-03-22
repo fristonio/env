@@ -85,8 +85,14 @@ function print_main_prompt() {
   echo -e "${TERM_COLOR_BLUE}[${TERM_COLOR_GREEN}${USER}${HOST_INFO} ${TERM_COLOR_MAGENTA}${PROMPT_ICON}${TERM_COLOR_BLUE}]${TERM_COLOR_NONE}"
 }
 
+function print_prompt_indicator() {
+  echo -e "${TERM_COLOR_BLUE}ᗆ ${TERM_COLOR_NONE}"
+}
+
 # To enable hostname in prompt: export PROMPT_VERBOSE=1
 # export PROMPT_VERBOSE=${PROMPT_VERBOSE:-1}
 
 PS1="\$(print_main_prompt) \$(print_shell_indidcator) \$(print_cwd) \$(print_git_branch)"
-PS1+="\n${TERM_COLOR_BLUE}ᗆ ${TERM_COLOR_NONE}"
+# New line prompt indicator with color breaks the shell.
+# PS1+="\n\$(print_prompt_indicator)"
+PS1+="\nᗆ "

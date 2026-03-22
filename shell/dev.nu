@@ -65,3 +65,12 @@ def setup-vm [name: string = "dev"] {
 
   limactl shell $name make -C $env.ENV_DIR configs
 }
+
+@category "linux-dev"
+def setup-swap [] {
+  sudo fallocate -l 8G /swap
+  sudo chmod 600 /swap
+  sudo mkswap /swap
+  sudo swapon /swap
+  sudo swapon --show
+}

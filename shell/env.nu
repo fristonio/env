@@ -46,7 +46,7 @@ def note [] {
     mkdir $notes_dir
   }
 
-  let day = (date now | format date "%Y-%b-%d" | str downcase)
+  let day = (date now | format date "%Y-%B" | str downcase)
   vim ($notes_dir | path join $"($day).md")
 }
 

@@ -23,7 +23,7 @@ nixos-switch: switch ## Switch the nixos configuration: f=<configuration-name>. 
 	@echo "Switching nixos configuration for $(f)"
 	sudo nixos-rebuild switch --flake .#$(f)
 
-home-switch: switch ## Switch the home manager configuration: f=<configuration-name>. Example: make home-switch f=macbook-lima-vm
+home-switch: switch ## Switch the home manager configuration: f=<configuration-name>. Example: make home-switch f=lima-vm-aarch64
 	@echo "Switching home-manager configuration for $(f)"
 	home-manager switch -b bak --flake .#$(f)
 
