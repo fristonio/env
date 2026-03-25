@@ -1,7 +1,6 @@
 {
   lib,
   pkgs,
-  pkgsUnstable,
   ...
 }:
 
@@ -35,7 +34,7 @@ in
   ]);
 
   home.file = lib.mkIf isDarwin {
-    "aerospace.toml".source = configPath "aerospace.toml";
+    ".aerospace.toml".source = configPath "aerospace.toml";
   };
 
   home.pointerCursor = lib.mkIf isLinux {

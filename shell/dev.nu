@@ -1,6 +1,6 @@
 use std/log
 
-@category "dev"
+@category "linux-dev"
 def configure-linux-vm [] {
   'net.ipv4.ip_forward=1
 net.ipv6.conf.all.forwarding=1

@@ -41,13 +41,18 @@ let env_configs = {
 
 @category "env"
 def note [] {
-  let notes_dir = ($env.ENV_LOCAL | path join "scratch")
-  if not ($notes_dir | path exists) {
-    mkdir $notes_dir
+  mut notes_dir = "";
+  if ($env | get -o NOTES_DIR) != null and ($env.NOTES_DIR | path exists) {
+    $notes_dir = $env.NOTES_DIR
+  } else {
+    $notes_dir = ($env.ENV_LOCAL | path join "scratch")
+    if not ($notes_dir | path exists) {
+      mkdir $notes_dir
+    }
   }
 
-  let day = (date now | format date "%Y-%B" | str downcase)
-  vim ($notes_dir | path join $"($day).md")
+  let month = (date now | format date "%Y-%B" | str downcase)
+  hx ($notes_dir | path join $"($month).md")
 }
 
 # Initializes any user autloads required for nushell
