@@ -22,7 +22,8 @@ $env.config.ls.use_ls_colors = false
 
 # Create the prompt
 def create_left_prompt [] {
-    let host = (sys host).hostname
+    # let host = (sys host).hostname
+    let host = whoami
     let main_prompt = $"(ansi blue)[(ansi cyan)($host) (ansi magenta)(ansi reset)(ansi blue)](ansi reset)"
 
     mut cmd_indicator = $"(ansi blue)$(ansi reset)"
