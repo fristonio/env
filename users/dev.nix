@@ -38,8 +38,8 @@
 
     ## Go
     go
-    gopls
-    gotools
+    (gopls // { meta.priority = 1; }) # Go 'modernize' conflict
+    (gotools // { meta.priority = 10; })
     golangci-lint
     golangci-lint-langserver
     delve

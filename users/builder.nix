@@ -17,13 +17,20 @@ name:
 
 let
 
-  pkgs = nixpkgs.legacyPackages.${system};
-  pkgsUnstable = nixpkgs-unstable.legacyPackages.${system};
+  pkgs = import nixpkgs {
+    inherit system;
+    config.allowUnfree = true;
+  };
+  pkgsUnstable = import nixpkgs-unstable {
+    inherit system;
+    config.allowUnfree = true;
+  };
 
   userConfig = if userConfigAlias == "" then ./${name}.nix else ./${userConfigAlias}.nix;
   userHomeDirectory = if homeDirectory == "" then name else homeDirectory;
 
 in
+
 home-manager.lib.homeManagerConfiguration {
   inherit pkgs;
 
@@ -38,7 +45,7 @@ home-manager.lib.homeManagerConfiguration {
   ];
 
   extraSpecialArgs = {
-    inherit pkgsUnstable;
+    inherit pkgs pkgsUnstable;
 
     username = name;
     homeDirectory = userHomeDirectory;

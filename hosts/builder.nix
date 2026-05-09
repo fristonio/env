@@ -22,7 +22,14 @@ let
   home-manager =
     if darwin then inputs.home-manager.darwinModules else inputs.home-manager.nixosModules;
 
-  pkgsUnstable = nixpkgs-unstable.legacyPackages.${system};
+  pkgs = import nixpkgs {
+    inherit system;
+    config.allowUnfree = true;
+  };
+  pkgsUnstable = import nixpkgs-unstable {
+    inherit system;
+    config.allowUnfree = true;
+  };
 
   hardwareConfig = ./hardware/${name}.nix;
   machineConfig = ./${name}.nix;
@@ -44,8 +51,6 @@ nix-system rec {
 
   modules = [
     {
-      # Allow unfree packages.
-      nixpkgs.config.allowUnfree = true;
       nixpkgs.overlays = [ niri-flake.overlays.niri ];
     }
 
@@ -84,7 +89,8 @@ nix-system rec {
       };
 
       home-manager.extraSpecialArgs = {
-        inherit pkgsUnstable;
+        inherit pkgs pkgsUnstable;
+
         username = user;
         homeDirectory = user;
       };
