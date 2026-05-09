@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgsUnstable, ... }:
 
 {
   imports = [
@@ -8,7 +8,7 @@
 
   services.podman.enable = true;
 
-  home.packages = with pkgs; [
+  home.packages = with pkgsUnstable; [
     # Tooling
     inetutils
     iproute2

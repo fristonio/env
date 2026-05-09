@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  pkgsUnstable,
   ...
 }:
 
@@ -18,19 +19,20 @@ in
   };
 
   home.packages = [
-    pkgs.zed-editor
-    pkgs.vscode
-    pkgs.obsidian
+    # Common GUI packages
+    pkgsUnstable.zed-editor
+    pkgsUnstable.vscode
+    pkgsUnstable.obsidian
   ]
   ++ (lib.optionals isDarwin [
-    pkgs.aerospace
+    pkgsUnstable.aerospace
   ])
   ++ (lib.optionals isLinux [
-    pkgs.apple-cursor
     # Installed through brew for darwin systems.
-    pkgs.ghostty
+    pkgsUnstable.ghostty
     # Google chrome installed through homebrew on macos
     pkgs.google-chrome
+    pkgs.apple-cursor
   ]);
 
   home.file = lib.mkIf isDarwin {

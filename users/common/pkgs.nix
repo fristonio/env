@@ -12,8 +12,6 @@
   };
 
   home.packages = [
-    pkgsUnstable.lima
-
     pkgs.git
     pkgs.curl
     pkgs.vim
@@ -32,10 +30,13 @@
     pkgs.ripgrep
     pkgs.zoxide
 
-    pkgs.helix
-    pkgs.nushell
-
     pkgs.nixfmt
     pkgs.nil
+
+    pkgsUnstable.lima
+
+    pkgsUnstable.helix
+    pkgsUnstable.neovim
+    pkgsUnstable.nushell
   ];
 }
