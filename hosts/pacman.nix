@@ -24,14 +24,14 @@
   };
 
   # Enable OpenGL
-  # hardware.graphics.enable = true;
+  hardware.graphics.enable = true;
 
-  # hardware.nvidia = {
-  #   modesetting.enable = true;
-  #   open = false;
-  #   nvidiaSettings = true;
-  #   package = config.boot.kernelPackages.nvidiaPackages.stable;
-  # };
+  hardware.nvidia = {
+    modesetting.enable = true;
+    open = false;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+  };
 
   networking.networkmanager.enable = true;
   hardware.bluetooth.enable = true;

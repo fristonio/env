@@ -16,8 +16,8 @@
   # Load nvidia driver for Xorg and wayland
   services.xserver.videoDrivers = [
     "displaylink"
-    # "modesetting"
-    # "nvidia"
+    "modesetting"
+    "nvidia"
   ];
   systemd.services.dlm.wantedBy = [ "multi-user.target" ];
   services.power-profiles-daemon.enable = true;
