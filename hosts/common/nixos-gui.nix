@@ -59,7 +59,11 @@
 
     # To run X11 apps on wayland.
     xwayland-satellite
+    wlr-randr
 
     inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+    gparted
+    parted
   ];
 }

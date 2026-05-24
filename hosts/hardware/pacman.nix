@@ -27,6 +27,11 @@
     fsType = "ext4";
   };
 
+  fileSystems."/home/fristonio/data" = {
+    device = "/dev/disk/by-label/data";
+    fsType = "ext4";
+  };
+
   fileSystems."/boot" = {
     device = "/dev/disk/by-label/boot";
     fsType = "vfat";
