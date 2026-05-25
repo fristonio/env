@@ -1,62 +1,112 @@
 {
-  "edit_predictions": {
-    "provider": "none"
+  "auto_update": false,
+  "relative_line_numbers": "enabled",
+  "gutter": {
+    "line_numbers": true,
   },
-  "use_system_window_tabs": true,
-  "collaboration_panel": {
-    "button": false
+  "cli_default_open_behavior": "new_window",
+  "agent_servers": {
+    "codex-acp": {
+      "type": "registry",
+    },
+    "claude-acp": {
+      "type": "registry",
+    },
+  },
+  "proxy": "",
+  "sticky_scroll": {
+    "enabled": true,
+  },
+  "excerpt_context_lines": 3,
+  "which_key": {
+    "enabled": true,
+    "delay_ms": 100,
+  },
+  "ssh_connections": [
+    {
+      "host": "lima-dev-lts",
+      "nickname": "dev",
+      "args": ["-F", "/Users/dpathak/.lima/dev-lts/ssh.config"],
+      "projects": [
+        {
+          "paths": ["/home/lima/workspace/cilium/cilium"],
+        },
+        {
+          "paths": ["/home/lima/workspace/cilium/proxy"],
+        },
+        {
+          "paths": ["/home/lima/workspace/isovalent/cilium"],
+        },
+      ],
+    },
+  ],
+
+  "edit_predictions": {
+    "allow_data_collection": "no",
+    "provider": "none",
+  },
+  "project_panel": {
+    "dock": "left",
+  },
+  "outline_panel": {
+    "dock": "left",
   },
   "debugger": {
-    "dock": "right"
+    "dock": "right",
   },
-  "helix_mode": true,
-  "audio": {
-    "experimental.legacy_audio_compatible": false,
-    "experimental.denoise": false,
-    "experimental.auto_speaker_volume": false
+  "collaboration_panel": {
+    "button": false,
   },
   "git_panel": {
-    "dock": "right"
+    "tree_view": true,
+    "dock": "right",
   },
+
   "theme": "Ayu Mirage",
   "icon_theme": "Colored Zed Icons Theme Dark",
-  "disable_ai": true,
+  "disable_ai": false,
   "base_keymap": "VSCode",
 
   "ui_font_family": "JetBrainsMono Nerd Font",
   "buffer_font_family": "JetBrainsMono Nerd Font",
 
   "ui_font_size": 16.5,
-  "buffer_font_size": 16,
-  "buffer_font_weight": 500.0,
   "ui_font_weight": 500.0,
   "ui_font_features": {
-    "calt": true
-  },
-  "buffer_font_features": {
-    "calt": true
+    "calt": true,
   },
 
+  "buffer_font_size": 16,
+  "buffer_font_weight": 500.0,
+  "buffer_font_features": {
+    "calt": true,
+  },
+
+  "agent_buffer_font_size": 14.0,
+  "agent_ui_font_size": 15.5,
+
+  "helix_mode": true,
   "vim_mode": false,
-  "relative_line_numbers": "disabled",
+
+  "use_system_window_tabs": true,
   "tab_bar": {
-    "show": true
+    "show": true,
   },
   "tabs": {
     "show_diagnostics": "errors",
-    "file_icons": true
+    "file_icons": true,
   },
   "indent_guides": {
     "enabled": true,
-    "coloring": "indent_aware"
+    "coloring": "indent_aware",
   },
   "title_bar": {
-    "show_branch_icon": true,
+    "show_branch_status_icon": true,
     "show_sign_in": false,
-    "show_menus": true
+    "show_menus": true,
   },
   "toolbar": {
-    "quick_actions": false
+    "quick_actions": false,
   },
   // Inlay hints preconfigured by Zed: Go, Rust, Typescript and Svelte
   "inlay_hints": {
@@ -64,7 +114,7 @@
     "show_type_hints": true,
     "show_value_hints": true,
     "show_other_hints": false,
-    "enabled": false // Buggy
+    "enabled": false, // Buggy
   },
   // Use zed commit editor
   "terminal": {
@@ -72,27 +122,34 @@
     "font_weight": 500.0,
     "font_family": "JetBrainsMono Nerd Font",
     "env": {
-      "EDITOR": "zed --wait"
-    }
+      "EDITOR": "zed --wait",
+    },
   },
   // Turn off telemetry
   "telemetry": {
     "diagnostics": false,
-    "metrics": false
+    "metrics": false,
   },
   "agent": {
-    "button": false,
+    "enabled": true,
+    "button": true,
+    "sidebar_side": "right",
+    "dock": "right",
     "expand_terminal_card": false,
     "expand_edit_card": false,
     "notify_when_agent_waiting": "never",
     "enable_feedback": false,
     "single_file_review": false,
-    "enabled": false
   },
   "format_on_save": "on",
+  "auto_indent_on_paste": false,
   "languages": {
     "YAML": {
-      "format_on_save": "off"
-    }
-  }
+      "format_on_save": "off",
+    },
+    "C++": {
+      // "show_whitespaces": "all",
+      "tab_size": 2,
+    },
+  },
 }

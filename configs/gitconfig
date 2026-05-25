@@ -22,5 +22,7 @@
 	format = ssh
 
 [safe]
-
 	directory = ~
+
+[worktree]
+	useRelativePath = true
