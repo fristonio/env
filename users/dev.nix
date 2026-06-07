@@ -18,6 +18,7 @@
     tldr
 
     # Languages
+	tree-sitter
 
     ## C/C++/Rust/Zig
     (gcc // { meta.priority = 1; }) # cpp provided by gcc conflicts with clang. Assign priority to avoid conflict.
@@ -35,6 +36,10 @@
     uv
     ty
     ruff
+
+	# Lua
+	lua-language-server
+	stylua
 
     ## Go
     go
