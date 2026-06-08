@@ -5,7 +5,7 @@ local telescope_plugins = {
 	"https://github.com/nvim-telescope/telescope-ui-select.nvim",
 
 	-- Complementry plugin to navigate buffer symbols.
-	"https://github.com/stevearc/aerial.nvim",
+	-- "https://github.com/stevearc/aerial.nvim",
 }
 if vim.fn.executable("make") == 1 then
 	table.insert(telescope_plugins, "https://github.com/nvim-telescope/telescope-fzf-native.nvim")

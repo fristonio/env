@@ -2,10 +2,11 @@
 
 # List available themes: ghostty +list-themes
 theme = Catppuccin Frappe
+# theme = Everforest Dark Hard
 
 # Mac
 macos-option-as-alt = left
-macos-titlebar-style = tab
+macos-titlebar-style = tabs
 window-decoration = true
 
 # Linux

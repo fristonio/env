@@ -2,92 +2,152 @@
 // from the command palette.
 [
   {
-    "context": "Pane",
+    "context": "Workspace",
     "bindings": {
-      "ctrl-w": [
-        "pane::CloseActiveItem",
-        {
-          "close_pinned": false,
-        },
-      ],
-    },
-  },
-  {
-    "bindings": {
+      "alt-h": "workspace::ActivatePaneLeft",
+      "alt-j": "workspace::ActivatePaneDown",
+      "alt-k": "workspace::ActivatePaneUp",
+      "alt-l": "workspace::ActivatePaneRight",
+
       "cmd-t": "workspace::NewTerminal", // Remote terminal (default)
       "cmd-T": ["workspace::NewTerminal", { "local": true }], // Local terminal
     },
   },
   {
-    "context": "(VimControl && !menu)",
+    "context": "VimControl && !menu",
     "bindings": {
-      "space": null, // Disable the default action vim::WrappingRight
+      "g b": "vim::StartOfDocument",
+      "g h": "vim::StartOfLine",
+      "g l": "vim::EndOfLine",
+      "g s": "vim::FirstNonWhitespace",
+      "g e": "vim::EndOfDocument",
+
+      "space f f": "file_finder::Toggle",
+      "space f b": "tab_switcher::Toggle",
+      "space f c": "command_palette::Toggle",
+      "space f d": "diagnostics::DeployCurrentFile",
+      "space f s": "command_palette::Toggle",
+
+      "space p t": "theme_selector::Toggle",
+      "space l w": "editor::ToggleSoftWrap",
+
+      "m m": "vim::Matching",
+
+      "C": "vim::HelixDuplicateBelow",
+      "alt-C": "vim::HelixDuplicateAbove",
     },
   },
   {
-    "context": "(VimControl && !menu) || (Terminal)",
+    "context": "Editor && VimControl && (vim_mode == normal) && !menu",
     "bindings": {
-      "ctrl-w": null,
+      "U": "vim::Redo",
+
+      "w k": "zed::OpenKeymap",
+
+      "space q": "pane::CloseActiveItem",
+      "space e": "project_panel::ToggleFocus",
+
+      "space f m t": "editor::Format",
+
+      "space t o": "terminal_panel::Toggle",
+      "space t p": "project_panel::Toggle",
+      "space t s": "outline_panel::Toggle",
+      "space t d": "debug_panel::Toggle",
+      "space t g": "git_panel::Toggle",
+      "space t a": "agent::Toggle",
+
+      "space h n": "editor::GoToHunk",
+      "space h p": "editor::GoToPreviousHunk",
+      "space h i": "editor::ToggleSelectedDiffHunks",
+      "space h s": "editor::ApplyDiffHunk",
+      "space h r": "git::Restore",
+      "space h B": "git::Blame",
+      "space h b": "editor::BlameHover",
+      "space h t b": "editor::ToggleGitBlameInline",
+
+      "space p l": "editor::OpenPermalinkToLine",
+
+      "K": "editor::Hover",
+      "g d": "editor::GoToDefinition",
+      "g D": "editor::GoToDeclaration",
+      "g I": "editor::GoToImplementation",
+      "g R": "editor::FindAllReferences",
+
+      "space l s": "outline_panel::ToggleFocus",
+      "space l d": "editor::GoToDefinition",
+      "space l D": "editor::GoToDeclaration",
+      "space l i": "editor::Hover",
+      "space l I": "editor::GoToImplementation",
+      "space l R": "editor::FindAllReferences",
+      "space l r n": "editor::Rename",
+      "space l a": "editor::ToggleCodeActions",
+
+      "g n": "pane::ActivateNextItem",
+      "g p": "pane::ActivatePreviousItem",
+      "g c": "vim::ToggleComments",
+
+      "x": "vim::ToggleVisualLine",
+      "X": "vim::ToggleVisualLine",
+
+      ">": "vim::Indent",
+      "<": "vim::Outdent",
+      "=": "vim::AutoIndent",
     },
   },
   {
-    "context": "((VimControl && !menu) || (!Editor && !Terminal))",
+    "context": "Editor && VimControl && (vim_mode == visual) && !menu",
     "bindings": {
+      "x": "vim::Down",
+      "X": "vim::Up",
+
+      "space j": "editor::MoveLineDown",
+      "space k": "editor::MoveLineUp",
+
+      "g c": [
+        "action::Sequence",
+        ["vim::ToggleComments", "vim::RestoreVisualSelection"],
+      ],
+
+      ">": ["action::Sequence", ["vim::Indent", "vim::RestoreVisualSelection"]],
+      "<": [
+        "action::Sequence",
+        ["vim::Outdent", "vim::RestoreVisualSelection"],
+      ],
+      "=": [
+        "action::Sequence",
+        ["vim::AutoIndent", "vim::RestoreVisualSelection"],
+      ],
+    },
+  },
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      "ctrl-h": null,
+      "ctrl-j": null,
+    },
+  },
+  {
+    "context": "(Workspace || (Editor && VimControl)) && !Terminal",
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
       "ctrl-l": "workspace::ActivatePaneRight",
     },
   },
   {
-    "context": "((VimControl && !menu) || (!Editor && !Terminal))",
+    "context": "Terminal",
     "bindings": {
-      "ctrl-k": "workspace::ActivatePaneUp",
+      "escape escape": "terminal_panel::Toggle",
     },
   },
   {
-    "context": "((VimControl && !menu) || (!Editor && !Terminal))",
+    "context": "Dock || Terminal || (Editor && VimControl)",
     "bindings": {
-      "ctrl-j": "workspace::ActivatePaneDown",
-    },
-  },
-  {
-    "context": "((VimControl && !menu) || (!Editor && !Terminal))",
-    "bindings": {
-      "ctrl-h": "workspace::ActivatePaneLeft",
-    },
-  },
-  {
-    "context": "((vim_mode == helix_normal || vim_mode == helix_select) && !menu)",
-    "bindings": {
-      "ctrl-c": null,
-    },
-  },
-  {
-    "context": "(menu || Editor || Terminal)",
-    "bindings": {
-      "alt-l": "workspace::ActivatePaneRight",
-    },
-  },
-  {
-    "context": "(menu || Editor || Terminal)",
-    "bindings": {
-      "alt-k": "workspace::ActivatePaneUp",
-    },
-  },
-  {
-    "context": "(menu || Editor || Terminal)",
-    "bindings": {
-      "alt-j": "workspace::ActivatePaneDown",
-    },
-  },
-  {
-    "context": "(menu || Editor || Terminal)",
-    "bindings": {
-      "alt-h": "workspace::ActivatePaneLeft",
-    },
-  },
-  {
-    "context": "(Editor && mode == full)",
-    "bindings": {
-      "alt-z": "editor::ToggleSoftWrap",
+      "shift-left": "vim::ResizePaneLeft",
+      "shift-right": "vim::ResizePaneRight",
+      "shift-up": "vim::ResizePaneUp",
+      "shift-down": "vim::ResizePaneDown",
     },
   },
   {
@@ -95,12 +155,15 @@
     "bindings": {
       "escape": "editor::Cancel",
       "ctrl-c": "menu::Cancel",
+      "ctrl-e": "menu::Cancel",
       "tab": "editor::ConfirmCompletion",
+      "ctrl-y": "editor::ConfirmCompletion",
     },
   },
   {
+    "context": "Dock && !editing && !Terminal",
     "bindings": {
-      "cmd-shift-a": "agent::Toggle",
+      "space q": "workspace::CloseActiveDock",
     },
   },
 ]
