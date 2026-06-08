@@ -25,7 +25,7 @@
     },
   },
   {
-    "context": "(VimControl && !menu)",
+    "context": "(VimControl && !menu) || (Terminal)",
     "bindings": {
       "ctrl-w": null,
     },

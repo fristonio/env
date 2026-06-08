@@ -1,19 +1,19 @@
 local map = vim.keymap.set
 
+-- Execute line under the cursor.
+map("n", "<leader><leader>x", "<cmd>.lua<CR>")
+
+-- Remap Esc to clear highlight and C-c to do double Esc
+-- Useful to close completion menu and return to normal mode directly.
 map("n", "<Esc>", "<cmd>noh<CR>")
 map({ "n", "v", "i" }, "<C-c>", "<Esc><Esc>")
 
-map("i", "jk", "<ESC>")
-
 -- Commands & Navigation
-map({ "n", "x" }, ";", ":", { desc = "Open command line prompt" })
-map({ "n", "x" }, "gh", "0", { desc = "Move cursor to absolute start of line" })
-map({ "n", "x" }, "gl", "$", { desc = "Move cursor to absolute end of line" })
-map({ "n", "x" }, "gs", "^", { desc = "Move cursor to first non-whitespace character" })
-map({ "n", "x" }, "ge", "G", { desc = "Jump straight to last line of file" })
-
-map({ "n", "x" }, "gn", "gt", { desc = "Cycle forward to next tab" })
-map({ "n", "x" }, "gp", "gT", { desc = "Cycle backward to previous tab" })
+map("n", ";", ":", { desc = "Open command line prompt" })
+map({ "n", "v" }, "gh", "0", { desc = "Move cursor to absolute start of line" })
+map({ "n", "v" }, "gl", "$", { desc = "Move cursor to absolute end of line" })
+map({ "n", "v" }, "gs", "^", { desc = "Move cursor to first non-whitespace character" })
+map({ "n", "v" }, "ge", "G", { desc = "Jump straight to last line of file" })
 
 map("i", "<C-b>", "<ESC>^i", { desc = "Move to beginning of line" })
 map("i", "<C-e>", "<End>", { desc = "Move to end of line" })
@@ -23,24 +23,28 @@ map("i", "<C-j>", "<Down>", { desc = "Move down" })
 map("i", "<C-k>", "<Up>", { desc = "Move up" })
 
 -- View adjustments
-map({ "n", "x" }, "zc", "zz", { desc = "Center current line vertically" })
-map({ "n", "x" }, "zt", "zt", { desc = "Scroll current line to top of viewport" })
-map({ "n", "x" }, "zb", "zb", { desc = "Scroll current line to bottom of viewport" })
-map({ "n", "x" }, "zj", "<C-e>", { desc = "Scroll viewport down one line" })
-map({ "n", "x" }, "zk", "<C-y>", { desc = "Scroll viewport up one line" })
+map({ "n", "v" }, "zc", "zz", { desc = "Center current line vertically" })
+map({ "n", "v" }, "zt", "zt", { desc = "Scroll current line to top of viewport" })
+map({ "n", "v" }, "zb", "zb", { desc = "Scroll current line to bottom of viewport" })
+map({ "n", "v" }, "zj", "<C-e>", { desc = "Scroll viewport down one line" })
+map({ "n", "v" }, "zk", "<C-y>", { desc = "Scroll viewport up one line" })
+
+map("n", "<C-d>", "<C-d>zz")
+map("n", "<C-u>", "<C-u>zz")
 
 -- Editing & Matching
-map({ "n", "x" }, "<", "<<", { desc = "Shift current line left one indent level" })
-map({ "n", "x" }, ">", ">>", { desc = "Shift current line right one indent level" })
+map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selected block down, and auto-indent" })
+map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selected block up, and auto-indent" })
+
+map("n", "<", "<<", { desc = "Shift current line left one indent level" })
+map("n", ">", ">>", { desc = "Shift current line right one indent level" })
+map("x", ">", ">gv", { desc = "Shift selection left one indent level" })
+map("x", "<", "<gv", { desc = "Shift selection right one indent level" })
+
 map({ "n", "x" }, "mm", "%", { desc = "Jump between matching brackets" })
 map({ "n", "x" }, "U", "<C-r>", { desc = "Redo last undone change" })
 
-map("n", "<leader>d", ":m+1<CR>", { desc = "Move current line down" })
-map("n", "<leader>u", ":m-2<CR>", { desc = "Move current line up" })
-map("x", "J", ":m '>+1<CR>gv=gv", { desc = "Move selected block down, and auto-indent" })
-map("x", "K", ":m '<-2<CR>gv=gv", { desc = "Move selected block up, and auto-indent" })
-
--- Splits & Windows
+-- Splits, Windows and buffers.
 map({ "n", "x" }, "<leader>w", "<C-w>", { desc = "Window command prefix" })
 map({ "n", "x" }, "<C-w>v", ":vsplit<CR>", { desc = "Split current window vertically" })
 map({ "n", "x" }, "<C-w>s", ":split<CR>", { desc = "Split current window horizontally" })
@@ -50,11 +54,8 @@ map({ "n", "x" }, "<C-j>", "<C-w>j", { desc = "Focus split pane below" })
 map({ "n", "x" }, "<C-k>", "<C-w>k", { desc = "Focus split pane above" })
 map({ "n", "x" }, "<C-l>", "<C-w>l", { desc = "Focus split pane to the right" })
 
--- Tabs & Buffers
-map("n", "<leader>to", "<cmd>:tabnew<CR>", { desc = "[O]pen new tab" })
-map("n", "<leader>tb", "<cmd> enew <CR>", { desc = "Open new [b]uffer" })
-map("n", "<leader>x", ":bd<CR>", { desc = "Unload/delete current buffer" })
-map("n", "<leader>q", ":q<CR>", { desc = "Close current split window" })
+map({ "n", "x" }, "<leader>x", ":bd<CR>", { desc = "Unload/delete current buffer" })
+map({ "n", "x" }, "<leader>q", ":q<CR>", { desc = "Close current split window" })
 
 -- Search
 map({ "n", "x" }, "n", "nzzzv", { desc = "Find next search result and center screen" })
@@ -70,9 +71,6 @@ map("x", "X", "k", { desc = "Extend visual selection up one line" })
 -- Toggle line wrapping
 map("n", "<leader>lw", "<cmd>set wrap!<CR>", { desc = "Toggle line wraps" })
 
--- Keep last yanked when pasting
-map("v", "p", '"_dP')
-
 -- Terminal
 map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal insert mode back to normal mode" })
 
@@ -81,3 +79,7 @@ map("n", "<S-Up>", ":resize +2<CR>", { desc = "Resize split up" })
 map("n", "<S-Down>", ":resize -2<CR>", { desc = "Resize split down" })
 map("n", "<S-Left>", ":vertical resize +2<CR>", { desc = "Resize split left" })
 map("n", "<S-Right>", ":vertical resize -2<CR>", { desc = "Resize split right" })
+
+-- Extras...
+map("v", "p", '"_dP') -- Keep last yanked text when pasting.
+map("n", "gc", "gcc")

@@ -1,16 +1,19 @@
 vim.pack.add({ "https://github.com/folke/which-key.nvim" })
 
 require("which-key").setup({
+	-- Automatically trigger which key on key presses(disabled in visual mode).
 	triggers = { "<auto>", mode = "nisotc" },
 	-- Delay between pressing a key and opening which-key (milliseconds)
-	delay = 100,
+	delay = 250,
 	preset = "helix", -- helix, modern, classic
 	icons = { mappings = vim.g.have_nerd_font },
-	-- icons = { mappings = false },
 	-- Document existing key chains
 	spec = {
-		{ "<leader>w", group = "[W]indow", mode = { "n", "v" }, proxy = "<C-w>" },
-		{ "<leader>f", group = "[F]inder", mode = { "n", "v" } },
+		{ "<leader>w", group = "Window", mode = { "n", "v" }, proxy = "<C-w>" },
+		{ "<leader>l", group = "LSP Actions", mode = { "n" } },
+		{ "<leader>h", group = "Git Hunks", mode = { "n" } },
+		{ "<leader>f", group = "Finder", mode = { "n", "v" } },
+		{ "<leader>p", group = "Picker", mode = { "n" } },
 	},
 })
 

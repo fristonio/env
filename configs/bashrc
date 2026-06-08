@@ -35,7 +35,8 @@ export PATH="${PATH}:${HOME}/.local/bin"
 alias sbash='source ~/.bashrc'
 alias shelp='source ~/.env/shell/helpers.sh'
 
-alias l='ls -la --color=auto'
+alias l='ls -l --color=auto'
+alias ll='ls -la --color=auto'
 alias ls='ls --color=auto'
 
 alias gs="git status"

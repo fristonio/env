@@ -31,8 +31,10 @@ let env_configs = {
 
     "configs/helix/config.toml": { dest: ".config/helix/config.toml" },
     "configs/ghostty/config":    { dest: ".config/ghostty/config" },
-    "configs/zed/settings.json": { dest: ".config/zed/settings.json" }
-    "configs/zed/keymap.json":   { dest: ".config/zed/keymap.json" }
+    "configs/zed/settings.json": { dest: ".config/zed/settings.json" },
+    "configs/zed/keymap.json":   { dest: ".config/zed/keymap.json" },
+
+    "configs/nvim": { dest: ".config/nvim" },
 
     # TODO: Seperate out darwin vs linux stuff.
     # "configs/aerospace.toml":  { dest: ".aerospace.toml", optional: true },

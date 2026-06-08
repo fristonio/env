@@ -39,6 +39,21 @@
         },
       ],
     },
+    {
+      "host": "lima-dev",
+      "args": ["-F", "/Users/dpathak/.lima/dev/ssh.config"],
+      "projects": [
+        {
+          "paths": ["/home/lima/workspace/cilium/cilium"],
+        },
+        {
+          "paths": ["/home/lima/workspace/cilium/proxy"],
+        },
+        {
+          "paths": ["/home/lima/workspace/isovalent/cilium"],
+        },
+      ],
+    },
   ],
 
   "edit_predictions": {
@@ -62,7 +77,7 @@
     "dock": "right",
   },
 
-  "theme": "Ayu Mirage",
+  "theme": "Everforest Dark Hard (regular)",
   "icon_theme": "Colored Zed Icons Theme Dark",
   "disable_ai": false,
   "base_keymap": "VSCode",

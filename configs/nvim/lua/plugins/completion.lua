@@ -11,7 +11,18 @@ cmp.setup({
 	enabled = function()
 		return not vim.tbl_contains(disabled_completions)
 	end,
-	cmdline = { enabled = true },
+	fuzzy = {
+		implementation = "prefer_rust",
+	},
+	cmdline = {
+		enabled = true,
+		completion = {
+			menu = {
+				auto_show = true,
+				auto_show_delay_ms = 500,
+			},
+		},
+	},
 	sources = {
 		default = { "lsp", "path", "snippets", "buffer" },
 	},
@@ -25,7 +36,10 @@ cmp.setup({
 			auto_show_delay_ms = 1000,
 		},
 		-- Display a preview of the selected item on the current line.
-		ghost_text = { enabled = false },
+		ghost_text = {
+			enabled = false,
+			show_with_menu = false,
+		},
 	},
 	keymap = {
 		preset = "default",
@@ -40,5 +54,4 @@ vim.api.nvim_create_user_command("ToggleCmpAutoShow", function()
 
 	config.completion.menu.auto_show = not config.completion.menu.auto_show
 	config.completion.documentation.auto_show = not config.completion.documentation.auto_show
-	config.completion.ghost_text.enabled = not config.completion.ghost_text.enabled
 end, { nargs = 0, desc = "Toggle auto completion suggestion auto show. Use <C-Space> to trigger" })

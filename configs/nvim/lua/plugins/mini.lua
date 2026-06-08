@@ -1,3 +1,5 @@
+-- Setup mini plugins for neovim.
+-- See :help mini.nvim for more details.
 vim.pack.add({ "https://github.com/nvim-mini/mini.nvim" })
 
 -- Setup mini file explorer(maybe neo-tree someday)
@@ -15,16 +17,20 @@ require("mini.files").setup({
 	},
 })
 
--- Open mini.files in the directory of the current active file
 vim.keymap.set("n", "<leader>E", function()
 	require("mini.files").open(vim.api.nvim_buf_get_name(0), true)
-end, { desc = "Open mini.files (current file directory)" })
+end, { desc = "Open File [E]xplorer (current file directory)" })
 
--- Open mini.files in the current working directory (cwd)
 vim.keymap.set("n", "<leader>e", function()
 	require("mini.files").open(vim.uv.cwd(), true)
-end, { desc = "Open mini.files (cwd)" })
+end, { desc = "Open File [E]xplorer (cwd)" })
 
 -- Other useful plugins
 require("mini.surround").setup()
 require("mini.pairs").setup()
+require("mini.notify").setup()
+
+-- Extra stuff to explore
+--
+-- require("mini.ai").setup()
+-- require("mini.indentscope").setup()

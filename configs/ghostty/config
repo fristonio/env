@@ -5,6 +5,7 @@ theme = Catppuccin Frappe
 
 # Mac
 macos-option-as-alt = left
+macos-titlebar-style = tab
 window-decoration = true
 
 # Linux

@@ -1,6 +1,11 @@
 vim.pack.add({
+	-- Themes
 	"https://github.com/catppuccin/nvim",
 	"https://github.com/sainnhe/everforest",
+	"https://github.com/olimorris/onedarkpro.nvim",
+	"https://github.com/sainnhe/gruvbox-material",
+
+	-- Statusline
 	"https://github.com/nvim-lualine/lualine.nvim",
 })
 
@@ -8,20 +13,6 @@ vim.pack.add({
 if vim.g.have_nerd_font then
 	vim.pack.add({ "https://github.com/nvim-tree/nvim-web-devicons" })
 end
-
--- Setup colorscheme
-require("catppuccin").setup({
-	flavour = "frappe",
-	no_underline = true,
-	dim_inactive = {
-		enabled = true, -- dims the background color of inactive window
-		shade = "light",
-		percentage = 0.25, -- percentage of the shade to apply to the inactive window
-	},
-})
-
--- vim.cmd.colorscheme("catppuccin-nvim")
-vim.cmd.colorscheme("everforest")
 
 -- Setup statusline
 require("lualine").setup({
@@ -46,3 +37,20 @@ require("lualine").setup({
 		lualine_z = {},
 	},
 })
+
+-- Setup colorschemes.
+require("catppuccin").setup({
+	flavour = "frappe",
+	no_underline = true,
+	dim_inactive = {
+		enabled = true, -- dims the background color of inactive window
+		shade = "light",
+		percentage = 0.25, -- percentage of the shade to apply to the inactive window
+	},
+})
+
+-- Dim inactive windows(makes background dark).
+-- vim.g.everforest_dim_inactive_windows = 1
+
+-- vim.cmd.colorscheme("catppuccin-nvim")
+vim.cmd.colorscheme("everforest")
