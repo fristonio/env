@@ -57,6 +57,9 @@ vim.api.nvim_create_autocmd("FileType", {
 			return
 		end
 
+		vim.wo.foldmethod = "expr"
+		vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+
 		local installed_parsers = require("nvim-treesitter").get_installed("parsers")
 
 		if vim.tbl_contains(installed_parsers, language) then

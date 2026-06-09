@@ -120,6 +120,8 @@ local servers = {
 		},
 	},
 
+	nushell = {},
+
 	-- Special Lua Config, as recommended by neovim help docs
 	lua_ls = {
 		on_init = function(client)
@@ -187,6 +189,7 @@ require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
 		go = { "goimports", "gofumpt" },
+		nu = { "nufmt" },
 	},
 })
 vim.keymap.set({ "n", "v" }, "<leader>fmt", function()

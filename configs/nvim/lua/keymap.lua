@@ -9,7 +9,6 @@ map("n", "<Esc>", "<cmd>noh<CR>")
 map({ "n", "v", "i" }, "<C-c>", "<Esc><Esc>")
 
 -- Commands & Navigation
-map("n", ";", ":", { desc = "Open command line prompt" })
 map({ "n", "v" }, "gh", "0", { desc = "Move cursor to absolute start of line" })
 map({ "n", "v" }, "gl", "$", { desc = "Move cursor to absolute end of line" })
 map({ "n", "v" }, "gs", "^", { desc = "Move cursor to first non-whitespace character" })
@@ -23,7 +22,6 @@ map("i", "<C-j>", "<Down>", { desc = "Move down" })
 map("i", "<C-k>", "<Up>", { desc = "Move up" })
 
 -- View adjustments
-map({ "n", "v" }, "zc", "zz", { desc = "Center current line vertically" })
 map({ "n", "v" }, "zt", "zt", { desc = "Scroll current line to top of viewport" })
 map({ "n", "v" }, "zb", "zb", { desc = "Scroll current line to bottom of viewport" })
 map({ "n", "v" }, "zj", "<C-e>", { desc = "Scroll viewport down one line" })

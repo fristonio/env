@@ -102,3 +102,12 @@ vim.o.winborder = "rounded"
 -- Set default shift and tab width to 4 spaces.
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
+
+-- Folds configuration
+vim.o.foldcolumn = "1" -- Shows fold column on the left side.
+vim.o.foldlevel = 99 -- Disable code folding by default
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+
+vim.opt.fillchars:append({ fold = " ", foldopen = "", foldclose = "", foldsep = " ", foldinner = " " })
+vim.opt.foldmethod = "indent" -- Defaults to indent, overridden in treesitter config

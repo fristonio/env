@@ -25,10 +25,25 @@ vim.keymap.set("n", "<leader>e", function()
 	require("mini.files").open(vim.uv.cwd(), true)
 end, { desc = "Open File [E]xplorer (cwd)" })
 
+require("mini.hipatterns").setup({
+	highlighters = {
+		-- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
+		fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "MiniHipatternsFixme" },
+		hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "MiniHipatternsHack" },
+		todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "MiniHipatternsTodo" },
+		note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "MiniHipatternsNote" },
+	},
+})
+
+require("mini.notify").setup()
+vim.g.mininotify_disable = true -- Disable by default
+vim.api.nvim_create_user_command("ToggleNotify", function()
+	vim.g.mininotify_disable = not vim.g.mininotify_disable
+end, { desc = "Toggle mini.notify" })
+
 -- Other useful plugins
 require("mini.surround").setup()
 require("mini.pairs").setup()
-require("mini.notify").setup()
 
 -- Extra stuff to explore
 --

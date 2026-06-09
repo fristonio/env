@@ -14,6 +14,17 @@
     },
   },
   {
+    "context": "EmptyPane",
+    "bindings": {
+      "space t o": "terminal_panel::Toggle",
+      "space t p": "project_panel::Toggle",
+      "space t s": "outline_panel::Toggle",
+      "space t d": "debug_panel::Toggle",
+      "space t g": "git_panel::Toggle",
+      "space t a": "agent::Toggle",
+    },
+  },
+  {
     "context": "VimControl && !menu",
     "bindings": {
       "g b": "vim::StartOfDocument",
@@ -161,7 +172,7 @@
     },
   },
   {
-    "context": "Dock && !editing && !Terminal",
+    "context": "Dock && !editing && !Terminal && !MessageEditor",
     "bindings": {
       "space q": "workspace::CloseActiveDock",
     },
