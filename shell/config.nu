@@ -27,27 +27,27 @@ def create_left_prompt [] {
     let main_prompt = $"(ansi blue)[(ansi cyan)($host) (ansi magenta)(ansi reset)(ansi blue)](ansi reset)"
 
     mut cmd_indicator = $"(ansi blue)$(ansi reset)"
-    if ($env.LAST_EXIT_CODE != 0) {
-      $cmd_indicator = $"(ansi red)$(ansi reset)"
+    if $env.LAST_EXIT_CODE != 0 {
+        $cmd_indicator = $"(ansi red)$(ansi reset)"
     }
 
     let cwd = $"(ansi yellow)($env.PWD | str replace $env.HOME '~')(ansi reset)"
 
-    mut branch_indicator = ((git branch --show-current | complete).stdout | str trim)
+    mut branch_indicator = (git branch --show-current | complete).stdout | str trim
     if ($branch_indicator | is-not-empty) {
-      $branch_indicator = $"(ansi blue)\( ($branch_indicator)\)(ansi reset)"
+        $branch_indicator = $"(ansi blue)\( ($branch_indicator)\)(ansi reset)"
     }
 
     $"($main_prompt) ($cmd_indicator) ($cwd) ($branch_indicator)\n"
 }
 
 def create_right_prompt [] {
-  let current_time = (date now | format date "%H:%M:%S %p")
-  $"(ansi magenta)  (ansi blue)[(ansi green)($current_time)(ansi blue)](ansi reset)"
+    let current_time = date now | format date "%H:%M:%S %p"
+    $"(ansi magenta)  (ansi blue)[(ansi green)($current_time)(ansi blue)](ansi reset)"
 }
 
-$env.PROMPT_COMMAND = { || create_left_prompt }
-$env.PROMPT_COMMAND_RIGHT = { || create_right_prompt }
+$env.PROMPT_COMMAND = {|| create_left_prompt }
+$env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
 
 $env.PROMPT_INDICATOR = $"(ansi cyan)ᗆ (ansi reset)"
 $env.PROMPT_INDICATOR_VI_INSERT = $"(ansi cyan)ᗆ (ansi reset)"

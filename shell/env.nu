@@ -1,40 +1,53 @@
 $env.ENV_DIR = ($env.HOME | path join ".env")
 $env.ENV_LOCAL = ($env.ENV_DIR | path join "local")
 
-@category "env"
-def showcmds [] {
-  help commands | where command_type == "custom" and category != ""
+if (which go | is-not-empty) {
+  $env.PATH ++= [($env.HOME | path join "go/bin")]
+}
+
+if (which cargo | is-not-empty) {
+  $env.PATH ++= [($env.HOME | path join ".cargo/bin")]
 }
 
 @category "env"
-def nuscript-path [
-  name: string
-  --autoload (-a)
-] {
-  if $autoload {
-    ($nu.user-autoload-dirs | path join $name)
-  } else {
-    ($nu.default-config-dir | path join $name)
-  }
+def showcmds [] {
+    help commands | where command_type == "custom" and category != ""
+}
+
+@category "env"
+def nuscript-path [name: string, --autoload(-a)] {
+    if $autoload {
+        ($nu.user-autoload-dirs | path join $name)
+    } else {
+        ($nu.default-config-dir | path join $name)
+    }
 }
 
 let env_configs = {
-    "configs/bashrc":    { dest: ".bashrc", optional: true },
-    "configs/vimrc":     { dest: ".vimrc", optional: true },
-    "configs/gitconfig": { dest: ".gitconfig", optional: true }
-    "configs/tmux.conf": { dest: ".tmux.conf", optional: true },
-
-    "shell/config.nu": { dest: (nuscript-path "config.nu") },
-    "shell/env.nu":    { dest: (nuscript-path "env.nu") },
-    "shell/dev.nu":    { dest: (nuscript-path -a "dev.nu") },
-    "shell/aliases.nu":    { dest: (nuscript-path -a "aliases.nu") },
-
-    "configs/helix/config.toml": { dest: ".config/helix/config.toml" },
-    "configs/ghostty/config":    { dest: ".config/ghostty/config" },
-    "configs/zed/settings.json": { dest: ".config/zed/settings.json" },
-    "configs/zed/keymap.json":   { dest: ".config/zed/keymap.json" },
-
-    "configs/nvim": { dest: ".config/nvim" },
+    "configs/bashrc": {dest: ".bashrc", optional: true}
+    "configs/vimrc": {dest: ".vimrc", optional: true}
+    "configs/gitconfig": {dest: ".gitconfig", optional: true}
+    "configs/tmux.conf": {dest: ".tmux.conf", optional: true}
+    "shell/config.nu": {
+        dest: (nuscript-path "config.nu")
+    }
+    "shell/env.nu": {
+        dest: (nuscript-path "env.nu")
+    }
+    "shell/dev.nu": {
+        dest: (nuscript-path -a "dev.nu")
+    }
+    "shell/aliases.nu": {
+        dest: (nuscript-path -a "aliases.nu")
+    }
+    "shell/git.nu": {
+        dest: (nuscript-path -a "git.nu")
+    }
+    "configs/helix/config.toml": {dest: ".config/helix/config.toml"}
+    "configs/ghostty/config": {dest: ".config/ghostty/config"}
+    "configs/zed/settings.json": {dest: ".config/zed/settings.json"}
+    "configs/zed/keymap.json": {dest: ".config/zed/keymap.json"}
+    "configs/nvim": {dest: ".config/nvim"}
 
     # TODO: Seperate out darwin vs linux stuff.
     # "configs/aerospace.toml":  { dest: ".aerospace.toml", optional: true },
@@ -43,34 +56,34 @@ let env_configs = {
 
 @category "env"
 def note [] {
-  mut notes_dir = "";
-  if ($env | get -o NOTES_DIR) != null and ($env.NOTES_DIR | path exists) {
-    $notes_dir = $env.NOTES_DIR
-  } else {
-    $notes_dir = ($env.ENV_LOCAL | path join "scratch")
-    if not ($notes_dir | path exists) {
-      mkdir $notes_dir
+    mut notes_dir = ""
+    if ($env | get -o NOTES_DIR) != null and ($env.NOTES_DIR | path exists) {
+        $notes_dir = $env.NOTES_DIR
+    } else {
+        $notes_dir = ($env.ENV_LOCAL | path join "scratch")
+        if not ($notes_dir | path exists) {
+            mkdir $notes_dir
+        }
     }
-  }
 
-  let month = (date now | format date "%Y-%B" | str downcase)
-  hx ($notes_dir | path join $"($month).md")
+    let month = date now | format date "%Y-%B" | str downcase
+    hx ($notes_dir | path join $"($month).md")
 }
 
 # Initializes any user autloads required for nushell
 @category "env"
 def init-nushell-autoloads [] {
-  let autoload_dir = ($nu.user-autoload-dirs | first)
-  let theme_file = ($autoload_dir | path join "theme.nu")
+    let autoload_dir = $nu.user-autoload-dirs | first
+    let theme_file = $autoload_dir | path join "theme.nu"
 
-  mkdir $autoload_dir
+    mkdir $autoload_dir
 
-  http get https://raw.githubusercontent.com/catppuccin/nushell/refs/heads/main/themes/catppuccin_frappe.nu
-  | save -f ($autoload_dir | path join "theme.nu")
+    http get https://raw.githubusercontent.com/catppuccin/nushell/refs/heads/main/themes/catppuccin_frappe.nu
+    | save -f ($autoload_dir | path join "theme.nu")
 
-  if (which zoxide | is-not-empty) {
-    zoxide init nushell | save -f ($autoload_dir | path join "zoxide.nu")
-  }
+    if (which zoxide | is-not-empty) {
+        zoxide init nushell | save -f ($autoload_dir | path join "zoxide.nu")
+    }
 }
 
 # Sync environment config to user home.
@@ -80,20 +93,20 @@ def sync-env-configs [
   --backup (-b)   # Backup existing files to .bak
   --dry-run (-d)  # Display actions without actually modifying the filesystem
 ] {
-  use std/log
+    use std/log
 
-  let $env_dir = $env.ENV_DIR
-  let $home_dir = $env.HOME
+    let $env_dir = $env.ENV_DIR
+    let $home_dir = $env.HOME
 
-  if $dry_run {
-    print $"(ansi yellow_italic)--- DRY RUN MODE: No changes will be made ---\n(ansi reset)"
-  }
+    if $dry_run {
+        print $"(ansi yellow_italic)--- DRY RUN MODE: No changes will be made ---\n(ansi reset)"
+    }
 
-  let configs_list = (
+    let configs_list = (
     $env_configs
     | transpose src meta
     | each { |entry|
-      let config_out = ({optional: false} | merge $entry.meta)
+      let config_out = {optional: false} | merge $entry.meta
       mut out = {
         src: ($env_dir | path join $entry.src | path expand),
         dest: ($home_dir | path join $config_out.dest | path expand --no-symlink),
@@ -116,20 +129,22 @@ def sync-env-configs [
     }
   )
 
-  let $invalid_configs = ($configs_list | where not $it.skip and $it.error != "")
-  if ($invalid_configs | is-not-empty) {
-    log critical "Unable to sync configs"
-    ($invalid_configs | each { |entry| log error $entry.error })
-    return
-  }
+    let $invalid_configs = $configs_list | where not $it.skip and $it.error != ""
+    if ($invalid_configs | is-not-empty) {
+        log critical "Unable to sync configs"
+        ($invalid_configs | each {|entry| log error $entry.error })
+        return
+    }
 
-  def format-path [path: string] { $path | str replace $home_dir ~ }
-  $configs_list
-  | where $it.skip == false
-  | each { |entry|
+    def format-path [path: string] {
+        $path | str replace $home_dir ~
+    }
+    $configs_list
+    | where $it.skip == false
+    | each { |entry|
     let log_prefix = if $dry_run { $"(ansi yellow)[DRY] (ansi reset)" } else { "" }
 
-    let dest_dir = ($entry.dest | path dirname)
+    let dest_dir = $entry.dest | path dirname
     if not ($dest_dir | path exists) {
       log info $"($log_prefix) Ensuring directory: ($dest_dir)"
       if not $dry_run {
@@ -152,6 +167,6 @@ def sync-env-configs [
     }
   }
 
-  print $"\n(ansi green)Environment configs sync complete(ansi reset)"
-  return
+    print $"\n(ansi green)Environment configs sync complete(ansi reset)"
+    return
 }

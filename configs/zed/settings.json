@@ -25,34 +25,8 @@
   "ssh_connections": [
     {
       "host": "lima-dev-lts",
-      "nickname": "dev",
       "args": ["-F", "/Users/dpathak/.lima/dev-lts/ssh.config"],
-      "projects": [
-        {
-          "paths": ["/home/lima/workspace/cilium/cilium"],
-        },
-        {
-          "paths": ["/home/lima/workspace/cilium/proxy"],
-        },
-        {
-          "paths": ["/home/lima/workspace/isovalent/cilium"],
-        },
-      ],
-    },
-    {
-      "host": "lima-dev",
-      "args": ["-F", "/Users/dpathak/.lima/dev/ssh.config"],
-      "projects": [
-        {
-          "paths": ["/home/lima/workspace/cilium/cilium"],
-        },
-        {
-          "paths": ["/home/lima/workspace/cilium/proxy"],
-        },
-        {
-          "paths": ["/home/lima/workspace/isovalent/cilium"],
-        },
-      ],
+      "projects": [{ "paths": ["/home/lima/.env"] }],
     },
   ],
 

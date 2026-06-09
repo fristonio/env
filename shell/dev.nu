@@ -2,75 +2,74 @@ use std/log
 
 @category "linux-dev"
 def configure-linux-vm [] {
-  'net.ipv4.ip_forward=1
+    'net.ipv4.ip_forward=1
 net.ipv6.conf.all.forwarding=1
 fs.file-max=1000000
 fs.inotify.max_user_watches=524288
 fs.inotify.max_user_instances=8192
 ' | sudo tee /etc/sysctl.d/vm-sysctl.conf
-  sudo sysctl -p
+    sudo sysctl -p
 }
 
 @category "dev"
 def setup-vm [name: string = "dev"] {
-  let lima_template = ($env.ENV_DIR | path join "configs/lima/template.yaml")
-  let vmstate = (limactl list -f json
+    let lima_template = $env.ENV_DIR | path join "configs/lima/template.yaml"
+    let vmstate = (limactl list -f json
     | jq --arg vmname $name -r '. | select(.name == $vmname).status')
 
-  match $vmstate {
-    "" => {
-      log info $"Creating VM: ($name) [Template: ($lima_template)]"
-      limactl create --name $name $lima_template
-      limactl start $name
+    match $vmstate {
+        "" => {
+            log info $"Creating VM: ($name) [Template: ($lima_template)]"
+            limactl create --name $name $lima_template
+            limactl start $name
+        }
+        "Running" => {
+            log info "VM already running"
+        }
+        "Stopped" => {
+            log info $"Starting VM: ($name)"
+            limactl start $name
+        }
+        _ => {
+            log critical $"Invalid VM state: ($vmstate)"
+            return
+        }
     }
-    "Running" => {
-      log info "VM already running"
+
+    try {
+        limactl shell $name nix --version
+    } catch {
+        limactl shell $name bash -c "sudo apt -y update && sudo apt install -y make curl"
+        limactl shell $name make -C $env.ENV_DIR init-nix
+
+        limactl shell $name bash -c "curl -fsSL https://test.docker.com | sudo sh"
+        limactl shell $name bash -c "sudo usermod \$USER --append --group docker"
+        limactl restart $name
     }
-    "Stopped" => {
-      log info $"Starting VM: ($name)"
-      limactl start $name
+
+    mut vm_arch = uname | get machine
+    $vm_arch = match $vm_arch {
+        arm64 => "aarch64"
+        _ => $vm_arch
     }
-    _ => {
-      log critical $"Invalid VM state: ($vmstate)"
-      return
+    mut flake_name = $"lima-vm-($vm_arch)"
+    let flake_path = $"($env.ENV_DIR)#($flake_name)"
+    log info $"Setting up home configuration for: ($flake_name)"
+    try {
+        limactl shell $name home-manager --version
+        (limactl shell $name home-manager switch -b bak --flake $flake_path)
+    } catch {
+        limactl shell $name nix run home-manager/release-25.11 -- switch -b backup --flake $flake_path
     }
-  }
 
-  try {
-    limactl shell $name nix --version
-  } catch {
-    limactl shell $name bash -c "sudo apt -y update && sudo apt install -y make curl"
-    limactl shell $name make -C $env.ENV_DIR init-nix
-
-    limactl shell $name bash -c "curl -fsSL https://test.docker.com | sudo sh"
-    limactl shell $name bash -c "sudo usermod \$USER --append --group docker"
-    limactl restart $name
-  }
-
-
-  mut vm_arch = (uname | get machine);
-  $vm_arch = match $vm_arch {
-    "arm64" => "aarch64"
-    _ => $vm_arch
-  }
-  mut flake_name = $"lima-vm-($vm_arch)"
-  let flake_path = $"($env.ENV_DIR)#($flake_name)"
-  log info $"Setting up home configuration for: ($flake_name)"
-  try {
-    limactl shell $name home-manager --version
-    (limactl shell $name home-manager switch -b bak --flake $flake_path)
-  } catch {
-    limactl shell $name nix run home-manager/release-25.11 -- switch -b backup --flake $flake_path
-  }
-
-  limactl shell $name make -C $env.ENV_DIR configs
+    limactl shell $name make -C $env.ENV_DIR configs
 }
 
 @category "linux-dev"
 def setup-swap [] {
-  sudo fallocate -l 8G /swap
-  sudo chmod 600 /swap
-  sudo mkswap /swap
-  sudo swapon /swap
-  sudo swapon --show
+    sudo fallocate -l 8G /swap
+    sudo chmod 600 /swap
+    sudo mkswap /swap
+    sudo swapon /swap
+    sudo swapon --show
 }
