@@ -33,6 +33,9 @@
     pkgs.nixfmt
     pkgs.nil
 
+    pkgs.delta
+    pkgs.diffnav
+
     pkgsUnstable.lima
 
     pkgsUnstable.helix

@@ -126,22 +126,24 @@ def git-branch-remote [branch: string, remote: string, --dir(-C): string = "."] 
     (git -C $dir ls-remote --exit-code --heads $remote $branch | complete).exit_code == 0
 }
 
-def git-wt-info [path: string = "."] {
+def git-wt-info [path: string = ".", --status (-s) = false] {
     git-validate-worktree $path
 
     let wt_path = $path | path expand
     let branch_name = (git -C $path branch --show-current)
     let upstream = git-branch-upstream $path
     let commit_info = git-commit-info $path
-    let status = git-status-info $path
 
-    {
+    mut result = {
         path: $wt_path
         branch: $branch_name
         upstream: $upstream
         commit: $commit_info
-        status: $status
+        status: null
     }
+
+    if $status { $result.status = git-status-info $path }
+    return $result
 }
 
 def get-wt-repo-root [repo: string] {
@@ -157,7 +159,7 @@ def get-wt-repo-path [repo?: string] {
 }
 
 def get-wt-dir-name [branch: string] {
-    let branch_sh = $branch | split column "fristonio/" | last
+    let branch_sh = ($branch | split row -n 2 "fristonio/" | last)
     if ($branch_sh | is-not-empty) {
         $branch_sh
     } else {
@@ -254,13 +256,14 @@ def "wt init" [
 #   wt list cilium/cilium
 def "wt list" [
     repo?: string # Repository to list worktrees for (user/repo); inferred from CWD if omitted
+    --status (-s) = false # Enable worktree git status reporting; prints extra information about the state of HEAD.
 ] {
     let repo_path = get-wt-repo-path $repo
     git-validate-bare $repo_path
 
     let worktrees = (git-wt-list $repo_path
         | where {|it| ($it.worktree? | is-not-empty) and not ("bare" in $it) }
-        | each {|it| git-wt-info $it.worktree })
+        | each {|it| git-wt-info --status $status $it.worktree })
 
     if ($worktrees | is-empty) {
         print $"(ansi yellow)No worktrees found in ($repo_path)(ansi reset)"
@@ -308,6 +311,7 @@ def --env "wt switch" [
     }
 
     if ($remote | is-not-empty) {
+        print $"  (ansi yellow)→(ansi reset) Checking (ansi cyan)($branch)(ansi reset) from ($remote)"
         if not (git-branch-remote -C $repo_path $branch $remote) {
             error make {msg: $"Branch '($branch)' not found on remote '($remote)'"}
         }

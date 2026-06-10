@@ -1,5 +1,7 @@
 # ghostty +list-keybinds --default
 
+clipboard-paste-protection = false
+
 # List available themes: ghostty +list-themes
 theme = Catppuccin Frappe
 # theme = Everforest Dark Hard

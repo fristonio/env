@@ -25,7 +25,7 @@ alt-shift-l = 'move right'
 # alt-b = 'split horizontal'
 # alt-v = 'split vertical'
 
-alt-f = 'fullscreen'
+alt-shift-f = 'fullscreen'
 
 alt-s = 'layout v_accordion'               # 'layout stacking' in i3
 alt-w = 'layout h_accordion'               # 'layout tabbed' in i3

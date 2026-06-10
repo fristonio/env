@@ -52,7 +52,7 @@ map({ "n", "x" }, "<C-j>", "<C-w>j", { desc = "Focus split pane below" })
 map({ "n", "x" }, "<C-k>", "<C-w>k", { desc = "Focus split pane above" })
 map({ "n", "x" }, "<C-l>", "<C-w>l", { desc = "Focus split pane to the right" })
 
-map({ "n", "x" }, "<leader>x", ":bd<CR>", { desc = "Unload/delete current buffer" })
+map({ "n", "x" }, "<leader>x", "<cmd>bp|bd #<CR>", { desc = "Unload/delete current buffer" }) -- Does not close the split
 map({ "n", "x" }, "<leader>q", ":q<CR>", { desc = "Close current split window" })
 
 -- Search
@@ -81,3 +81,8 @@ map("n", "<S-Right>", ":vertical resize -2<CR>", { desc = "Resize split right" }
 -- Extras...
 map("v", "p", '"_dP') -- Keep last yanked text when pasting.
 map("n", "gc", "gcc")
+
+-- Copy file name and path
+map("n", "<leader>cp", "<cmd>let @+ = expand(\"%\")<CR>", { desc = "Copy File Name(relative path)" })
+map("n", "<leader>cP", "<cmd>let @+ = expand(\"%:p\")<CR>", { desc = "Copy File Path(absolute path)" })
+
