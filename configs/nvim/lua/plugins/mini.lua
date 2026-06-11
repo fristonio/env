@@ -44,8 +44,8 @@ end, { desc = "Toggle mini.notify" })
 -- Other useful plugins
 require("mini.surround").setup()
 require("mini.pairs").setup()
+require("mini.ai").setup()
 
 -- Extra stuff to explore
 --
--- require("mini.ai").setup()
 -- require("mini.indentscope").setup()

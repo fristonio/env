@@ -2,6 +2,8 @@ $env.WT_WS_DIR = $"($env.HOME)/ws"
 $env.WT_REMOTE_ORIGIN = "origin"
 $env.WT_REMOTE_UPSTREAM = "upstream"
 
+$env.WT_PULL_REQUEST_PREFIX = "pull"
+
 def git-repo-url [repo: string] {
     $"git@github.com:($repo).git"
 }
@@ -100,15 +102,19 @@ def git-status-info [path: string = "."] {
     $info
 }
 
-def git-branch-upstream [path: string = "."] {
-    let info = git -C rev-parse --abbrev-ref --symbolic-full-name @{u} | complete
+def git-branch-upstream [--dir(-C): string = "."] {
+    let info = git -C $dir rev-parse --abbrev-ref --symbolic-full-name @{u} | complete
     if $info.exit_code == 0 {
         $info.stdout | str trim
     } else { null }
 }
 
-def git-branch-local [branch: string, --dir(-C): string = "."] {
+def git-is-local-branch [branch: string, --dir(-C): string = "."] {
     (git -C $dir rev-parse --verify --quiet $"refs/heads/($branch)" | complete).exit_code == 0
+}
+
+def git-remote-of [branch: string, --dir(-C): string = "."] {
+    git -C $dir for-each-ref --format='%(upstream:remotename)' $"refs/heads/($branch)"
 }
 
 def git-branch-remote [branch: string, remote: string, --dir(-C): string = "."] {
@@ -126,12 +132,70 @@ def git-branch-remote [branch: string, remote: string, --dir(-C): string = "."] 
     (git -C $dir ls-remote --exit-code --heads $remote $branch | complete).exit_code == 0
 }
 
-def git-wt-info [path: string = ".", --status (-s) = false] {
+def git-force-branch-sync [branch: string, --dir(-C): string = "."] {
+    let remote = git-remote-of -C $dir $branch
+    if ($remote | is-empty) {
+        return (error make {msg: $"Cannot find remote for branch: ($branch)"})
+    }
+
+    let upstream_branch = git -C $dir rev-parse --abbrev-ref $"($branch)@{u}" | str trim
+    if ($upstream_branch | is-empty) {
+        return (error make {msg: $"No upstream tracking branch: ($branch)"})
+    }
+
+    git -C $dir fetch $remote $upstream_branch
+    git branch -f $branch $upstream_branch
+}
+
+def git-pull-sync [branch: string, worktree?: string, --dir(-C): string = "."] {
+    let remote = git -C $dir config $"branch.($branch).remote" | str trim
+    let merge_ref = git -C $dir config $"branch.($branch).merge" | str trim
+
+    if ($remote | is-empty) or ($merge_ref | is-empty) {
+        error make {msg: $"Branch '($branch)' does not have upstream tracking configured."}
+    }
+
+    if ($worktree | is-not-empty) and ($worktree | path exists) {
+        let wt_branch = git -C $worktree branch --show-current | str trim
+        if $wt_branch != $branch {
+            error make {msg: $"Branch '($branch)' does not match current worktree branch '($wt_branch)'"}
+        }
+
+        print $"Syncing worktree '($worktree)' from ($remote)/($merge_ref)..."
+        git -C $worktree fetch $remote $merge_ref
+        git -C $worktree reset --hard FETCH_HEAD
+    } else {
+        print $"Syncing branch '($branch)' from ($remote)/($merge_ref)..."
+        git -C $dir fetch $remote $"+($merge_ref):($branch)"
+    }
+}
+
+# Prints merge commits associated with the PR.
+# Note:
+# * refs/pull/<pr>/head:
+#   This reference points directly to the latest commit pushed by the author of the Pull Request.
+#   It represents the exact state of their feature branch at this very moment.
+# * refs/pull/<pr>/merge:
+#   A simulated merge commit combining the target base branch and the PR branch.
+#   FETCH_HEAD^1 is the current tip of the target base branch (e.g., main).
+#   FETCH_HEAD^2 is the tip of the PR branch (identical to head).
+def git-log-pr-merge-commits [
+    remote: string
+    pr: int
+    --dir(-C): string = "."
+    --log(-l)
+] {
+    let pr_merge_ref = $"refs/pull/($pr)/merge"
+    git -C $dir fetch $remote $pr_merge_ref
+    git log "FETCH_HEAD^1..FETCH_HEAD^2" --oneline
+}
+
+def git-wt-info [path: string = ".", status: bool = false] {
     git-validate-worktree $path
 
     let wt_path = $path | path expand
     let branch_name = (git -C $path branch --show-current)
-    let upstream = git-branch-upstream $path
+    let upstream = git-branch-upstream -C $path
     let commit_info = git-commit-info $path
 
     mut result = {
@@ -159,12 +223,31 @@ def get-wt-repo-path [repo?: string] {
 }
 
 def get-wt-dir-name [branch: string] {
-    let branch_sh = ($branch | split row -n 2 "fristonio/" | last)
+    if ($branch | str starts-with $"($env.WT_PULL_REQUEST_PREFIX)/") {
+        return $branch
+    }
+
+    let branch_sh = $branch | split row -n 2 "fristonio/" | last
     if ($branch_sh | is-not-empty) {
         $branch_sh
     } else {
         $branch | str replace --all "/" "."
     }
+}
+
+def get-wt-path [branch: string, repo?: string] {
+    (get-wt-repo-path $repo) | path join (get-wt-dir-name $branch)
+}
+
+def wt-is-valid [branch: string, repo?: string] {
+    let wt_path = get-wt-path $branch $repo
+    if ($wt_path | path exists) {
+        try {
+            git-validate-worktree $wt_path
+            return true
+        } catch { return false }
+    }
+    return false
 }
 
 # Git worktree manager — manage multiple branches as parallel checkouts.
@@ -173,6 +256,8 @@ def get-wt-dir-name [branch: string] {
 # Every branch gets its own checkout directory alongside .git.
 #
 # Run a subcommand to get started:
+@category git
+@search-terms git worktree wt
 def "wt" [] {
     print $"(ansi attr_bold)wt(ansi reset) — git worktree manager"
     print $"  workspace: (ansi cyan)($env.WT_WS_DIR)(ansi reset)"
@@ -182,7 +267,8 @@ def "wt" [] {
     print $"  (ansi green)wt list(ansi reset)   [repo]                               List all worktrees with status and commit info"
     print $"  (ansi green)wt switch(ansi reset) <branch> [remote] [repo] [--create]  Switch to a worktree, creating it if needed"
     print $"  (ansi green)wt create(ansi reset) <branch> [base] [repo]               Create a new branch and its worktree"
-    print $"  (ansi green)wt remove(ansi reset) <branch> [repo]                      Remove a worktree checkout"
+    print $"  (ansi green)wt remove(ansi reset) <branch> [repo] [--purge]            Remove a worktree checkout"
+    print $"  (ansi green)wt pull(ansi reset)   <pr> [remote] [repo] [--sync]        Check out a pull request as a worktree"
     print ""
     print $"  Run (ansi attr_bold)wt <subcommand> --help(ansi reset) for detailed usage."
 }
@@ -198,6 +284,8 @@ def "wt" [] {
 # Examples:
 #   wt init cilium/cilium
 #   wt init cilium/cilium fristonio/cilium
+@category git
+@search-terms git worktree wt
 def "wt init" [
     repo: string    # GitHub repository to clone as upstream, in user/repo format
     origin?: string # Fork to register as origin remote, in user/repo format; defaults to upstream
@@ -254,16 +342,18 @@ def "wt init" [
 # Examples:
 #   wt list
 #   wt list cilium/cilium
+@category git
+@search-terms git worktree wt
 def "wt list" [
     repo?: string # Repository to list worktrees for (user/repo); inferred from CWD if omitted
-    --status (-s) = false # Enable worktree git status reporting; prints extra information about the state of HEAD.
+    --status (-s) # Enable worktree git status reporting; prints extra information about the state of HEAD.
 ] {
     let repo_path = get-wt-repo-path $repo
     git-validate-bare $repo_path
 
     let worktrees = (git-wt-list $repo_path
         | where {|it| ($it.worktree? | is-not-empty) and not ("bare" in $it) }
-        | each {|it| git-wt-info --status $status $it.worktree })
+        | each {|it| git-wt-info $it.worktree $status })
 
     if ($worktrees | is-empty) {
         print $"(ansi yellow)No worktrees found in ($repo_path)(ansi reset)"
@@ -285,6 +375,8 @@ def "wt list" [
 #   wt switch main
 #   wt switch feat/my-feature upstream
 #   wt switch feat/new-thing --create
+@category git
+@search-terms git worktree wt
 def --env "wt switch" [
     branch: string   # Branch name to switch to
     remote?: string  # Remote to fetch the branch from if it does not exist locally
@@ -294,8 +386,7 @@ def --env "wt switch" [
     let repo_path = get-wt-repo-path $repo
     git-validate-bare $repo_path
 
-    let wt_dir = get-wt-dir-name $branch
-
+    let wt_dir = get-wt-path $branch $repo
     if ($wt_dir | path exists) {
         print $"  (ansi yellow)→(ansi reset) Worktree already exists, switching to (ansi cyan)($branch)(ansi reset)"
         git-validate-worktree $wt_dir
@@ -303,7 +394,7 @@ def --env "wt switch" [
         return
     }
 
-    if (git-branch-local -C $repo_path $branch) {
+    if (git-is-local-branch -C $repo_path $branch) {
         print $"  (ansi yellow)→(ansi reset) Branch (ansi cyan)($branch)(ansi reset) found locally, creating worktree"
         git -C $repo_path worktree add --relative-paths $wt_dir $branch
         cd $wt_dir
@@ -340,18 +431,19 @@ def --env "wt switch" [
 #   wt create feat/my-feature
 #   wt create feat/my-feature main
 #   wt create hotfix/urgent v1.19 cilium/cilium
-def "wt create" [
+@category git
+@search-terms git worktree wt
+def --env "wt create" [
     branch: string  # Name of the new branch to create
     base?: string   # Base branch to branch from; defaults to the repo's current branch
     repo?: string   # Repository to operate on (user/repo); inferred from CWD if omitted
 ] {
     let repo_path = get-wt-repo-path $repo
-
-    if (git-branch-local -C $repo_path $branch) {
+    if (git-is-local-branch -C $repo_path $branch) {
         error make {msg: $"Branch '($branch)' already exists"}
     }
 
-    let wt_dir = get-wt-dir-name $branch
+    let wt_dir = get-wt-path $branch $repo
     if ($wt_dir | path exists) {
         error make {msg: $"Worktree directory '($wt_dir)' already exists"}
     }
@@ -366,6 +458,7 @@ def "wt create" [
     git -C $repo_path worktree add --relative-paths $wt_dir -b $branch $base_branch
     print $"  (ansi green)✓(ansi reset) Created worktree at ($wt_dir)"
 
+    cd $wt_dir
     {branch: $branch, base: $base_branch, path: $wt_dir}
 }
 
@@ -377,18 +470,83 @@ def "wt create" [
 # Examples:
 #   wt remove feat/my-feature
 #   wt remove feat/my-feature cilium/cilium
-def "wt remove" [
+@category git
+@search-terms git worktree wt
+def --env "wt remove" [
     branch: string  # Branch whose worktree should be removed
     repo?: string   # Repository to operate on (user/repo); inferred from CWD if omitted
+    --purge (-p)    # Also delete the local branch after removing the worktree
 ] {
     let repo_path = get-wt-repo-path $repo
-    let wt_dir = get-wt-dir-name $branch
-
+    let wt_dir = get-wt-path $branch $repo
     if not ($wt_dir | path exists) {
         error make {msg: $"No worktree directory found for branch '($branch)'"}
     }
 
     print $"  (ansi yellow)→(ansi reset) Removing worktree for (ansi cyan)($branch)(ansi reset)"
     git -C $repo_path worktree remove $wt_dir
+    if $purge {
+        print $"  (ansi yellow)→(ansi reset) Removing branch (ansi cyan)($branch)(ansi reset)"
+        git -C $repo_path branch -D $branch
+    }
     print $"  (ansi green)✓(ansi reset) Removed ($wt_dir)"
+}
+
+# Check out a GitHub pull request as a worktree.
+#
+# Fetches the PR's head ref from the remote and creates a local branch named
+# pull/<pr> with a worktree. If the worktree or branch already exists, the
+# command switches into it instead; pass --sync to force-reset it to the
+# current upstream state.
+#
+# Examples:
+#   wt pull 1234
+#   wt pull 1234 origin
+#   wt pull 1234 --sync
+@category git
+@search-terms git worktree wt
+def --env "wt pull" [
+  pr: int             # Pull request number to check out
+  remote?: string     # Remote to fetch the PR from; defaults to $WT_REMOTE_UPSTREAM
+  repo?: string       # Repository to operate on (user/repo); inferred from CWD if omitted
+  --sync (-s)         # Force-sync the worktree branch to the current upstream PR head
+] {
+    let pr_head = $"refs/pull/($pr)/head"
+    let pr_branch = $"($env.WT_PULL_REQUEST_PREFIX)/($pr)"
+
+    mut pr_remote = $remote
+    if ($pr_remote | is-empty) {
+        $pr_remote = $env.WT_REMOTE_UPSTREAM
+    }
+
+    let repo_path = get-wt-repo-path $repo
+    git-validate-bare $repo_path
+
+    let wt_dir = get-wt-path $pr_branch $repo
+    if ($wt_dir | path exists) {
+        if $sync {
+            print $"  (ansi yellow)→(ansi reset) Worktree exists, syncing with upstream PR (ansi cyan)($pr_branch)(ansi reset)"
+            git-pull-sync -C $repo_path $pr_branch $wt_dir
+        } else {
+            print $"  (ansi yellow)→(ansi reset) Found worktree for branch: (ansi cyan)($pr_branch)(ansi reset)"
+        }
+
+        cd $wt_dir
+        return
+    }
+
+    if (git-is-local-branch -C $repo_path $pr_branch) {
+        print $"  (ansi yellow)→(ansi reset) Local branch exists for PR (ansi cyan)($pr)(ansi reset) resyncing"
+        git-pull-sync -C $repo_path $pr_branch
+    } else {
+        print $"  (ansi yellow)→(ansi reset) Fetching PR (ansi cyan)($pr)(ansi reset) from remote (ansi cyan)($pr_remote)(ansi reset)"
+        git -C $repo_path fetch $pr_remote $"($pr_head):($pr_branch)"
+
+        git -C $repo_path config $"branch.($pr_branch).remote" $pr_remote
+        git -C $repo_path config $"branch.($pr_branch).merge" $pr_head
+    }
+
+    git -C $repo_path worktree add --relative-paths $wt_dir $pr_branch
+    print $"  (ansi green)✓(ansi reset) Configured worktree for '($pr)' with branch (ansi cyan)($pr)(ansi reset) at ($wt_dir)"
+    cd $wt_dir
 }

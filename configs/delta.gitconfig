@@ -7,7 +7,7 @@
 	diffFilter = delta --color-only
 
 [alias]
-	ndiff = -c core.pager=diffnav diff
+	ndiff = -c pager.diff=diffnav diff
 
 [delta]
 	navigate = true
@@ -22,10 +22,10 @@
 	dark = true
 	blame-palette = "#303446 #292c3c #232634 #414559 #51576d"
 	commit-decoration-style = "#737994" bold box ul
-	file-decoration-style = "#737994"
+	file-decoration-style = "#737994" box ul
 	file-style = "#c6d0f5"
-	hunk-header-decoration-style = "#737994" box ul
-	hunk-header-file-style = bold
+	hunk-header-decoration-style = "#737994"
+	hunk-header-file-style = bold italic "#81c8be"
 	hunk-header-line-number-style = bold "#a5adce"
 	hunk-header-style = file line-number syntax
 	line-numbers-left-style = "#737994"
