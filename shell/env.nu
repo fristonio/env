@@ -41,6 +41,7 @@ def nuscript-path [name: string, --autoload(-a)] {
 }
 
 let env_configs = {
+
     # Optional tag because in some environment these are directly tracked
     # through nix config.
     "configs/bashrc": {dest: ".bashrc", optional: true}
@@ -60,9 +61,6 @@ let env_configs = {
     }
     "shell/git.nu": {
         dest: (nuscript-path -a "git.nu")
-    }
-    "shell/tmux.nu": {
-        dest: (nuscript-path -a "tmux.nu")
     }
     "shell/k8s.nu": {
         dest: (nuscript-path -a "k8s.nu")
@@ -86,10 +84,10 @@ let env_configs = {
 }
 
 @category "env"
-def nmux [...args] {
+def --wrapped nmux [...args] {
     with-env { SHELL: (which nu) } {
-    tmux -L nu-server ...$args
-  }
+        tmux -L nu-server ...$args
+    }
 }
 
 @category "env"

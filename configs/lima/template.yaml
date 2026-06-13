@@ -53,6 +53,10 @@ mounts:
   mountPoint: "{{.Home}}/workspace"
   writable: true
 
+- location: "{{.Home}}/ws"
+  mountPoint: "{{.Home}}/ws"
+  writable: true
+
 - location: "{{.Home}}/.env"
   mountPoint: "{{.Home}}/.env"
   writable: true
