@@ -19,7 +19,7 @@ cmp.setup({
 		completion = {
 			menu = {
 				auto_show = true,
-				auto_show_delay_ms = 250,
+				auto_show_delay_ms = 0,
 			},
 		},
 	},
@@ -29,7 +29,7 @@ cmp.setup({
 	completion = {
 		menu = {
 			auto_show = false,
-			auto_show_delay_ms = 250,
+			auto_show_delay_ms = 0,
 		},
 		documentation = {
 			auto_show = false,

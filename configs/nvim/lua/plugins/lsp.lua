@@ -80,8 +80,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		-- word under your cursor when your cursor rests there for a little while.
 		--    See `:help CursorHold` for information about when this is executed
 		local client = vim.lsp.get_client_by_id(event.data.client_id)
-		-- Disable LSP highlighting, rely on treesitter instead.
-		client.server_capabilities.semanticTokensProvider = nil
+
+		if vim.fn.executable("tree-sitter") == 1 then
+			-- Disable LSP highlighting, rely on treesitter instead when available.
+			client.server_capabilities.semanticTokensProvider = nil
+		end
+
 		if client and client:supports_method("textDocument/documentHighlight", event.buf) then
 			local highlight_augroup = vim.api.nvim_create_augroup("nvim-lsp-highlight", { clear = false })
 			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {

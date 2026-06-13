@@ -8,7 +8,7 @@ $env.config.history.max_size = 1_000_000
 $env.config.show_banner = "none"
 
 $env.config.edit_mode = "vi"
-$env.config.buffer_editor = "vim"
+$env.config.buffer_editor = $env.EDITOR
 $env.config.cursor_shape.vi_normal = "block"
 $env.config.cursor_shape.vi_insert = "line"
 
@@ -19,6 +19,74 @@ $env.config.completions.use_ls_colors = false
 
 $env.config.footer_mode = "auto"
 $env.config.ls.use_ls_colors = false
+
+$env.config.keybindings = ($env.config.keybindings | append [
+  ## Configure Vim insert mode keybindings. Match with regular terminal line edit keybinds.
+
+  {
+    name: vi_move_to_line_end
+    modifier: control
+    keycode: char_e
+    mode: [vi_insert, vi_normal]
+    event: { edit: movetolineend }
+  }
+  {
+    name: vi_move_left
+    modifier: control
+    keycode: char_b
+    mode: vi_insert
+    event: { edit: moveleft }
+  }
+  {
+    name: vi_move_right
+    modifier: control
+    keycode: char_f
+    mode: vi_insert
+    event: { edit: moveright }
+  }
+  {
+    name: vi_move_word_left
+    modifier: alt
+    keycode: char_b
+    mode: vi_insert
+    event: { edit: movewordleft }
+  }
+  {
+    name: vi_move_word_right
+    modifier: alt
+    keycode: char_f
+    mode: vi_insert
+    event: { edit: movewordright }
+  }
+  {
+    name: vi_kill_line
+    modifier: control
+    keycode: char_k
+    mode: vi_insert
+    event: { edit: cuttolineend }
+  }
+  {
+    name: vi_unix_line_discard
+    modifier: control
+    keycode: char_u
+    mode: vi_insert
+    event: { edit: cutfromlinestart }
+  }
+  {
+    name: vi_backward_kill_word
+    modifier: control
+    keycode: char_w
+    mode: vi_insert
+    event: { edit: backspaceword }
+  }
+  {
+    name: emacs_yank
+    modifier: control
+    keycode: char_y
+    mode: vi_insert
+    event: { edit: pastecutbufferafter }
+  }
+])
 
 # Create the prompt
 def create_left_prompt [] {
@@ -47,7 +115,10 @@ def create_right_prompt [] {
 }
 
 $env.PROMPT_COMMAND = {|| create_left_prompt }
-$env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
+# $env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
+$env.PROMPT_COMMAND_RIGHT = {||
+
+}
 
 $env.PROMPT_INDICATOR = $"(ansi cyan)ᗆ (ansi reset)"
 $env.PROMPT_INDICATOR_VI_INSERT = $"(ansi cyan)ᗆ (ansi reset)"

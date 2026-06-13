@@ -1,12 +1,29 @@
 $env.ENV_DIR = ($env.HOME | path join ".env")
 $env.ENV_LOCAL = ($env.ENV_DIR | path join "local")
 
+$env.EDITOR = "nvim"
+
+alias l = ls -a
+alias ll = ls -la
+
+alias gs = git status
+alias gl = git log --oneline --graph --abbrev-commit --decorate
+
+if (which eza | is-not-empty) {
+    alias li = eza -l --icons
+    alias tree = eza --tree
+}
+
 if (which go | is-not-empty) {
-  $env.PATH ++= [($env.HOME | path join "go/bin")]
+    $env.PATH ++= [
+        ($env.HOME | path join "go/bin")
+    ]
 }
 
 if (which cargo | is-not-empty) {
-  $env.PATH ++= [($env.HOME | path join ".cargo/bin")]
+    $env.PATH ++= [
+        ($env.HOME | path join ".cargo/bin")
+    ]
 }
 
 @category "env"
@@ -17,17 +34,21 @@ def showcmds [] {
 @category "env"
 def nuscript-path [name: string, --autoload(-a)] {
     if $autoload {
-        ($nu.user-autoload-dirs | path join $name)
+        ($nu.user-autoload-dirs | first | path join $name)
     } else {
         ($nu.default-config-dir | path join $name)
     }
 }
 
 let env_configs = {
+    # Optional tag because in some environment these are directly tracked
+    # through nix config.
     "configs/bashrc": {dest: ".bashrc", optional: true}
     "configs/vimrc": {dest: ".vimrc", optional: true}
     "configs/gitconfig": {dest: ".gitconfig", optional: true}
     "configs/tmux.conf": {dest: ".tmux.conf", optional: true}
+
+    # Nushell configs
     "shell/config.nu": {
         dest: (nuscript-path "config.nu")
     }
@@ -37,21 +58,38 @@ let env_configs = {
     "shell/dev.nu": {
         dest: (nuscript-path -a "dev.nu")
     }
-    "shell/aliases.nu": {
-        dest: (nuscript-path -a "aliases.nu")
-    }
     "shell/git.nu": {
         dest: (nuscript-path -a "git.nu")
     }
+    "shell/tmux.nu": {
+        dest: (nuscript-path -a "tmux.nu")
+    }
+    "shell/k8s.nu": {
+        dest: (nuscript-path -a "k8s.nu")
+    }
+    "shell/theme.nu": {
+        dest: (nuscript-path -a "theme.nu")
+    }
+
+    # Editor configs
     "configs/helix/config.toml": {dest: ".config/helix/config.toml"}
-    "configs/ghostty/config": {dest: ".config/ghostty/config"}
+    "configs/nvim": {dest: ".config/nvim"}
     "configs/zed/settings.json": {dest: ".config/zed/settings.json"}
     "configs/zed/keymap.json": {dest: ".config/zed/keymap.json"}
-    "configs/nvim": {dest: ".config/nvim"}
+
+    # Terminal config
+    "configs/ghostty/config": {dest: ".config/ghostty/config"}
 
     # TODO: Seperate out darwin vs linux stuff.
     # "configs/aerospace.toml":  { dest: ".aerospace.toml", optional: true },
     # "configs/niri/config.kdl": { dest: ".config/niri/config.kdl", optional: true },
+}
+
+@category "env"
+def nmux [...args] {
+    with-env { SHELL: (which nu) } {
+    tmux -L nu-server ...$args
+  }
 }
 
 @category "env"
@@ -67,22 +105,20 @@ def note [] {
     }
 
     let month = date now | format date "%Y-%B" | str downcase
-    hx ($notes_dir | path join $"($month).md")
+    ^$env.EDITOR ($notes_dir | path join $"($month).md")
 }
 
 # Initializes any user autloads required for nushell
 @category "env"
 def init-nushell-autoloads [] {
     let autoload_dir = $nu.user-autoload-dirs | first
-    let theme_file = $autoload_dir | path join "theme.nu"
-
-    mkdir $autoload_dir
-
-    http get https://raw.githubusercontent.com/catppuccin/nushell/refs/heads/main/themes/catppuccin_frappe.nu
-    | save -f ($autoload_dir | path join "theme.nu")
 
     if (which zoxide | is-not-empty) {
-        zoxide init nushell | save -f ($autoload_dir | path join "zoxide.nu")
+        zoxide init --cmd cd nushell | save -f ($autoload_dir | path join "_zoxide.nu")
+    }
+
+    if (which fzf | is-not-empty) {
+        fzf --nushell | save -f ($autoload_dir | path join "_fzf.nu")
     }
 }
 

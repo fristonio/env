@@ -15,7 +15,7 @@ window-decoration = true
 # window-decoration = false
 
 # Enable shell integration
-shell-integration = bash
+# shell-integration = bash
 
 # brew install --cask font-jetbrains-mono
 font-family = "JetBrains Mono Medium"
@@ -26,6 +26,7 @@ font-size = 15
 
 quick-terminal-position = right
 quick-terminal-animation-duration = 0
+quick-terminal-size = 40%,100%
 
 # Reload config
 keybind = alt+a>r=reload_config

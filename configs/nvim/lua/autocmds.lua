@@ -63,7 +63,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
 			return
 		end
 
-		if name == "nvim-treesitter" then
+		if name == "nvim-treesitter" and vim.fn.executable("tree-sitter") then
 			if not ev.data.active then
 				vim.cmd.packadd("nvim-treesitter")
 			end

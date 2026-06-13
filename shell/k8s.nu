@@ -1,21 +1,5 @@
-# Standard aliases
-
-alias l = ls -a
-alias ll = ls -la
-
-alias gs = git status
-alias gl = git log --oneline --graph --abbrev-commit --decorate
-
-alias li = eza -l --icons
-alias tree = eza --tree
-
-# User aliases
-
-alias kit = hx $env.KIT_DIR
-
-# Dev Aliases
-
 alias k = kubectl
+
 alias ksys = kubectl -n kube-system
 alias kexec = kubectl exec -it
 alias ksysexec = kubectl -n kube-system exec -it

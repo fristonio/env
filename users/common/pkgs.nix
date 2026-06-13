@@ -16,7 +16,6 @@
     pkgs.curl
     pkgs.vim
     pkgs.tmux
-    pkgs.fzf
     pkgs.tree
     pkgs.watch
     pkgs.gnumake
@@ -40,6 +39,8 @@
 
     pkgsUnstable.helix
     pkgsUnstable.neovim
+
     pkgsUnstable.nushell
+	pkgsUnstable.fzf
   ];
 }
