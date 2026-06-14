@@ -1,28 +1,5 @@
 use std/log
 
-@category "tmux"
-def tm [--interactive(-i)] {
-    let session_format = "#{session_name}|#{session_windows}|#{pane_current_command}|#{t:session_created}|#{?session_attached,1,0}|#{session_path}"
-    let sessions_list = ^tmux list-sessions -F $session_format
-    | lines
-    | where {|l| $l | is-not-empty }
-    | each { |line|
-      let out = $line | split row "|"
-      {
-        name: ($out | get 0)
-        windows: ($out | get 1)
-        command: ($out | get 2)
-        age: ((date now) - ($out | get 3 | into datetime) | into string | split words | first)
-        attached: (($out | get 4) == "1")
-        path: ($out | get 5 | str replace $env.HOME "~")
-      }
-    }
-
-    if not ($interactive | into bool) {
-        return $sessions_list
-    }
-}
-
 @category "linux-dev"
 def configure-linux-vm [] {
     'net.ipv4.ip_forward=1

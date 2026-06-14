@@ -55,6 +55,9 @@ map({ "n", "x" }, "<C-l>", "<C-w>l", { desc = "Focus split pane to the right" })
 map({ "n", "x" }, "<leader>x", "<cmd>bp|bd #<CR>", { desc = "Unload/delete current buffer" }) -- Does not close the split
 map({ "n", "x" }, "<leader>q", ":q<CR>", { desc = "Close current split window" })
 
+map("n", "<leader>gn", "<cmd>bnext<CR>", { desc = "Go to netxt buffer" })
+map("n", "<leader>gp", "<cmd>bprevious<CR>", { desc = "Go to previous buffer" })
+
 -- Search
 map({ "n", "x" }, "n", "nzzzv", { desc = "Find next search result and center screen" })
 map({ "n", "x" }, "N", "Nzzzv", { desc = "Find previous search result and center screen" })
@@ -83,6 +86,5 @@ map("v", "p", '"_dP') -- Keep last yanked text when pasting.
 map("n", "gc", "gcc")
 
 -- Copy file name and path
-map("n", "<leader>cp", "<cmd>let @+ = expand(\"%\")<CR>", { desc = "Copy File Name(relative path)" })
-map("n", "<leader>cP", "<cmd>let @+ = expand(\"%:p\")<CR>", { desc = "Copy File Path(absolute path)" })
-
+map("n", "<leader>cp", '<cmd>let @+ = expand("%")<CR>', { desc = "Copy File Name(relative path)" })
+map("n", "<leader>cP", '<cmd>let @+ = expand("%:p")<CR>', { desc = "Copy File Path(absolute path)" })

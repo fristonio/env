@@ -26,13 +26,55 @@ if (which cargo | is-not-empty) {
     ]
 }
 
-@category "env"
-def showcmds [] {
-    help commands | where command_type == "custom" and category != ""
+@category env
+def --env pick [action?: closure, --default(-d): any = null] {
+    let selection = $in | input list --fuzzy --no-separator
+    let value = if ($selection | is-not-empty) {
+        $selection
+    } else if $default != null {
+        $default
+    } else { return }
+
+    if $action != null {
+        do $action $value
+    } else {
+        $value
+    }
 }
 
-@category "env"
-def nuscript-path [name: string, --autoload(-a)] {
+@category env
+def --env confirm [prompt: string = "Are you sure? [y/n]: "] {
+    print -n $"(ansi yellow)($prompt)(ansi reset)"
+    loop {
+        let event = (input listen --types [key])
+        if $event.key_type == "char" {
+            let key = $event.code | str downcase
+            if $key == "y" {
+                print $event.code
+                return true
+            } else if $key == "n" {
+                print $event.code
+                return false
+            }
+            if ($event.modifiers | is-not-empty) {
+                return false
+            }
+        } else {
+            print ""
+            return false
+        }
+    }
+}
+
+@category env
+def --env cmds [] {
+    help commands
+    | where command_type == "custom" and category != ""
+    | input list --fuzzy --no-separator
+}
+
+@category env
+def --env nuscript-path [name: string, --autoload(-a)] {
     if $autoload {
         ($nu.user-autoload-dirs | first | path join $name)
     } else {
@@ -59,6 +101,9 @@ let env_configs = {
     "shell/dev.nu": {
         dest: (nuscript-path -a "dev.nu")
     }
+    "shell/utils.nu": {
+        dest: (nuscript-path -a "utils.nu")
+    }
     "shell/git.nu": {
         dest: (nuscript-path -a "git.nu")
     }
@@ -81,29 +126,6 @@ let env_configs = {
     # TODO: Seperate out darwin vs linux stuff.
     # "configs/aerospace.toml":  { dest: ".aerospace.toml", optional: true },
     # "configs/niri/config.kdl": { dest: ".config/niri/config.kdl", optional: true },
-}
-
-@category "env"
-def --wrapped nmux [...args] {
-    with-env { SHELL: (which nu) } {
-        tmux -L nu-server ...$args
-    }
-}
-
-@category "env"
-def note [] {
-    mut notes_dir = ""
-    if ($env | get -o NOTES_DIR) != null and ($env.NOTES_DIR | path exists) {
-        $notes_dir = $env.NOTES_DIR
-    } else {
-        $notes_dir = ($env.ENV_LOCAL | path join "scratch")
-        if not ($notes_dir | path exists) {
-            mkdir $notes_dir
-        }
-    }
-
-    let month = date now | format date "%Y-%B" | str downcase
-    ^$env.EDITOR ($notes_dir | path join $"($month).md")
 }
 
 # Initializes any user autloads required for nushell
