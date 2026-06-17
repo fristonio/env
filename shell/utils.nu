@@ -68,8 +68,8 @@ def "tm list" [] {
 
 @category utils
 @search-terms tmux
-def "tm attach" [name?: string] {
-    tm list | pick --default $name { |session| 
+def "tm attach" [] {
+    tm list | pick { |session| 
       if ($session | is-empty) {
         print $"(ansi yellow)No session selected to attach(ansi reset)"
         return
@@ -85,8 +85,8 @@ def "tm attach" [name?: string] {
 
 @category utils
 @search-terms tmux
-def "tm delete" [name?: string] {
-    tm list | pick --default $name { |session| 
+def "tm delete" [] {
+    tm list | pick { |session| 
       if ($session | is-empty) {
         print $"(ansi yellow)No session selected to delete(ansi reset)"
         return

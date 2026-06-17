@@ -23,13 +23,14 @@ $env.config.ls.use_ls_colors = false
 $env.config.keybindings = ($env.config.keybindings | append [
   ## Configure Vim insert mode keybindings. Match with regular terminal line edit keybinds.
 
-  {
-    name: vi_move_to_line_end
-    modifier: control
-    keycode: char_e
-    mode: [vi_insert, vi_normal]
-    event: { edit: movetolineend }
-  }
+  # Ctrl-e is used to select the ghost text completion.
+  # {
+  #   name: vi_move_to_line_end
+  #   modifier: control
+  #   keycode: char_e
+  #   mode: [vi_insert, vi_normal]
+  #   event: { edit: movetolineend }
+  # }
   {
     name: vi_move_left
     modifier: control

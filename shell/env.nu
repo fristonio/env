@@ -27,11 +27,20 @@ if (which cargo | is-not-empty) {
 }
 
 @category env
-def --env pick [action?: closure, --default(-d): any = null] {
-    let selection = $in | input list --fuzzy --no-separator
+def --env pick [
+    action?: closure
+    --default(-d): any
+    --prompt(-p): string
+    --multi(-m)
+] {
+    if ($in | is-empty) {
+        return
+    }
+
+    let selection = $in | input list --fuzzy --no-separator --multi=$multi $prompt
     let value = if ($selection | is-not-empty) {
         $selection
-    } else if $default != null {
+    } else if ($default | is-not-empty) {
         $default
     } else { return }
 
