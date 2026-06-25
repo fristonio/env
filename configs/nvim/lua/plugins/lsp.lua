@@ -114,6 +114,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- Enable the following language servers
 --  See `:help lsp-config` for information about keys and how to configure
 local servers = {
+	clangd = {},
+
 	gopls = {
 		settings = {
 			gopls = {
