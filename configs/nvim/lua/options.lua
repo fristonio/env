@@ -88,6 +88,7 @@ vim.opt.listchars = { tab = "» ", space = "·" }
 vim.opt.list = false
 
 vim.opt.fillchars:append({ eob = " " })
+vim.opt.fillchars:append({ diff = "╱" })
 
 -- Max number of entries to show in completion popups.
 vim.opt.pumheight = 16
@@ -113,3 +114,7 @@ vim.o.foldenable = true
 
 vim.opt.fillchars:append({ fold = " ", foldopen = "", foldclose = "", foldsep = " ", foldinner = " " })
 vim.opt.foldmethod = "indent" -- Defaults to indent, overridden in treesitter config
+
+-- %C: Fold icon, %=: align to right, %l: line number %s: GitSigns column
+vim.o.statuscolumn = "%C  %=%l %s"
+

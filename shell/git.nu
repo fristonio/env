@@ -407,7 +407,7 @@ def --env "wt switch" [
             error make {msg: $"Branch '($branch)' not found on remote '($remote)'"}
         }
         print $"  (ansi yellow)→(ansi reset) Fetching (ansi cyan)($branch)(ansi reset) from ($remote)"
-        git -C $repo_path fetch $remote $branch
+        git -C $repo_path fetch $remote $"($branch):($branch)"
         print $"  (ansi yellow)→(ansi reset) Creating worktree"
         git -C $repo_path worktree add --relative-paths $wt_dir $branch
         cd $wt_dir

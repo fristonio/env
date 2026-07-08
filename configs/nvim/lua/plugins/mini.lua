@@ -41,6 +41,10 @@ vim.api.nvim_create_user_command("ToggleNotify", function()
 	vim.g.mininotify_disable = not vim.g.mininotify_disable
 end, { desc = "Toggle mini.notify" })
 
+-- Only show tabline when there are atleast two tabs
+require("mini.tabline").setup()
+vim.opt.showtabline = 1
+
 -- Other useful plugins
 require("mini.surround").setup()
 require("mini.pairs").setup()

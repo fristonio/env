@@ -74,3 +74,55 @@ require("gitsigns").setup({
 		map({ "o", "x" }, "ih", gitsigns.select_hunk, { desc = "Select the hunk" })
 	end,
 })
+
+-- Experimental code diffview
+vim.pack.add({ "https://github.com/dlyongemallo/diffview-plus.nvim" })
+require("diffview").setup({
+	enhanced_diff_hl = true,
+	use_icons = true,
+
+	-- For PR reviews.
+	-- imply-local makes the right side buffer editable during reviews
+	default_args = {
+		DiffviewOpen = { "--imply-local" },
+	},
+	file_panel = {
+		show_branch_name = true,
+		always_show_sections = true,
+	},
+
+	hooks = {
+		diff_buf_read = function(bufnr)
+			vim.opt_local.wrap = false
+		end,
+	},
+
+	-- Persist review progress.
+	-- persist_selections = { enabled = true },
+})
+
+-- Toggle diffview open/close
+vim.keymap.set("n", "<leader>dv", "<cmd>DiffviewToggle<cr>", { desc = "Git Diffview toggle" })
+
+-- Diff working directory
+vim.keymap.set("n", "<leader>do", "<cmd>DiffviewOpen<cr>", { desc = "Git Diffview open" })
+vim.keymap.set("n", "<leader>dc", "<cmd>DiffviewClose<cr>", { desc = "Git Diffview close" })
+
+-- File history
+vim.keymap.set("n", "<leader>dh", "<cmd>DiffviewFileHistory %<cr>", { desc = "Git file history (current file)" })
+vim.keymap.set("n", "<leader>dH", "<cmd>DiffviewFileHistory<cr>", { desc = "Git file history (repo)" })
+
+-- Visual mode: history for selection
+vim.keymap.set("v", "<leader>dh", "<Esc><cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Git range history" })
+
+-- Single line history
+vim.keymap.set("n", "<leader>dl", "<cmd>.DiffviewFileHistory --follow<CR>", { desc = "Git Line history" })
+
+-- Diff against main/master branch (useful before merging)
+vim.keymap.set("n", "<leader>dm", function()
+	-- Try main first, fall back to master
+	local result = vim.fn.systemlist({ "git", "rev-parse", "--verify", "main" })
+	local ok = vim.v.shell_error == 0 and result[1] ~= nil and result[1] ~= ""
+	local branch = ok and "main" or "master"
+	vim.cmd("DiffviewOpen " .. branch)
+end, { desc = "Git Diff against main/master" })

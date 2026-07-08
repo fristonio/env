@@ -53,7 +53,7 @@
     "bindings": {
       "U": "vim::Redo",
 
-      "w k": "zed::OpenKeymap",
+      "space w k": "zed::OpenKeymap",
 
       "space q": "pane::CloseActiveItem",
       "space e": "project_panel::ToggleFocus",
