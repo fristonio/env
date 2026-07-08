@@ -24,12 +24,6 @@ def --env _kubectl_ns_arg [--namespace(-n): string, --all(-a)] {
 alias k = kubectl -n $env.KUBE_NS
 alias ksys = kubectl -n kube-system
 
-# TODO: Migrate to custom commands
-#
-# alias ksysexec = kubectl -n kube-system exec -it
-# alias klogs = kubectl logs
-# alias ksyslogs = kubectl -n kube-system logs
-
 def kpods [
     --namespace(-n): string
     --all(-a)
@@ -50,3 +44,32 @@ def kpods [
     } --prompt "Select pods to get K8s objects for" --multi=$multi
 }
 alias ksyspods = kpods --namespace kube-system
+
+def kexec [
+  --namespace(-n): string
+  --all(-a)
+  cmd: string = "bash"
+] {
+  let pod = kpods -i -n $namespace --all=$all
+  if $pod == null { return }
+
+  ^kubectl exec -it -n $pod.metadata.namespace $pod.metadata.name -- $cmd
+}
+alias ksysexec = kexec --namespace kube-system
+
+
+def klogs [
+  --namespace(-n): string
+  --all(-a)
+  --follow(-f)
+] {
+  let pod = kpods -i -n $namespace --all=$all
+  if $pod == null { return }
+
+  if $follow {
+    ^kubectl logs -f -n $pod.metadata.namespace $pod.metadata.name
+  } else {
+    ^kubectl logs -n $pod.metadata.namespace $pod.metadata.name
+  }
+}
+alias ksyslogs = klogs --namespace kube-system
