@@ -14,7 +14,13 @@ end
 
 -- See `:help telescope` and `:help telescope.setup()`
 vim.pack.add(telescope_plugins)
-require("telescope").setup({
+
+local telescope = require("telescope")
+local themes = require("telescope.themes")
+
+local live_grep_args_actions = require("telescope-live-grep-args.actions")
+
+telescope.setup({
 	defaults = {
 		layout_strategy = "horizontal",
 		layout_config = {
@@ -43,32 +49,35 @@ require("telescope").setup({
 		colorscheme = { theme = "ivy" },
 	},
 	extensions = {
-		["ui-select"] = { require("telescope.themes").get_dropdown() },
+		["ui-select"] = { themes.get_dropdown() },
+		live_grep_args = {
+			auto_quoting = true,
+			mappings = {
+				i = {
+					["<C-k>"] = live_grep_args_actions.quote_prompt(),
+					["<C-i>"] = live_grep_args_actions.quote_prompt({ postfix = " --iglob " }),
+					["<C-t>"] = live_grep_args_actions.quote_prompt({ postfix = " -t" }),
+					-- Freeze the current list and start a fuzzy search in the frozen list
+					["<C-space>"] = live_grep_args_actions.to_fuzzy_refine,
+				},
+			},
+		},
 	},
 })
 
--- Configure plugin for buffer symbol outlines(similar to zed outline panel)
--- require("aerial").setup({})
-
 -- Enable Telescope extensions if they are installed
-pcall(require("telescope").load_extension, "fzf")
-pcall(require("telescope").load_extension, "ui-select")
-pcall(require("telescope").load_extension, "live_grep_args")
-
--- pcall(require("telescope").load_extension, "aerial")
+telescope.load_extension("fzf")
+telescope.load_extension("ui-select")
+telescope.load_extension("live_grep_args")
 
 -- See `:help telescope.builtin`
 local builtin = require("telescope.builtin")
 local utils = require("telescope.utils")
-local themes = require("telescope.themes")
 
 local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
 
 vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "[F]ind [F]iles" })
-vim.keymap.set("n", "<leader>fb", function()
-	builtin.buffers({ sort_lastused = true })
-end, { desc = "[F]ind [B]uffers" })
-vim.keymap.set("n", "<leader>f.", builtin.oldfiles, { desc = '[F]ind Recent Files ("." for repeat)' })
+vim.keymap.set("n", "<leader>fo", builtin.oldfiles, { desc = '[F]ind Recent Files ("." for repeat)' })
 vim.keymap.set("n", "<leader>fe", function()
 	builtin.find_files({
 		cwd = utils.buffer_dir(),
@@ -76,18 +85,18 @@ vim.keymap.set("n", "<leader>fe", function()
 	})
 end, { desc = "[F]ind files in current buffer directory" })
 
-vim.keymap.set("n", "<leader>fr", builtin.resume, { desc = "[F]ind [R]esume" })
-vim.keymap.set("n", "<leader>pr", builtin.resume, { desc = "Telescope [P]icker [R]esume" })
-vim.keymap.set("n", "<leader>fs", builtin.builtin, { desc = "[F]ind [S]elect Telescope" })
+vim.keymap.set("n", "<leader>fb", function()
+	builtin.buffers({ sort_lastused = true })
+end, { desc = "[F]ind [B]uffers" })
 
-vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "[F]ind current [W]ord" })
+vim.keymap.set("n", "<leader>fr", builtin.resume, { desc = "[F]ind [R]esume" })
+
 vim.keymap.set(
 	"n",
-	"<leader>fW",
+	"<leader>fw",
 	live_grep_args_shortcuts.grep_word_under_cursor,
 	{ desc = "[F]ind current [W]ord with args" }
 )
-
 vim.keymap.set(
 	"v",
 	"<leader>fv",
@@ -95,31 +104,35 @@ vim.keymap.set(
 	{ desc = "[F]ind current [V]isual selection" }
 )
 
-vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind by [G]rep" })
-vim.keymap.set("n", "<leader>fG", function()
-	require("telescope").extensions.live_grep_args.live_grep_args()
-end, { desc = "[F]ind by [G]rep with args" })
-
-vim.keymap.set("n", "<leader>f/", function()
-	builtin.live_grep({
+vim.keymap.set("n", "<leader>/", builtin.current_buffer_fuzzy_find, { desc = "Fuzzily search in current buffer" })
+vim.keymap.set(
+	"n",
+	"<leader>f/",
+	require("telescope").extensions.live_grep_args.live_grep_args,
+	{ desc = "Live Grep in workspace root" }
+)
+vim.keymap.set("n", "<leader>f.", function()
+	require("telescope").extensions.live_grep_args.live_grep_args({
+		cwd = utils.buffer_dir(),
+		prompt_title = "Live Grep in current buffer directory",
+	})
+end, { desc = "Live Grep in current buffer directory" })
+vim.keymap.set("n", "<leader>fg", function()
+	require("telescope").extensions.live_grep_args.live_grep_args({
 		grep_open_files = true,
 		prompt_title = "Live Grep in Open Files",
 	})
-end, { desc = "Search in Open Files" })
-vim.keymap.set("n", "<leader>/", function()
-	builtin.current_buffer_fuzzy_find(themes.get_dropdown({
-		winblend = 10,
-		previewer = false,
-	}))
-end, { desc = "Fuzzily search in current buffer" })
+end, { desc = "Live Grep in Open Files" })
 
 vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "[F]ind [D]iagnostics" })
 
+vim.keymap.set("n", "<leader>fs", builtin.builtin, { desc = "[F]ind [S]elect Telescope" })
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "[F]ind [H]elp" })
 vim.keymap.set("n", "<leader>fk", builtin.keymaps, { desc = "[F]ind [K]eymaps" })
 vim.keymap.set("n", "<leader>fc", builtin.commands, { desc = "[F]ind [C]ommands" })
 
 vim.keymap.set("n", "<leader>pt", builtin.colorscheme, { desc = "Pick [TH]eme" })
+vim.keymap.set("n", "<leader>pr", builtin.resume, { desc = "Telescope [P]icker [R]esume" })
 
 -- Shortcut for searching Neovim configuration files
 vim.keymap.set("n", "<leader>fn", function()
@@ -147,7 +160,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		map("<leader>lR", builtin.lsp_references, "Goto [L]SP [R]eferences")
 		map("<leader>lt", builtin.lsp_type_definitions, "Goto [L]SP [T]ype definitions")
 
-		map("<leader>ls", builtin.lsp_document_symbols, "Explore current document symbols")
-		map("<leader>lS", builtin.lsp_dynamic_workspace_symbols, "Explore current workspace symbols")
+		map("<leader>ls", function()
+			builtin.lsp_document_symbols({
+				symbol_width = 0.7,
+				symbol_type_width = 0.3,
+			})
+		end, "Explore current document symbols")
+		map("<leader>lS", function()
+			builtin.lsp_dynamic_workspace_symbols({
+				symbol_width = 0.7,
+				symbol_type_width = 0.3,
+			})
+		end, "Explore current document symbols")
 	end,
 })

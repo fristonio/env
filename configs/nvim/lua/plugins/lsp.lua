@@ -203,3 +203,21 @@ require("conform").setup({
 vim.keymap.set({ "n", "v" }, "<leader>fmt", function()
 	require("conform").format({ async = true })
 end, { desc = "[F]ormat buffer" })
+
+-- Outline panel configuration
+vim.pack.add({ "https://github.com/hedyhli/outline.nvim" })
+require("outline").setup({
+	outline_window = {
+		auto_jump = true,
+		hide_cursor = false,
+		jump_highlight_duration = 1000,
+	},
+	providers = {
+		priority = { "lsp", "markdown", "norg", "man" },
+		lsp = {
+			-- Lsp client names to ignore
+			blacklist_clients = {},
+		},
+	},
+})
+vim.keymap.set("n", "<leader>to", "<cmd>Outline<CR>", { desc = "Toggle Outline" })

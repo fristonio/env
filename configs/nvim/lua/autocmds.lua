@@ -13,15 +13,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
 	end,
 })
 
--- Open a terminal at the bottom of the screen with a fixed height.
-vim.keymap.set("n", "<leader>to", function()
-	vim.cmd.new()
-	vim.cmd.wincmd("J")
-	vim.api.nvim_win_set_height(0, 16)
-	vim.wo.winfixheight = true
-	vim.cmd.term()
-end, { desc = "Open a terminal window at the bottom" })
-
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
 --  See `:help vim.hl.on_yank()`

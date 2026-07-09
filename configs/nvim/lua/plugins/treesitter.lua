@@ -1,6 +1,9 @@
 -- See `:help nvim-treesitter-intro`
 
-vim.pack.add({ "https://github.com/nvim-treesitter/nvim-treesitter" })
+vim.pack.add({
+	"https://github.com/nvim-treesitter/nvim-treesitter",
+	"https://github.com/nvim-treesitter/nvim-treesitter-context",
+})
 
 -- Install required parsers.
 -- Requires tree-sitter-cli: `brew install tree-sitter-cli`
@@ -22,6 +25,11 @@ require("nvim-treesitter").install({
 	"zig",
 	"nu",
 	"python",
+})
+
+require("treesitter-context").setup({
+	-- Use TSContext toggle
+	enable = false,
 })
 
 local function treesitter_try_attach(buf, language)

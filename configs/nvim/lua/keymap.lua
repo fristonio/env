@@ -88,3 +88,6 @@ map("n", "gc", "gcc")
 -- Copy file name and path
 map("n", "<leader>cp", '<cmd>let @+ = expand("%")<CR>', { desc = "Copy File Name(relative path)" })
 map("n", "<leader>cP", '<cmd>let @+ = expand("%:p")<CR>', { desc = "Copy File Path(absolute path)" })
+
+-- Search for current visual selection globally using '//'
+map("v", "//", [[y/\V<C-R>=escape(@", '/\')<CR><CR>]], { desc = "Search for visual selection" })

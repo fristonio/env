@@ -61,3 +61,4 @@ local configuration = vim.fn["everforest#get_configuration"]()
 local palette = vim.fn["everforest#get_palette"](configuration.background, configuration.colors_override)
 
 vim.api.nvim_set_hl(0, "DiffText", { bg = palette.bg_purple[1] })
+vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { fg = palette.bg3[1] })

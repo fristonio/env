@@ -14,6 +14,9 @@ require("which-key").setup({
 		{ "<leader>h", group = "Git Hunks", mode = { "n" } },
 		{ "<leader>f", group = "Finder", mode = { "n", "v" } },
 		{ "<leader>p", group = "Picker", mode = { "n" } },
+		{ "<leader>c", group = "Copy Actions", mode = { "n" } },
+		{ "<leader>d", group = "Git Diffview", mode = { "n" } },
+		{ "<leader>g", group = "Goto Actions", mode = { "n" } },
 	},
 })
 

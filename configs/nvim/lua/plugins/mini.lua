@@ -45,11 +45,19 @@ end, { desc = "Toggle mini.notify" })
 require("mini.tabline").setup()
 vim.opt.showtabline = 1
 
+-- Show indentguides for currently active section.
+require("mini.indentscope").setup({
+	draw = {
+		delay = 0,
+		animation = require("mini.indentscope").gen_animation.none(),
+	},
+	symbol = "│",
+	options = { try_as_border = true },
+})
+
 -- Other useful plugins
 require("mini.surround").setup()
 require("mini.pairs").setup()
 require("mini.ai").setup()
-
--- Extra stuff to explore
---
--- require("mini.indentscope").setup()
+require("mini.trailspace").setup()
+require("mini.bufremove").setup()
