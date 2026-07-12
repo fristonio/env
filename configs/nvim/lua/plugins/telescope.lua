@@ -44,7 +44,14 @@ telescope.setup({
 				preview_width = 0.4,
 			},
 		},
-		buffers = { theme = "ivy" },
+		find_files = {
+			-- Make hidden file searchable, but still ignore gitignored files.
+			hidden = true,
+		},
+		buffers = {
+			theme = "ivy",
+			-- ignore_current_buffer = true,
+		},
 		commands = { theme = "ivy" },
 		colorscheme = { theme = "ivy" },
 	},
@@ -52,6 +59,7 @@ telescope.setup({
 		["ui-select"] = { themes.get_dropdown() },
 		live_grep_args = {
 			auto_quoting = true,
+			hidden = true,
 			mappings = {
 				i = {
 					["<C-k>"] = live_grep_args_actions.quote_prompt(),
@@ -124,7 +132,10 @@ vim.keymap.set("n", "<leader>fg", function()
 	})
 end, { desc = "Live Grep in Open Files" })
 
-vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "[F]ind [D]iagnostics" })
+vim.keymap.set("n", "<leader>fd", function()
+	builtin.diagnostics({ bufnr = 0 })
+end, { desc = "[F]ind [D]iagnostic in current file" })
+vim.keymap.set("n", "<leader>fD", builtin.diagnostics, { desc = "[F]ind [D]iagnostics" })
 
 vim.keymap.set("n", "<leader>fs", builtin.builtin, { desc = "[F]ind [S]elect Telescope" })
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "[F]ind [H]elp" })

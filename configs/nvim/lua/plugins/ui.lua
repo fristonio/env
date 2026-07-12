@@ -2,8 +2,7 @@ vim.pack.add({
 	-- Themes
 	"https://github.com/catppuccin/nvim",
 	"https://github.com/sainnhe/everforest",
-	"https://github.com/olimorris/onedarkpro.nvim",
-	"https://github.com/sainnhe/gruvbox-material",
+	"https://github.com/navarasu/onedark.nvim",
 
 	-- Statusline
 	"https://github.com/nvim-lualine/lualine.nvim",
@@ -24,7 +23,7 @@ require("lualine").setup({
 		lualine_a = { "mode" },
 		lualine_b = { "branch", "diff", "diagnostics" },
 		lualine_c = { { "filename", path = 1, shorting_target = 0 } },
-		lualine_x = { "fileformat", "filetype" },
+		lualine_x = { "lsp_status", "fileformat", "filetype" },
 		lualine_y = { "progress" },
 		lualine_z = { "location" },
 	},
@@ -48,17 +47,21 @@ require("catppuccin").setup({
 		percentage = 0.25, -- percentage of the shade to apply to the inactive window
 	},
 })
-
--- Dim inactive windows(makes background dark).
--- vim.g.everforest_dim_inactive_windows = 1
-
 -- vim.cmd.colorscheme("catppuccin-nvim")
 
+-- OneDark theme
+require("onedark").setup({
+	style = "warm",
+})
+
 -- Everforest theme
-vim.cmd.colorscheme("everforest")
+-- vim.g.everforest_dim_inactive_windows = 1
 
 local configuration = vim.fn["everforest#get_configuration"]()
 local palette = vim.fn["everforest#get_palette"](configuration.background, configuration.colors_override)
 
 vim.api.nvim_set_hl(0, "DiffText", { bg = palette.bg_purple[1] })
 vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { fg = palette.bg3[1] })
+
+-- Set colorscheme
+vim.cmd.colorscheme("everforest")
