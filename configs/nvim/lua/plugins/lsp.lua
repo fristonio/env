@@ -129,6 +129,7 @@ local servers = {
 	},
 
 	nushell = {},
+	nil_ls = {}, -- Nix language server.
 
 	-- Special Lua Config, as recommended by neovim help docs
 	lua_ls = {
@@ -198,6 +199,7 @@ require("conform").setup({
 		lua = { "stylua" },
 		go = { "goimports", "gofumpt" },
 		nu = { "nufmt" },
+		nix = { "nixfmt" },
 	},
 })
 vim.keymap.set({ "n", "v" }, "<leader>fmt", function()

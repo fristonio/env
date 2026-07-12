@@ -47,6 +47,7 @@ telescope.setup({
 		find_files = {
 			-- Make hidden file searchable, but still ignore gitignored files.
 			hidden = true,
+			no_ignore = false, -- Respect .gitignore
 		},
 		buffers = {
 			theme = "ivy",

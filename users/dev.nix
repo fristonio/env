@@ -4,6 +4,7 @@
   imports = [
     ./common/config.nix
     ./common/pkgs.nix
+    ./common/languages.nix
   ];
 
   services.podman.enable = true;
@@ -16,41 +17,6 @@
     tshark
 
     tldr
-
-    # Languages
-	tree-sitter
-
-    ## C/C++/Rust/Zig
-    (gcc // { meta.priority = 1; }) # cpp provided by gcc conflicts with clang. Assign priority to avoid conflict.
-    (clang // { meta.priority = 10; })
-    clang-tools
-    lldb
-    llvm
-
-    rustup
-    zig
-    zls
-
-    ## Python
-    python315
-    uv
-    ty
-    ruff
-
-	# Lua
-	lua-language-server
-	stylua
-
-    ## Go
-    go
-    (gopls // { meta.priority = 1; }) # Go 'modernize' conflict
-    (gotools // { meta.priority = 10; })
-    golangci-lint
-    golangci-lint-langserver
-    delve
-
-    ## Other
-    marksman # Markdown
 
     # Containers stuff
     kind

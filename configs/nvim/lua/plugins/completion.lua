@@ -6,6 +6,8 @@ local disabled_completions = {
 
 vim.pack.add({ "https://github.com/saghen/blink.lib", "https://github.com/saghen/blink.cmp" })
 local cmp = require("blink.cmp")
+-- On macos if the build keeps failing make sure its not due to linking error.
+-- If so correctly set `LIBRARY_PATH` variable to point to missing dylib.
 cmp.build():pwait()
 cmp.setup({
 	enabled = function()

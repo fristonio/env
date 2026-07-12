@@ -41,6 +41,6 @@
     pkgsUnstable.neovim
 
     pkgsUnstable.nushell
-	pkgsUnstable.fzf
+    pkgsUnstable.fzf
   ];
 }
