@@ -56,12 +56,14 @@ require("onedark").setup({
 
 -- Everforest theme
 -- vim.g.everforest_dim_inactive_windows = 1
-
-local configuration = vim.fn["everforest#get_configuration"]()
-local palette = vim.fn["everforest#get_palette"](configuration.background, configuration.colors_override)
-
-vim.api.nvim_set_hl(0, "DiffText", { bg = palette.bg_purple[1] })
-vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { fg = palette.bg3[1] })
-
--- Set colorscheme
+vim.g.everforest_background = "medium"
 vim.cmd.colorscheme("everforest")
+
+-- Custom highlights for configured colorschemes.
+if vim.g.colors_name == "everforest" then
+	local configuration = vim.fn["everforest#get_configuration"]()
+	local palette = vim.fn["everforest#get_palette"](configuration.background, configuration.colors_override)
+
+	vim.api.nvim_set_hl(0, "DiffText", { bg = palette.bg_purple[1] })
+	vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { fg = palette.bg3[1] })
+end

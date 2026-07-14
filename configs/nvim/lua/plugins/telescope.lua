@@ -29,13 +29,23 @@ telescope.setup({
 			},
 		},
 		sorting_strategy = "ascending",
+		file_ignore_patterns = {
+			"^node_modules/",
+			"^%.git/",
+			"^vendor/",
+		},
+		prompt_prefix = "   ",
+		selection_caret = "  ",
 	},
 	pickers = {
 		-- picker configuration for builtin.builtin picker.
 		-- This picker lets us choose between the pickers available in telescope.
 		builtin = {
 			previewer = false,
-			theme = "ivy",
+			layout_config = {
+				width = 0.4,
+				height = 0.4,
+			},
 		},
 		diagnostics = {
 			wrap_results = true,
@@ -43,18 +53,38 @@ telescope.setup({
 			layout_config = {
 				preview_width = 0.4,
 			},
+			sort_by = "severity",
 		},
 		find_files = {
 			-- Make hidden file searchable, but still ignore gitignored files.
 			hidden = true,
 			no_ignore = false, -- Respect .gitignore
+			previewer = false,
+			layout_config = {
+				width = 0.5,
+				height = 0.5,
+				preview_width = 0.6,
+			},
 		},
 		buffers = {
 			theme = "ivy",
+			layout_config = {
+				preview_width = 0.6,
+			},
 			-- ignore_current_buffer = true,
 		},
 		commands = { theme = "ivy" },
-		colorscheme = { theme = "ivy" },
+		colorscheme = {
+			layout_config = {
+				width = 0.4,
+				height = 0.4,
+			},
+		},
+		help_tags = {
+			layout_config = {
+				height = 0.75,
+			},
+		},
 	},
 	extensions = {
 		["ui-select"] = { themes.get_dropdown() },

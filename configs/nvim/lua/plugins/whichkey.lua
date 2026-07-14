@@ -15,9 +15,12 @@ require("which-key").setup({
 		{ "<leader>f", group = "Finder", mode = { "n", "v" } },
 		{ "<leader>p", group = "Picker", mode = { "n" } },
 		{ "<leader>c", group = "Copy Actions", mode = { "n" } },
-		{ "<leader>d", group = "Git Diffview", mode = { "n" } },
+		{ "<leader>v", group = "VCS(git) Actions", mode = { "n" } },
 		{ "<leader>g", group = "Goto Actions", mode = { "n" } },
 	},
+	filter = function(mapping)
+		return mapping.desc ~= "diffview_ignore"
+	end,
 })
 
 vim.keymap.set("n", "<leader>wK", "<cmd>WhichKey <CR>", { desc = "WhichKey all keymaps" })

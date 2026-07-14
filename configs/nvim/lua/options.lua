@@ -115,6 +115,8 @@ vim.o.foldenable = true
 vim.opt.fillchars:append({ fold = " ", foldopen = "", foldclose = "", foldsep = " ", foldinner = " " })
 vim.opt.foldmethod = "indent" -- Defaults to indent, overridden in treesitter config
 
+-- Thicker window borders
+vim.opt.fillchars:append({ vert = "║", horiz = "═" })
+
 -- %C: Fold icon, %=: align to right, %l: line number %s: GitSigns column
 vim.o.statuscolumn = "%C  %=%l %s"
-
