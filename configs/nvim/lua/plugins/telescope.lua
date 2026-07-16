@@ -242,3 +242,51 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end, "Explore current document symbols")
 	end,
 })
+
+local has_diffview = pcall(require, "diffview")
+if has_diffview then
+	local actions = require("telescope.actions")
+	local action_state = require("telescope.actions.state")
+
+	-- Diff against a branch selected via Telescope
+	vim.keymap.set("n", "<leader>db", function()
+		telescope.git_branches({
+			attach_mappings = function(_, map)
+				map("i", "<CR>", function(prompt_bufnr)
+					local selection = action_state.get_selected_entry()
+					actions.close(prompt_bufnr)
+					vim.cmd("DiffviewOpen " .. selection.value)
+				end)
+				return true
+			end,
+		})
+	end, { desc = "Diffview branch" })
+
+	-- File history for a commit selected via Telescope
+	vim.keymap.set("n", "<leader>dc", function()
+		telescope.git_commits({
+			attach_mappings = function(_, map)
+				map("i", "<CR>", function(prompt_bufnr)
+					local selection = action_state.get_selected_entry()
+					actions.close(prompt_bufnr)
+					vim.cmd("DiffviewOpen " .. selection.value .. "^!")
+				end)
+				return true
+			end,
+		})
+	end, { desc = "Diffview commit" })
+
+	-- Open commit range <selected-commit>..HEAD in diffview
+	vim.keymap.set("n", "<leader>dr", function()
+		telescope.git_commits({
+			attach_mappings = function(_, map)
+				map("i", "<CR>", function(prompt_bufnr)
+					local selection = action_state.get_selected_entry()
+					actions.close(prompt_bufnr)
+					vim.cmd("DiffviewOpen " .. selection.value .. "..HEAD")
+				end)
+				return true
+			end,
+		})
+	end, { desc = "Diffview commit" })
+end

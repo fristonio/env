@@ -88,7 +88,7 @@ require("diffview").setup({
 	},
 
 	hooks = {
-		diff_buf_read = function(bufnr)
+		diff_buf_read = function(_)
 			-- Disable line wrapping for diffview buffers.
 			vim.opt_local.wrap = false
 		end,
@@ -109,9 +109,9 @@ require("diffview").setup({
 	file_panel = {
 		show_branch_name = true,
 		always_show_sections = true,
-		win_config = {
-			width = "auto",
-		},
+		-- win_config = {
+		-- 	width = "auto",
+		-- },
 	},
 
 	-- Persist review progress.
@@ -119,24 +119,24 @@ require("diffview").setup({
 })
 
 -- Toggle diffview open/close
-vim.keymap.set("n", "<leader>vv", "<cmd>DiffviewToggle<cr>", { desc = "Git Diffview toggle" })
+vim.keymap.set("n", "<leader>dv", "<cmd>DiffviewToggle<cr>", { desc = "Git Diffview toggle" })
 
 -- Diff working directory
-vim.keymap.set("n", "<leader>vo", "<cmd>DiffviewOpen<cr>", { desc = "Git Diffview open" })
-vim.keymap.set("n", "<leader>vq", "<cmd>DiffviewClose<cr>", { desc = "Git Diffview close" })
+vim.keymap.set("n", "<leader>do", "<cmd>DiffviewOpen<cr>", { desc = "Git Diffview open" })
+vim.keymap.set("n", "<leader>dq", "<cmd>DiffviewClose<cr>", { desc = "Git Diffview close" })
 
 -- File history
-vim.keymap.set("n", "<leader>vh", "<cmd>DiffviewFileHistory %<cr>", { desc = "Git file history (current file)" })
-vim.keymap.set("n", "<leader>vH", "<cmd>DiffviewFileHistory<cr>", { desc = "Git file history (repo)" })
+vim.keymap.set("n", "<leader>dh", "<cmd>DiffviewFileHistory %<cr>", { desc = "Git file history (current file)" })
+vim.keymap.set("n", "<leader>dH", "<cmd>DiffviewFileHistory<cr>", { desc = "Git file history (repo)" })
 
 -- Visual mode: history for selection
-vim.keymap.set("v", "<leader>vh", "<Esc><cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Git range history" })
+vim.keymap.set("v", "<leader>dh", "<Esc><cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Git range history" })
 
 -- Single line history
-vim.keymap.set("n", "<leader>vl", "<cmd>.DiffviewFileHistory --follow<CR>", { desc = "Git Line history" })
+vim.keymap.set("n", "<leader>dl", "<cmd>.DiffviewFileHistory --follow<CR>", { desc = "Git Line history" })
 
 -- Diff against main/master branch (useful before merging)
-vim.keymap.set("n", "<leader>vm", function()
+vim.keymap.set("n", "<leader>dm", function()
 	-- Try main first, fall back to master
 	local result = vim.fn.systemlist({ "git", "rev-parse", "--verify", "main" })
 	local ok = vim.v.shell_error == 0 and result[1] ~= nil and result[1] ~= ""
@@ -144,51 +144,51 @@ vim.keymap.set("n", "<leader>vm", function()
 	vim.cmd("DiffviewOpen " .. branch)
 end, { desc = "Git Diff against main/master" })
 
--- Configure telescope integration if plugin is enabled.
-local has_telescope, telescope = pcall(require, "telescope.builtin")
-if has_telescope then
-	local actions = require("telescope.actions")
-	local action_state = require("telescope.actions.state")
+-- Snacks integration with Git
+local has_snacks, snacks = pcall(require, "snacks")
+if has_snacks then
+	local select_layout = {
+		preset = "ivy",
+		hidden = { "preview" },
+	}
 
-	-- Diff against a branch selected via Telescope
+	-- Diff against a branch selected via Snacks Picker
 	vim.keymap.set("n", "<leader>vb", function()
-		telescope.git_branches({
-			attach_mappings = function(_, map)
-				map("i", "<CR>", function(prompt_bufnr)
-					local selection = action_state.get_selected_entry()
-					actions.close(prompt_bufnr)
-					vim.cmd("DiffviewOpen " .. selection.value)
-				end)
-				return true
+		snacks.picker.git_branches({
+			layout = select_layout,
+			confirm = function(picker, item)
+				picker:close()
+				if item then
+					local branch = item.branch or item.text
+					vim.cmd("DiffviewOpen " .. branch)
+				end
 			end,
 		})
 	end, { desc = "Diffview branch" })
 
-	-- File history for a commit selected via Telescope
+	-- File history for a commit selected via Snacks Picker
 	vim.keymap.set("n", "<leader>vc", function()
-		telescope.git_commits({
-			attach_mappings = function(_, map)
-				map("i", "<CR>", function(prompt_bufnr)
-					local selection = action_state.get_selected_entry()
-					actions.close(prompt_bufnr)
-					vim.cmd("DiffviewOpen " .. selection.value .. "^!")
-				end)
-				return true
+		snacks.picker.git_log({
+			layout = select_layout,
+			confirm = function(picker, item)
+				picker:close()
+				if item and item.commit then
+					vim.cmd("DiffviewOpen " .. item.commit .. "^!")
+				end
 			end,
 		})
 	end, { desc = "Diffview commit" })
 
 	-- Open commit range <selected-commit>..HEAD in diffview
 	vim.keymap.set("n", "<leader>vr", function()
-		telescope.git_commits({
-			attach_mappings = function(_, map)
-				map("i", "<CR>", function(prompt_bufnr)
-					local selection = action_state.get_selected_entry()
-					actions.close(prompt_bufnr)
-					vim.cmd("DiffviewOpen " .. selection.value .. "..HEAD")
-				end)
-				return true
+		snacks.picker.git_log({
+			layout = select_layout,
+			confirm = function(picker, item)
+				picker:close()
+				if item and item.commit then
+					vim.cmd("DiffviewOpen " .. item.commit .. "..HEAD")
+				end
 			end,
 		})
-	end, { desc = "Diffview commit" })
+	end, { desc = "Diffview commit range" })
 end

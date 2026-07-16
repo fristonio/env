@@ -10,11 +10,14 @@ if vim.fn.executable("tree-sitter") == 1 then
 end
 
 require("plugins.lsp")
-require("plugins.telescope")
+require("plugins.snacks")
 
 require("plugins.mini")
 require("plugins.git")
 require("plugins.completion")
-require("plugins.whichkey")
 
+-- Deprecated in favor of snacks picker.
+-- require("plugins.telescope")
+
+require("plugins.whichkey")
 require("plugins.ui")
