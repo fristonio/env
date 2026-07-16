@@ -4,12 +4,38 @@ local telescope_plugins = {
 	"https://github.com/nvim-telescope/telescope.nvim",
 	"https://github.com/nvim-telescope/telescope-ui-select.nvim",
 	"https://github.com/nvim-telescope/telescope-live-grep-args.nvim",
-
-	-- Complementry plugin to navigate buffer symbols.
-	-- "https://github.com/stevearc/aerial.nvim",
 }
+
 if vim.fn.executable("make") == 1 then
 	table.insert(telescope_plugins, "https://github.com/nvim-telescope/telescope-fzf-native.nvim")
+
+	local function run_build(name, cmd, cwd)
+		local result = vim.system(cmd, { cwd = cwd }):wait()
+		if result.code ~= 0 then
+			local stderr = result.stderr or ""
+			local stdout = result.stdout or ""
+			local output = stderr ~= "" and stderr or stdout
+			if output == "" then
+				output = "No output from build command."
+			end
+			vim.notify(("Build failed for %s:\n%s"):format(name, output), vim.log.levels.ERROR)
+		end
+	end
+
+	vim.api.nvim_create_autocmd("PackChanged", {
+		callback = function(ev)
+			local kind = ev.data.kind
+			if kind ~= "install" and kind ~= "update" then
+				return
+			end
+
+			local name = ev.data.spec.name
+			if name == "telescope-fzf-native.nvim" then
+				run_build(name, { "make" }, ev.data.path)
+				return
+			end
+		end,
+	})
 end
 
 -- See `:help telescope` and `:help telescope.setup()`
@@ -117,7 +143,7 @@ local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
 
 vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "[F]ind [F]iles" })
 vim.keymap.set("n", "<leader>fo", builtin.oldfiles, { desc = '[F]ind Recent Files ("." for repeat)' })
-vim.keymap.set("n", "<leader>fe", function()
+vim.keymap.set("n", "<leader>fF", function()
 	builtin.find_files({
 		cwd = utils.buffer_dir(),
 		prompt_title = "Find Files in current buffer dir",

@@ -5,6 +5,27 @@ vim.pack.add({
 	"https://github.com/nvim-treesitter/nvim-treesitter-context",
 })
 
+-- This autocommand runs after a plugin is installed or updated and
+-- runs the appropriate build command for that plugin if necessary.
+--
+-- See `:help vim.pack-events`
+vim.api.nvim_create_autocmd("PackChanged", {
+	callback = function(ev)
+		local kind = ev.data.kind
+		if kind ~= "install" and kind ~= "update" then
+			return
+		end
+
+		if ev.data.spec.name == "nvim-treesitter" and vim.fn.executable("tree-sitter") then
+			if not ev.data.active then
+				vim.cmd.packadd("nvim-treesitter")
+			end
+			vim.cmd("TSUpdate")
+			return
+		end
+	end,
+})
+
 -- Install required parsers.
 -- Requires tree-sitter-cli: `brew install tree-sitter-cli`
 require("nvim-treesitter").install({
