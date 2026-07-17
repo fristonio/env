@@ -5,6 +5,11 @@ vim.pack.add({
 local snacks = require("snacks")
 
 snacks.setup({
+	explorer = {
+		enabled = false,
+		replace_netrw = true,
+		trash = false,
+	},
 	picker = {
 		enabled = true,
 		ui_select = true, -- vim.ui.select using snacks
@@ -13,6 +18,7 @@ snacks.setup({
 				hidden = true,
 				ignored = false,
 				layout = "select",
+				exclude = { "**/vendor/**" },
 			},
 			buffers = {
 				layout = "select",
@@ -45,6 +51,24 @@ snacks.setup({
 			commands = {
 				layout = "select",
 			},
+		},
+	},
+	gitbrowse = {
+		notify = false,
+		open = function(url)
+			-- Copy permalink to clipboard(useful when running neovim remotely)
+			vim.fn.setreg("+", { url, "c" })
+			if vim.ui.open then
+				vim.ui.open(url)
+			end
+		end,
+		what = "permalink",
+	},
+	indent = {
+		-- Enable using Snacks.indent.enable() whenever required.
+		enabled = false,
+		animate = {
+			enabled = false,
 		},
 	},
 })
@@ -116,6 +140,10 @@ vim.keymap.set("n", "<leader>pr", snacks.picker.resume, { desc = "Resume Picker"
 vim.keymap.set("n", "<leader>fn", function()
 	snacks.picker.files({ cwd = vim.fn.stdpath("config") })
 end, { desc = "Search Neovim files" })
+
+vim.keymap.set({ "n", "v" }, "<leader>gp", function()
+	snacks.gitbrowse.open()
+end, { desc = "Copy and open git repo permalink" })
 
 -- LSP Attach mappings
 vim.api.nvim_create_autocmd("LspAttach", {

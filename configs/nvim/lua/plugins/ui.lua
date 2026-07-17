@@ -9,9 +9,9 @@ vim.pack.add({
 })
 
 -- TODO: Maybe migrate to mini.icons?
-if vim.g.have_nerd_font then
-	vim.pack.add({ "https://github.com/nvim-tree/nvim-web-devicons" })
-end
+-- if vim.g.have_nerd_font then
+-- 	vim.pack.add({ "https://github.com/nvim-tree/nvim-web-devicons" })
+-- end
 
 -- Setup statusline
 require("lualine").setup({

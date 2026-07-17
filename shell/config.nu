@@ -5,6 +5,10 @@
 $env.config.history.file_format = "sqlite"
 $env.config.history.max_size = 1_000_000
 
+# Keep history when doing reverse search to only the current
+# terminal tab.
+$env.config.history.isolation = true
+
 $env.config.show_banner = "none"
 
 $env.config.edit_mode = "vi"

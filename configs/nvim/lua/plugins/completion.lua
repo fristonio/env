@@ -48,6 +48,7 @@ cmp.setup({
 
 		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
 		["<CR>"] = { "select_and_accept", "fallback" },
+		["<C-c>"] = { "cancel", "fallback" },
 	},
 })
 

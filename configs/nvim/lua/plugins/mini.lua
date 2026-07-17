@@ -2,6 +2,9 @@
 -- See :help mini.nvim for more details.
 vim.pack.add({ "https://github.com/nvim-mini/mini.nvim" })
 
+-- Setup mini icons.
+require("mini.icons").setup({})
+
 -- Setup mini file explorer(maybe neo-tree someday)
 require("mini.files").setup({
 	mappings = {

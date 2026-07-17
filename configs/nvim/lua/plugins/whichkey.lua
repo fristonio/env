@@ -9,13 +9,13 @@ require("which-key").setup({
 	icons = { mappings = vim.g.have_nerd_font },
 	-- Document existing key chains
 	spec = {
-		{ "<leader>w", group = "Window", mode = { "n", "v" }, proxy = "<C-w>" },
+		{ "<leader>w", group = "Window Actions", mode = { "n", "v" }, proxy = "<C-w>" },
 		{ "<leader>l", group = "LSP Actions", mode = { "n" } },
-		{ "<leader>h", group = "Git Hunks", mode = { "n" } },
-		{ "<leader>f", group = "Finder", mode = { "n", "v" } },
-		{ "<leader>p", group = "Picker", mode = { "n" } },
+		{ "<leader>h", group = "Git Hunks Actions", mode = { "n" } },
+		{ "<leader>f", group = "Finder Actions", mode = { "n", "v" } },
+		{ "<leader>p", group = "Picker Actions", mode = { "n" } },
 		{ "<leader>c", group = "Copy Actions", mode = { "n" } },
-		{ "<leader>d", group = "DiffView Actions", mode = { "n" } },
+		{ "<leader>v", group = "DiffView Actions", mode = { "n" } },
 	},
 	filter = function(mapping)
 		return mapping.desc ~= "diffview_ignore"

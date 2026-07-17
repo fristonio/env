@@ -81,7 +81,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		--    See `:help CursorHold` for information about when this is executed
 		local client = vim.lsp.get_client_by_id(event.data.client_id)
 
-		if vim.fn.executable("tree-sitter") == 1 then
+		if vim.fn.executable("tree-sitter") == 1 and client then
 			-- Disable LSP highlighting, rely on treesitter instead when available.
 			client.server_capabilities.semanticTokensProvider = nil
 		end

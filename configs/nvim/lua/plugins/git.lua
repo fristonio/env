@@ -109,6 +109,7 @@ require("diffview").setup({
 	file_panel = {
 		show_branch_name = true,
 		always_show_sections = true,
+		-- Causes window layout to animate when toggling diffview.
 		-- win_config = {
 		-- 	width = "auto",
 		-- },
@@ -119,24 +120,24 @@ require("diffview").setup({
 })
 
 -- Toggle diffview open/close
-vim.keymap.set("n", "<leader>dv", "<cmd>DiffviewToggle<cr>", { desc = "Git Diffview toggle" })
+vim.keymap.set("n", "<leader>vt", "<cmd>DiffviewToggle<cr>", { desc = "Git Diffview toggle" })
 
 -- Diff working directory
-vim.keymap.set("n", "<leader>do", "<cmd>DiffviewOpen<cr>", { desc = "Git Diffview open" })
-vim.keymap.set("n", "<leader>dq", "<cmd>DiffviewClose<cr>", { desc = "Git Diffview close" })
+vim.keymap.set("n", "<leader>vo", "<cmd>DiffviewOpen<cr>", { desc = "Git Diffview open" })
+vim.keymap.set("n", "<leader>vq", "<cmd>DiffviewClose<cr>", { desc = "Git Diffview close" })
 
 -- File history
-vim.keymap.set("n", "<leader>dh", "<cmd>DiffviewFileHistory %<cr>", { desc = "Git file history (current file)" })
-vim.keymap.set("n", "<leader>dH", "<cmd>DiffviewFileHistory<cr>", { desc = "Git file history (repo)" })
+vim.keymap.set("n", "<leader>vh", "<cmd>DiffviewFileHistory %<cr>", { desc = "Git file history (current file)" })
+vim.keymap.set("n", "<leader>vH", "<cmd>DiffviewFileHistory<cr>", { desc = "Git file history (repo)" })
 
 -- Visual mode: history for selection
-vim.keymap.set("v", "<leader>dh", "<Esc><cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Git range history" })
+vim.keymap.set("v", "<leader>vh", "<Esc><cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Git range history" })
 
 -- Single line history
-vim.keymap.set("n", "<leader>dl", "<cmd>.DiffviewFileHistory --follow<CR>", { desc = "Git Line history" })
+vim.keymap.set("n", "<leader>vl", "<cmd>.DiffviewFileHistory --follow<CR>", { desc = "Git Line history" })
 
 -- Diff against main/master branch (useful before merging)
-vim.keymap.set("n", "<leader>dm", function()
+vim.keymap.set("n", "<leader>vm", function()
 	-- Try main first, fall back to master
 	local result = vim.fn.systemlist({ "git", "rev-parse", "--verify", "main" })
 	local ok = vim.v.shell_error == 0 and result[1] ~= nil and result[1] ~= ""

@@ -45,31 +45,33 @@ def kpods [
 }
 alias ksyspods = kpods --namespace kube-system
 
-def kexec [
-  --namespace(-n): string
-  --all(-a)
-  cmd: string = "bash"
-] {
-  let pod = kpods -i -n $namespace --all=$all
-  if $pod == null { return }
+def kexec [cmd: string = "bash", --namespace(-n): string, --all(-a)] {
+    let pod = kpods -i -n $namespace --all=$all
+    if $pod == null { return }
 
-  ^kubectl exec -it -n $pod.metadata.namespace $pod.metadata.name -- $cmd
+    ^kubectl exec -it -n $pod.metadata.namespace $pod.metadata.name -- $cmd
 }
 alias ksysexec = kexec --namespace kube-system
 
-
 def klogs [
-  --namespace(-n): string
-  --all(-a)
-  --follow(-f)
+    pod_name?: string
+    --namespace(-n): string
+    --all(-a)
+    --follow(-f)
 ] {
-  let pod = kpods -i -n $namespace --all=$all
-  if $pod == null { return }
+    if ($pod_name | is-not-empty) {
+        let ns = _kubectl_ns_arg --namespace $namespace --all=$all
+        ^kubectl logs --n $ns -f=$follow $pod_name
+        return
+    }
 
-  if $follow {
-    ^kubectl logs -f -n $pod.metadata.namespace $pod.metadata.name
-  } else {
-    ^kubectl logs -n $pod.metadata.namespace $pod.metadata.name
-  }
+    let pod = kpods -i -n $namespace --all=$all
+    if $pod == null { return }
+
+    if $follow {
+        ^kubectl logs -f -n $pod.metadata.namespace $pod.metadata.name
+    } else {
+        ^kubectl logs -n $pod.metadata.namespace $pod.metadata.name
+    }
 }
 alias ksyslogs = klogs --namespace kube-system
