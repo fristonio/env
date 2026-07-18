@@ -1,8 +1,9 @@
 vim.pack.add({
 	-- Themes
 	"https://github.com/catppuccin/nvim",
-	"https://github.com/sainnhe/everforest",
+	"https://github.com/neanias/everforest-nvim",
 	"https://github.com/navarasu/onedark.nvim",
+	"https://github.com/folke/tokyonight.nvim",
 
 	-- Statusline
 	"https://github.com/nvim-lualine/lualine.nvim",
@@ -47,23 +48,28 @@ require("catppuccin").setup({
 		percentage = 0.25, -- percentage of the shade to apply to the inactive window
 	},
 })
--- vim.cmd.colorscheme("catppuccin-nvim")
 
 -- OneDark theme
 require("onedark").setup({
 	style = "warm",
 })
 
+-- Tokyonight theme
+require("tokyonight").setup({
+	style = "storm",
+	on_colors = function(_) end,
+	on_highlights = function(_, _) end,
+})
+
 -- Everforest theme
--- vim.g.everforest_dim_inactive_windows = 1
-vim.g.everforest_background = "medium"
+require("everforest").setup({
+	-- TODO: Dimming doesn't work correctly.
+	-- dim_inactive_windows = true,
+	background = "medium",
+	on_highlights = function(hl, palette)
+		hl.DiffText = { fg = palette.bg_purple }
+	end,
+})
+
+-- Set default colorscheme.
 vim.cmd.colorscheme("everforest")
-
--- Custom highlights for configured colorschemes.
-if vim.g.colors_name == "everforest" then
-	local configuration = vim.fn["everforest#get_configuration"]()
-	local palette = vim.fn["everforest#get_palette"](configuration.background, configuration.colors_override)
-
-	vim.api.nvim_set_hl(0, "DiffText", { bg = palette.bg_purple[1] })
-	vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { fg = palette.bg3[1] })
-end

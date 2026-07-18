@@ -82,6 +82,9 @@ map("n", "<S-Right>", ":vertical resize -2<CR>", { desc = "Resize split right" }
 map("v", "p", '"_dP') -- Keep last yanked text when pasting.
 map("n", "gc", "gcc")
 
+map("n", "<leader>y", "+yy", { desc = "Yank to system clipboard" })
+map("v", "<leader>y", "+y", { desc = "Yank to system clipboard" })
+
 -- Copy file name and path
 map("n", "<leader>cp", '<cmd>let @+ = expand("%")<CR>', { desc = "Copy File Name(relative path)" })
 map("n", "<leader>cP", '<cmd>let @+ = expand("%:p")<CR>', { desc = "Copy File Path(absolute path)" })

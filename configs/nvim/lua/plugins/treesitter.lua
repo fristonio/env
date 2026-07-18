@@ -46,6 +46,7 @@ require("nvim-treesitter").install({
 	"zig",
 	"nu",
 	"python",
+	"helm",
 })
 
 require("treesitter-context").setup({

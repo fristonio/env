@@ -16,9 +16,9 @@
       "rev": "d5c09986681a671613aef0226ef409c01561d64c",
       "src": "https://github.com/dlyongemallo/diffview-plus.nvim"
     },
-    "everforest": {
-      "rev": "aeef62ee97872d2557d25904d160ec93a4a355f8",
-      "src": "https://github.com/sainnhe/everforest"
+    "everforest-nvim": {
+      "rev": "d235ca0aa6a29546e661a020e2618612acbbffbe",
+      "src": "https://github.com/neanias/everforest-nvim"
     },
     "gitsigns.nvim": {
       "rev": "25050e4ed39e628282831d4cbecb1850454ce915",
@@ -87,6 +87,10 @@
     "telescope.nvim": {
       "rev": "7d324792b7943e4aa16ad007212e6acc6f9fe335",
       "src": "https://github.com/nvim-telescope/telescope.nvim"
+    },
+    "tokyonight.nvim": {
+      "rev": "cdc07ac78467a233fd62c493de29a17e0cf2b2b6",
+      "src": "https://github.com/folke/tokyonight.nvim"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",
