@@ -1,5 +1,9 @@
 -- Setup LSPs and other language diagnostic settings.
 
+vim.api.nvim_create_user_command("EnableDAP", function()
+	require("plugins.dap")
+end, { desc = "Enable Debugging and testing related plugins" })
+
 -- Diagnostic Config & Keymaps
 --  See `:help vim.diagnostic.Opts`
 vim.diagnostic.config({

@@ -12,6 +12,9 @@ end
 
 require("plugins.lsp")
 
+-- DAP experience is not very smooth yet. Use EnableDAP when required.
+-- require("plugins.dap")
+
 require("plugins.snacks")
 
 require("plugins.git")
