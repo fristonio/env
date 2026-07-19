@@ -24,10 +24,6 @@
       "rev": "25050e4ed39e628282831d4cbecb1850454ce915",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
-    "gruvbox-material": {
-      "rev": "11d779b26a9ab2b3db8c22c6ac9fb6e8ed4fea79",
-      "src": "https://github.com/sainnhe/gruvbox-material"
-    },
     "lualine.nvim": {
       "rev": "221ce6b2d999187044529f49da6554a92f740a96",
       "src": "https://github.com/nvim-lualine/lualine.nvim"
@@ -35,10 +31,6 @@
     "mini.nvim": {
       "rev": "b2ac6522f7a54b475d9fad711b938eefc6d3d0a6",
       "src": "https://github.com/nvim-mini/mini.nvim"
-    },
-    "nui.nvim": {
-      "rev": "de740991c12411b663994b2860f1a4fd0937c130",
-      "src": "https://github.com/MunifTanjim/nui.nvim"
     },
     "nvim": {
       "rev": "0303a7208dba448c459767486a38a6ec05c4216b",
@@ -60,10 +52,6 @@
       "rev": "df4792accde9db0043121f32628bcf8e645d9aea",
       "src": "https://github.com/navarasu/onedark.nvim"
     },
-    "onedarkpro.nvim": {
-      "rev": "f5fddfd5122fe00421e199151ae4fe8571a02898",
-      "src": "https://github.com/olimorris/onedarkpro.nvim"
-    },
     "outline.nvim": {
       "rev": "2a132953b944561d45b52e4541ebfff71934a742",
       "src": "https://github.com/hedyhli/outline.nvim"
@@ -71,22 +59,6 @@
     "snacks.nvim": {
       "rev": "882c996cf28183f4d63640de0b4c02ec886d01f2",
       "src": "https://github.com/folke/snacks.nvim"
-    },
-    "telescope-fzf-native.nvim": {
-      "rev": "b25b749b9db64d375d782094e2b9dce53ad53a40",
-      "src": "https://github.com/nvim-telescope/telescope-fzf-native.nvim"
-    },
-    "telescope-live-grep-args.nvim": {
-      "rev": "53e9df55b3651dd7cf77e172f1e8c9a17407acca",
-      "src": "https://github.com/nvim-telescope/telescope-live-grep-args.nvim"
-    },
-    "telescope-ui-select.nvim": {
-      "rev": "6e51d7da30bd139a6950adf2a47fda6df9fa06d2",
-      "src": "https://github.com/nvim-telescope/telescope-ui-select.nvim"
-    },
-    "telescope.nvim": {
-      "rev": "7d324792b7943e4aa16ad007212e6acc6f9fe335",
-      "src": "https://github.com/nvim-telescope/telescope.nvim"
     },
     "tokyonight.nvim": {
       "rev": "cdc07ac78467a233fd62c493de29a17e0cf2b2b6",

@@ -17,8 +17,5 @@ require("plugins.snacks")
 require("plugins.git")
 require("plugins.completion")
 
--- Deprecated in favor of snacks picker.
--- require("plugins.telescope")
-
 require("plugins.whichkey")
 require("plugins.ui")
