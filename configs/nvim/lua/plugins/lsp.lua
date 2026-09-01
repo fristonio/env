@@ -226,4 +226,8 @@ require("outline").setup({
 		},
 	},
 })
-vim.keymap.set("n", "<leader>to", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
+vim.keymap.set({"n", "v"}, "<leader>to", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
+
+-- Markdown rendering plugin
+vim.pack.add({ "https://github.com/MeanderingProgrammer/render-markdown.nvim" })
+require("render-markdown").setup({})

@@ -45,9 +45,9 @@ show: ## Show flake information.
 init-nix-darwin: switch ## Setup nix-darwin for macos setup
 	@echo "Installing nix (Determinate installer)"
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install && exec bash
-	nix --version
 
 	@echo "Setting up nix-darwin"
+	nix --version
 	sudo nix run nix-darwin/nix-darwin-25.11#darwin-rebuild -- switch --flake .#$(f)
 	darwin-version
 
@@ -56,7 +56,6 @@ init-nix-darwin: switch ## Setup nix-darwin for macos setup
 init-nix: ## Setup nix on linux hosts
 	@echo "Installing nix"
 	curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh -s -- --daemon
-	nix --version
 
 	@echo "Enabling nix flakes"
 	echo "experimental-features = nix-command flakes" | sudo tee -a /etc/nix/nix.conf

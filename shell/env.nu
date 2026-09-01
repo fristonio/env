@@ -14,6 +14,8 @@ if (which eza | is-not-empty) {
     alias tree = eza --tree
 }
 
+alias vmshell = limactl shell --workdir /home/lima
+
 if (which go | is-not-empty) {
     $env.PATH ++= [
         ($env.HOME | path join "go/bin")

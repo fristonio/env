@@ -52,6 +52,8 @@ alias gl="git log --oneline --graph --abbrev-commit --decorate"
 alias nmux="SHELL=$(which nu) tmux -L nu-server $@"
 alias note="nu --config ~/.config/nushell/env.nu -c note"
 
+alias vmshell="limactl shell --workdir /home/lima"
+
 if command -v zoxide &> /dev/null; then
   eval "$(zoxide init --cmd cd bash)"
 fi
@@ -75,6 +77,8 @@ fi
 if command -v cargo &> /dev/null; then
   export PATH="${PATH}:${HOME}/.cargo/bin"
 fi
+
+[ -s "${HOME}/.config/nvm/nvm.sh" ] && source "${HOME}/.config/nvm/nvm.sh"
 
 if command -v kubectl &> /dev/null; then
   alias k='kubectl'
