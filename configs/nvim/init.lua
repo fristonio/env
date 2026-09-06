@@ -12,9 +12,6 @@ end
 
 require("plugins.lsp")
 
--- DAP experience is not very smooth yet. Use EnableDAP when required.
--- require("plugins.dap")
-
 require("plugins.snacks")
 
 require("plugins.git")
@@ -22,3 +19,7 @@ require("plugins.completion")
 
 require("plugins.whichkey")
 require("plugins.ui")
+
+vim.api.nvim_create_user_command("EnableNext", function()
+	require("plugins.next")
+end, { desc = "Enable test plugins in lua/plugins/next.lua" })

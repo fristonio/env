@@ -75,75 +75,164 @@ require("gitsigns").setup({
 	end,
 })
 
--- Experimental code diffview
-vim.pack.add({ "https://github.com/dlyongemallo/diffview-plus.nvim" })
-require("diffview").setup({
-	enhanced_diff_hl = true,
-	use_icons = true,
+vim.pack.add({ "https://github.com/esmuellert/codediff.nvim" })
 
-	-- For PR reviews.
-	-- imply-local makes the right side buffer editable during reviews
-	default_args = {
-		DiffviewOpen = { "--imply-local" },
+local mini_icons = require("mini.icons")
+local mini_prefix = function(ctx, category)
+	local icon, icon_hl = mini_icons.get(category, ctx.path)
+	local segments = {
+		{ text = ctx.indent, hl = ctx.indent_hl },
+	}
+
+	if category == "directory" then
+		segments[#segments + 1] = {
+			text = ctx.expanded and " " or " ",
+			hl = "Comment",
+		}
+	end
+
+	segments[#segments + 1] = {
+		text = icon .. " ",
+		hl = icon_hl,
+	}
+	return segments
+end
+
+-- Git status letter -> icon + gitsigns highlight group.
+local status_icons = {
+	A = { icon = "✚", hl = "GitSignsAdd" }, -- Added
+	M = { icon = "●", hl = "GitSignsChange" }, -- Modified
+	D = { icon = "✖", hl = "GitSignsDelete" }, -- Deleted
+	["??"] = { icon = "✱", hl = "GitSignsUntracked" }, -- Untracked
+	["!"] = { icon = "‼", hl = "GitSignsChangedelete" }, -- Conflict
+}
+
+local function status_icon(status)
+	return status_icons[status] or { icon = status, hl = "Comment" }
+end
+
+local file_count = function(count)
+	return count .. (count == 1 and " file" or " files")
+end
+
+local explorer_formatters = {
+	file = function(ctx)
+		local status = status_icon(ctx.status)
+		return {
+			left = {
+				{ segments = mini_prefix(ctx, "file") },
+				{
+					segments = { { text = ctx.filename, hl = "Normal" } },
+					truncate_priority = 1,
+				},
+			},
+			right = {
+				{
+					segments = {
+						{ text = status.icon, hl = status.hl },
+						{ text = " ", hl = "Normal" },
+					},
+				},
+			},
+		}
+	end,
+	folder = function(ctx)
+		return {
+			left = {
+				{ segments = mini_prefix(ctx, "directory") },
+				{
+					segments = { { text = ctx.name, hl = "Directory" } },
+					truncate_priority = 1,
+				},
+			},
+			right = {
+				{
+					segments = {
+						{ text = file_count(ctx.file_count), hl = "Comment" },
+						{ text = " ", hl = "Normal" },
+					},
+				},
+			},
+		}
+	end,
+	group = function(ctx)
+		return {
+			left = {
+				{
+					segments = { { text = " ◆ " .. ctx.label, hl = "VirtualTextHint" } },
+					truncate_priority = 1,
+				},
+			},
+			right = {
+				{
+					segments = {
+						{ text = file_count(ctx.file_count), hl = "Comment" },
+						{ text = " ", hl = "Normal" },
+					},
+				},
+			},
+		}
+	end,
+}
+
+require("codediff").setup({
+	diff = {
+		layout = "side-by-side",
+		cycle_hunks_across_files = true,
+		jump_to_first_change = false,
+		gutter_signs = false,
+		compact_context_lines = 5,
+		compact = true,
 	},
 
-	hooks = {
-		diff_buf_read = function(_)
-			-- Disable line wrapping for diffview buffers.
-			vim.opt_local.wrap = false
-		end,
-	},
-
-	view = {
-		-- Use a 4-way diff layout showing BASE, OURS, THEIRS and the merge result.
-		merge_tool = {
-			layout = "diff4_mixed",
-			disable_diagnostics = true,
-			winbar_info = true,
+	explorer = {
+		position = "left",
+		hidden = false,
+		auto_refresh = true,
+		indent_markers = true,
+		initial_focus = "explorer",
+		view_mode = "tree",
+		flatten_dirs = true,
+		focus_on_select = true,
+		line_stats = {
+			enabled = true,
+			count_untracked = true,
 		},
-		cycle_layouts = {
-			merge_tool = { "diff4_mixed", "diff3_mixed", "diff3_horizontal", "diff1_plain" },
+		formatters = explorer_formatters,
+	},
+
+	history = {
+		position = "bottom",
+		view_mode = "list",
+	},
+
+	keymaps = {
+		view = {
+			toggle_stage = "<leader>s",
 		},
 	},
-
-	file_panel = {
-		show_branch_name = true,
-		always_show_sections = true,
-		-- Causes window layout to animate when toggling diffview.
-		-- win_config = {
-		-- 	width = "auto",
-		-- },
-	},
-
-	-- Persist review progress.
-	-- persist_selections = { enabled = true },
 })
 
--- Toggle diffview open/close
-vim.keymap.set("n", "<leader>vt", "<cmd>DiffviewToggle<cr>", { desc = "Git Diffview toggle" })
+vim.keymap.set("n", "<leader>cd", "<cmd>CodeDiff<CR>", { desc = "Toggle CodeDiff" })
 
--- Diff working directory
-vim.keymap.set("n", "<leader>vo", "<cmd>DiffviewOpen<cr>", { desc = "Git Diffview open" })
-vim.keymap.set("n", "<leader>vq", "<cmd>DiffviewClose<cr>", { desc = "Git Diffview close" })
-
--- File history
-vim.keymap.set("n", "<leader>vh", "<cmd>DiffviewFileHistory %<cr>", { desc = "Git file history (current file)" })
-vim.keymap.set("n", "<leader>vH", "<cmd>DiffviewFileHistory<cr>", { desc = "Git file history (repo)" })
+-- Git history
+vim.keymap.set("n", "<leader>cf", "<cmd>CodeDiff history %<CR>", { desc = "CodeDiff Git history for current file" })
+vim.keymap.set("n", "<leader>ch", "<cmd>CodeDiff history<CR>", { desc = "CodeDiff Git history" })
 
 -- Visual mode: history for selection
-vim.keymap.set("v", "<leader>vh", "<Esc><cmd>'<,'>DiffviewFileHistory --follow<CR>", { desc = "Git range history" })
+vim.keymap.set("v", "<leader>ch", "<Esc><cmd>'<,'>CodeDiff history<CR>", { desc = "Git range history" })
 
 -- Single line history
-vim.keymap.set("n", "<leader>vl", "<cmd>.DiffviewFileHistory --follow<CR>", { desc = "Git Line history" })
+vim.keymap.set("n", "<leader>cl", "<cmd>.CodeDiff history<CR>", { desc = "Git Line history" })
 
 -- Diff against main/master branch (useful before merging)
-vim.keymap.set("n", "<leader>vm", function()
+vim.keymap.set("n", "<leader>cm", function()
 	-- Try main first, fall back to master
 	local result = vim.fn.systemlist({ "git", "rev-parse", "--verify", "main" })
 	local ok = vim.v.shell_error == 0 and result[1] ~= nil and result[1] ~= ""
 	local branch = ok and "main" or "master"
-	vim.cmd("DiffviewOpen " .. branch)
-end, { desc = "Git Diff against main/master" })
+	vim.cmd("CodeDiff " .. branch)
+end, { desc = "Git Diff against main/master branch" })
 
 -- Snacks integration with Git
 local has_snacks, snacks = pcall(require, "snacks")
@@ -154,40 +243,40 @@ if has_snacks then
 	}
 
 	-- Diff against a branch selected via Snacks Picker
-	vim.keymap.set("n", "<leader>vb", function()
+	vim.keymap.set("n", "<leader>cb", function()
 		snacks.picker.git_branches({
 			layout = select_layout,
 			confirm = function(picker, item)
 				picker:close()
 				if item then
 					local branch = item.branch or item.text
-					vim.cmd("DiffviewOpen " .. branch)
+					vim.cmd("CodeDiff " .. branch)
 				end
 			end,
 		})
 	end, { desc = "Diffview branch" })
 
-	-- File history for a commit selected via Snacks Picker
-	vim.keymap.set("n", "<leader>vc", function()
+	-- Diff a single commit against its parent, selected via Snacks Picker
+	vim.keymap.set("n", "<leader>cc", function()
 		snacks.picker.git_log({
 			layout = select_layout,
 			confirm = function(picker, item)
 				picker:close()
 				if item and item.commit then
-					vim.cmd("DiffviewOpen " .. item.commit .. "^!")
+					vim.cmd("CodeDiff " .. item.commit .. "^ " .. item.commit)
 				end
 			end,
 		})
 	end, { desc = "Diffview commit" })
 
-	-- Open commit range <selected-commit>..HEAD in diffview
-	vim.keymap.set("n", "<leader>vr", function()
+	-- Open commit range <selected-commit>..HEAD in CodeDiff
+	vim.keymap.set("n", "<leader>cr", function()
 		snacks.picker.git_log({
 			layout = select_layout,
 			confirm = function(picker, item)
 				picker:close()
 				if item and item.commit then
-					vim.cmd("DiffviewOpen " .. item.commit .. "..HEAD")
+					vim.cmd("CodeDiff " .. item.commit .. " HEAD")
 				end
 			end,
 		})

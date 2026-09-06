@@ -47,6 +47,8 @@ require("nvim-treesitter").install({
 	"nu",
 	"python",
 	"helm",
+	"yaml",
+	"json",
 })
 
 require("treesitter-context").setup({

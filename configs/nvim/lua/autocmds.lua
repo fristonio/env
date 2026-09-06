@@ -2,6 +2,13 @@
 
 local set = vim.opt_local
 
+-- Trigger a check when the window gains focus or a buffer is entered
+vim.opt.autoread = true
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
+	pattern = "*",
+	command = "checktime",
+})
+
 -- Set local settings for terminal buffers
 vim.api.nvim_create_autocmd("TermOpen", {
 	desc = "Terminal window config",

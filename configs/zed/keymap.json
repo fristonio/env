@@ -11,6 +11,7 @@
 
       "cmd-t": "workspace::NewTerminal", // Remote terminal (default)
       "cmd-T": ["workspace::NewTerminal", { "local": true }], // Local terminal
+      "alt-z": "editor::ToggleSoftWrap",
     },
   },
   {

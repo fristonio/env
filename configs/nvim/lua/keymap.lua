@@ -54,6 +54,12 @@ map({ "n", "x" }, "<C-l>", "<C-w>l", { desc = "Focus split pane to the right" })
 
 map({ "n", "x" }, "<leader>x", "<cmd>bp|bd #<CR>", { desc = "Unload/delete current buffer" }) -- Does not close the split
 map({ "n", "x" }, "<leader>q", ":q<CR>", { desc = "Close current split window" })
+map({ "n", "x" }, "<leader>Q", ":qa<CR>", { desc = "Quit all windows and files" })
+map({ "n", "x" }, "<leader>s", ":w<CR>", { desc = "Save current buffer changes" })
+map({ "n", "x" }, "<leader>S", ":wall<CR>", { desc = "Write all changed buffers" })
+
+map({ "n", "x" }, "<leader>tn", ":tabnext<CR>", { desc = "Go to next tabpage" })
+map({ "n", "x" }, "<leader>tp", ":tabprev<CR>", { desc = "Go to previous tabpage" })
 
 -- Search
 map({ "n", "x" }, "n", "nzzzv", { desc = "Find next search result and center screen" })
