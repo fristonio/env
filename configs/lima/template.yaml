@@ -134,5 +134,4 @@ provision:
 
       nix --version
       nix run home-manager/release-25.11 -- switch -b backup --flake "${HOME}/.env#lima-vm-$(uname -m)"
-      make -C "${HOME}/.env" configs
 

@@ -1,6 +1,4 @@
 $env.ENV_DIR = ($env.HOME | path join ".env")
-$env.ENV_LOCAL = ($env.ENV_DIR | path join "local")
-
 $env.EDITOR = "nvim"
 
 alias l = ls -a
@@ -14,19 +12,56 @@ if (which eza | is-not-empty) {
     alias tree = eza --tree
 }
 
-alias vmshell = limactl shell --workdir /home/lima
+# Setup PATH for external dependencies.
+{
+    "go": "go/bin"
+    "cargo": ".cargo/bin"
+}
+| items {|binary, path|
+    if (which $binary | is-not-empty) {
+      $env.PATH ++= [($env.HOME | path join $path)]
+    }
+  }
+| ignore
 
-if (which go | is-not-empty) {
-    $env.PATH ++= [
-        ($env.HOME | path join "go/bin")
-    ]
+$env.MOD_PROMPT_INDICATOR = ($env.MOD_PROMPT_INDICATOR? | default "")
+
+# mod — per-directory `mod.nu` commands, merged into one "mod" overlay.
+alias "mod activate" = overlay use --reload mod.nu as mod
+
+# --keep-env [PWD]: don't revert cwd on deactivate.
+alias "mod deactivate" = overlay hide --keep-env [PWD] mod
+
+# Whether the mod overlay is currently active (used by the prompt indicator).
+@category env
+def --env mod-active [] {
+    (overlay list | where name == "mod" and active == true | length) > 0
 }
 
-if (which cargo | is-not-empty) {
-    $env.PATH ++= [
-        ($env.HOME | path join ".cargo/bin")
-    ]
+# Full info (like `cmds`) for commands currently exported by the active mod
+# overlay, with a `source` column for the mod.nu file they came from.
+#
+# Caveat: source only reflects the *most recently* merged-in mod.nu — if
+# several directories are merged in (activated without an intervening
+# deactivate), their commands still work but all show the latest source.
+@category env
+@search-terms mod overlay workspace
+def "mod commands" [] {
+    if not (mod-active) {
+        return []
+    }
+    let mod_module = scope modules | where name == "mod" | first
+    if $mod_module == null {
+        print -n $"(ansi yellow)mod module not registered(ansi reset)"
+    }
+
+    let names = $mod_module.commands | get name
+    help commands
+    | where name in $names
+    | select name category params input_output search_terms description
+    | insert source $mod_module.file
 }
+alias "mod cmds" = mod commands
 
 @category env
 def --env pick [
@@ -78,10 +113,21 @@ def --env confirm [prompt: string = "Are you sure? [y/n]: "] {
 }
 
 @category env
-def --env cmds [] {
-    help commands
-    | where command_type == "custom" and category != ""
-    | input list --fuzzy --no-separator
+def --env cmds [base: string = "", --pick(-p)] {
+    let all_cmds = help commands
+    | where $it.command_type == "custom" and $it.category != ""
+    | where ($base | is-empty) or ($it.name == $base) or ($it.name | str starts-with $"($base) ")
+    | select name category params input_output search_terms description
+
+    if $pick {
+        (
+            $all_cmds
+            | update description {|c| $c.description | str replace -ra '\s*\n\s*' ' ' | str trim }
+            | input list --fuzzy --no-separator --display {|c| $"($c.name)  [($c.category)]  ($c.description)" }
+        )
+    } else {
+        return $all_cmds
+    }
 }
 
 @category env
@@ -94,7 +140,6 @@ def --env nuscript-path [name: string, --autoload(-a)] {
 }
 
 let env_configs = {
-
     # Optional tag because in some environment these are directly tracked
     # through nix config.
     "configs/bashrc": {dest: ".bashrc", optional: true}
@@ -114,8 +159,14 @@ let env_configs = {
     "shell/dev.nu": {
         dest: (nuscript-path -a "dev.nu")
     }
+    # Deployed as "_utils.nu" (not "utils.nu") so it sorts — and loads —
+    # before the other autoload files here (git.nu, ws.nu, ...) that define
+    # commands depending on it; autoload dirs source alphabetically.
     "shell/utils.nu": {
-        dest: (nuscript-path -a "utils.nu")
+        dest: (nuscript-path -a "_utils.nu")
+    }
+    "shell/ws.nu": {
+        dest: (nuscript-path -a "ws.nu")
     }
     "shell/git.nu": {
         dest: (nuscript-path -a "git.nu")
@@ -135,10 +186,6 @@ let env_configs = {
 
     # Terminal config
     "configs/ghostty/config": {dest: ".config/ghostty/config"}
-
-    # TODO: Seperate out darwin vs linux stuff.
-    # "configs/aerospace.toml":  { dest: ".aerospace.toml", optional: true },
-    # "configs/niri/config.kdl": { dest: ".config/niri/config.kdl", optional: true },
 }
 
 # Initializes any user autloads required for nushell
