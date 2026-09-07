@@ -46,7 +46,7 @@ let menu_style = {
     selected_text: {fg: $theme.subtext1, bg: $theme.surface1, attr: b}
     description_text: $theme.overlay1
     match_text: {fg: $theme.teal, bg: $theme.surface1, attr: b}
-    selected_match_text: {fg: $theme.teal, bg: $theme.surface1 attr: i}
+    selected_match_text: {fg: $theme.teal, bg: $theme.surface1, attr: i}
 }
 
 $env.config.color_config = {
@@ -54,7 +54,7 @@ $env.config.color_config = {
     leading_trailing_space_bg: {fg: $theme.lavender, attr: u}
     header: {fg: $theme.text, attr: b}
     # row_index: $scheme.virtual_text
-    row_index: { fg: $theme.blue, attr: b }
+    row_index: {fg: $theme.blue, attr: b}
     record: $theme.text
     list: $theme.text
     hints: $scheme.virtual_text

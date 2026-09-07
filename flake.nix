@@ -56,7 +56,7 @@
           nixpkgs-unstable
           home-manager
           catppuccin
-		  hunk
+          hunk
           ;
       };
 

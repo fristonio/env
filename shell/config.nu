@@ -111,7 +111,12 @@ def create_left_prompt [] {
         $branch_indicator = $"(ansi blue)\( ($branch_indicator)\)(ansi reset)"
     }
 
-    $"($main_prompt) ($cmd_indicator) ($cwd) ($branch_indicator)\n"
+    mut mod_indicator = ""
+    if (mod-active) {
+        $mod_indicator = $"(ansi yellow)($env.MOD_PROMPT_INDICATOR)(ansi reset) "
+    }
+
+    $"($mod_indicator)($main_prompt) ($cmd_indicator) ($cwd) ($branch_indicator)\n"
 }
 
 def create_right_prompt [] {

@@ -16,6 +16,13 @@ def git-validate-bare [path: string = "."] {
     git -C $path rev-parse --is-bare-repository o+e>| ignore
 }
 
+# Non-throwing variant of git-validate-bare, for filtering candidates rather
+# than aborting on the first non-repo.
+def git-is-bare [path: string] {
+    let result = git -C $path rev-parse --is-bare-repository | complete
+    $result.exit_code == 0 and ($result.stdout | str trim) == "true"
+}
+
 def git-validate-worktree [path: string = "."] {
     let repo_check = git -C $path rev-parse --is-inside-work-tree | complete
     if $repo_check.exit_code != 0 {
@@ -33,6 +40,11 @@ def git-wt-list [path: string = "."] {
             | parse -r '^(?<key>\S+)(?:\s+(?<value>.*))?$'
         }
     | each {|it| $it.key | zip $it.value | into record }
+}
+
+# Worktree checkouts of `path` (excludes the bare repo's own root entry).
+def git-wt-checkouts [path: string = "."] {
+    git-wt-list $path | where {|it| ($it.worktree? | is-not-empty) and not ("bare" in $it) }
 }
 
 def git-commit-info [path: string = "."] {
@@ -250,28 +262,134 @@ def wt-is-valid [branch: string, repo?: string] {
     return false
 }
 
+# Discover repositories under $WT_WS_DIR by scanning for a bare repo's `.git`
+# directory up to 3 levels deep (<user>/<repo>/.git) — deep enough to find
+# every repo root, shallow enough to skip past each worktree's own `.git`
+# (a file, one level deeper, at <user>/<repo>/<branch>/.git).
+def wt-repo-list [] {
+    if not ($env.WT_WS_DIR | path exists) {
+        return []
+    }
+
+    ^fd --type d --hidden --max-depth 3 --absolute-path '^\.git$' $env.WT_WS_DIR
+    | lines
+    | where {|l| $l | is-not-empty }
+    | each {|git_dir| $git_dir | str trim -r -c "/" | path dirname }
+    | where {|repo_path| git-is-bare $repo_path }
+    | each {|repo_path| {
+        repo: ($repo_path | str replace $"($env.WT_WS_DIR)/" "")
+        path: $repo_path
+        worktrees: (git-wt-checkouts $repo_path | length)
+    }}
+}
+
+# Pick a single repo via fzf. `actions`, if given, is forwarded straight to
+# fzf-nu (see its docs) so a caller can bind extra per-item keys; omit it for
+# a plain single-select. Returns the picked/actioned value, or null if
+# cancelled — fzf-nu already unifies a plain Enter and an actioned keypress
+# under the same "selected" outcome, so this contract covers both.
+def wt-pick-repo [repos: list<record>, actions?: list<record<key: string, label: string, action: closure>>] {
+    let cols = {
+        headers: ["REPO" "WORKTREES" "PATH"]
+        colors: [
+            "cyan"
+            "yellow"
+            "dark_gray"
+        ]
+        rows: ($repos | each {|r| [$r.repo, ($r.worktrees | into string), $r.path]})
+    }
+    let rendered = (
+        render-fzf-table $cols.rows --headers $cols.headers --colors $cols.colors
+    )
+    let fzf_items = (fzf-table-items $rendered.data $repos)
+
+    let result = (fzf-nu $fzf_items --header $rendered.header --actions $actions)
+    if $result.action == "selected" { $result.value } else { null }
+}
+
+# Interactive browser for a repo's worktrees: an fzf-nu picker with actions
+# to switch into (enter), fetch full info (ctrl-o), or remove (ctrl-d) a
+# worktree. A removal refreshes the list and loops so several worktrees can
+# be cleaned up in one sitting; fetching info returns that record directly.
+def --env wt-list-interactive [repo_path: string] {
+    loop {
+        let worktrees = (
+            git-wt-checkouts $repo_path
+            | each {|it| git-wt-info $it.worktree false }
+        )
+        if ($worktrees | is-empty) {
+            print $"(ansi yellow)No worktrees found in ($repo_path)(ansi reset)"
+            return
+        }
+
+        let cols = {
+            headers: ["BRANCH" "COMMIT" "UPSTREAM" "PATH"]
+            colors: [
+                "cyan"
+                "dark_gray"
+                "yellow"
+                "dark_gray"
+            ]
+            rows: ($worktrees | each {|w| [
+                $w.branch
+                ($w.commit.short_sha | default "-")
+                ($w.upstream | default "-")
+                ($w.path | str replace $env.HOME "~")
+            ]})
+        }
+
+        let rendered = (
+            render-fzf-table $cols.rows --headers $cols.headers --colors $cols.colors
+        )
+        let fzf_items = (fzf-table-items $rendered.data $worktrees)
+
+        let delete_action = {|wt|
+            if $wt == null { return {op: "noop"} }
+            print $"  (ansi yellow)→(ansi reset) Removing worktree at (ansi cyan)($wt.path)(ansi reset)"
+            git -C $repo_path worktree remove $wt.path
+            print $"(ansi green)✓(ansi reset) Removed ($wt.path)"
+            {op: "delete"}
+        }
+
+        # Full worktree info (branch/upstream/commit/status) via the same
+        # git-wt-info the non-interactive `wt list` uses.
+        let info_action = {|wt|
+            if $wt == null { return {op: "noop"} }
+            {
+                op: "info"
+                data: (git-wt-info $wt.path true)
+            }
+        }
+
+        let result = (
+            fzf-nu $fzf_items --header $rendered.header --select-label "switch" --actions [
+                {key: "ctrl-d", label: "remove", action: $delete_action}
+                {key: "ctrl-o", label: "info", action: $info_action}
+            ]
+        )
+
+        if $result.action == "cancelled" {
+            return
+        }
+
+        let outcome = $result.value
+        if ($outcome | get -o op) == "delete" or ($outcome | get -o op) == "noop" {
+            continue
+        }
+        if ($outcome | get -o op) == "info" {
+            return $outcome.data
+        }
+
+        cd $outcome.path
+        return
+    }
+}
+
 # Git worktree manager — manage multiple branches as parallel checkouts.
 #
 # Each repository lives under $WT_WS_DIR/<user>/<repo>/ as a bare clone.
 # Every branch gets its own checkout directory alongside .git.
-#
-# Run a subcommand to get started:
-@category git
-@search-terms git worktree wt
-def "wt" [] {
-    print $"(ansi attr_bold)wt(ansi reset) — git worktree manager"
-    print $"  workspace: (ansi cyan)($env.WT_WS_DIR)(ansi reset)"
-    print ""
-    print $"(ansi attr_bold)SUBCOMMANDS(ansi reset)"
-    print $"  (ansi green)wt init(ansi reset)   <repo> [origin]                      Clone a GitHub repo as a bare worktree workspace"
-    print $"  (ansi green)wt list(ansi reset)   [repo]                               List all worktrees with status and commit info"
-    print $"  (ansi green)wt switch(ansi reset) <branch> [remote] [repo] [--create]  Switch to a worktree, creating it if needed"
-    print $"  (ansi green)wt create(ansi reset) <branch> [base] [repo]               Create a new branch and its worktree"
-    print $"  (ansi green)wt remove(ansi reset) <branch> [repo] [--purge]            Remove a worktree checkout"
-    print $"  (ansi green)wt pull(ansi reset)   <pr> [remote] [repo] [--sync]        Check out a pull request as a worktree"
-    print ""
-    print $"  Run (ansi attr_bold)wt <subcommand> --help(ansi reset) for detailed usage."
-}
+alias wt = cmds "wt"
 
 # Clone a GitHub repository as a bare-cloned worktree workspace.
 #
@@ -282,11 +400,11 @@ def "wt" [] {
 # A worktree for the default branch is created automatically after cloning.
 #
 # Examples:
-#   wt init cilium/cilium
-#   wt init cilium/cilium fristonio/cilium
+#   wt repo init cilium/cilium
+#   wt repo init cilium/cilium fristonio/cilium
 @category git
 @search-terms git worktree wt
-def "wt init" [
+def "wt repo init" [
     repo: string    # GitHub repository to clone as upstream, in user/repo format
     origin?: string # Fork to register as origin remote, in user/repo format; defaults to upstream
 ] {
@@ -336,31 +454,79 @@ def "wt init" [
 
 # List all worktrees for a repository with status and commit info.
 #
-# When run from inside a worktree directory, the repo is inferred automatically.
-# Returns a list of records suitable for further pipeline use.
+# When run from inside a worktree directory, the repo is inferred
+# automatically. If the resolved path isn't a repository (e.g. run outside
+# any worktree with no `repo` given), an fzf picker opens over every
+# repository under $WT_WS_DIR to pick one from instead of erroring.
+#
+# With --interactive, browse the worktree list in an fzf picker with actions
+# to switch into (enter) or remove (ctrl-d) a worktree, instead of a plain
+# table dump.
 #
 # Examples:
 #   wt list
 #   wt list cilium/cilium
+#   wt list --interactive
 @category git
 @search-terms git worktree wt
-def "wt list" [
+def --env "wt list" [
     repo?: string # Repository to list worktrees for (user/repo); inferred from CWD if omitted
     --status (-s) # Enable worktree git status reporting; prints extra information about the state of HEAD.
+    --interactive (-i) # Browse the list in an fzf picker with switch/remove actions
 ] {
-    let repo_path = get-wt-repo-path $repo
-    git-validate-bare $repo_path
+    mut repo_path = get-wt-repo-path $repo
+    if not (git-is-bare $repo_path) {
+        let repos = (wt-repo-list)
+        if ($repos | is-empty) {
+            error make {msg: $"No repositories found under ($env.WT_WS_DIR) — run 'wt repo init' first"}
+        }
+        let picked = (wt-pick-repo $repos)
+        if $picked == null {
+            print $"(ansi yellow)No repository selected(ansi reset)"
+            return
+        }
+        $repo_path = $picked.path
+    }
 
-    let worktrees = (git-wt-list $repo_path
-        | where {|it| ($it.worktree? | is-not-empty) and not ("bare" in $it) }
-        | each {|it| git-wt-info $it.worktree $status })
+    if $interactive {
+        return (wt-list-interactive $repo_path)
+    }
 
+    let worktrees = git-wt-checkouts $repo_path | each {|it| git-wt-info $it.worktree $status }
     if ($worktrees | is-empty) {
         print $"(ansi yellow)No worktrees found in ($repo_path)(ansi reset)"
         return []
     }
 
     $worktrees
+}
+
+# List all repositories found under $WT_WS_DIR (see `wt list`'s doc for how
+# they're discovered). With --interactive, pick one via fzf to drill into its
+# worktree browser (see `wt list --interactive`).
+#
+# Examples:
+#   wt repo list
+#   wt repo list --interactive
+@category git
+@search-terms git worktree wt
+def --env "wt repo list" [--interactive(-i)] {
+    let repos = (wt-repo-list)
+    if ($repos | is-empty) {
+        print $"(ansi yellow)No repositories found under ($env.WT_WS_DIR)(ansi reset)"
+        return []
+    }
+
+    if $interactive {
+        let picked = (wt-pick-repo $repos)
+        if $picked == null {
+            print $"(ansi yellow)No repository selected(ansi reset)"
+            return
+        }
+        return (wt-list-interactive $picked.path)
+    }
+
+    $repos
 }
 
 # Switch to a worktree by branch name, creating it if needed.
@@ -380,7 +546,7 @@ def "wt list" [
 def --env "wt switch" [
     branch: string   # Branch name to switch to
     remote?: string  # Remote to fetch the branch from if it does not exist locally
-    repo?: string    # Repository to operate on (user/repo); inferred from CWD if omitted
+    --repo(-r): string = ""    # Repository to operate on (user/repo); inferred from CWD if omitted
     --create (-c)    # Create a new local branch if it does not exist anywhere
 ] {
     let repo_path = get-wt-repo-path $repo
@@ -415,7 +581,10 @@ def --env "wt switch" [
     }
 
     if not $create {
-        error make {msg: $"Branch '($branch)' not found — pass --create to create a new branch"}
+        if not (confirm $"Branch '($branch)' not found — create it and a new worktree? [y/n]: ") {
+            print $"(ansi yellow)Cancelled(ansi reset)"
+            return
+        }
     }
     print $"  (ansi yellow)→(ansi reset) Creating new branch (ansi cyan)($branch)(ansi reset) and worktree"
     git -C $repo_path worktree add --relative-paths $wt_dir -b $branch
@@ -429,14 +598,14 @@ def --env "wt switch" [
 #
 # Examples:
 #   wt create feat/my-feature
-#   wt create feat/my-feature main
-#   wt create hotfix/urgent v1.19 cilium/cilium
+#   wt create feat/my-feature --base main
+#   wt create hotfix/urgent -b v1.19 -r cilium/cilium
 @category git
 @search-terms git worktree wt
 def --env "wt create" [
     branch: string  # Name of the new branch to create
-    base?: string   # Base branch to branch from; defaults to the repo's current branch
-    repo?: string   # Repository to operate on (user/repo); inferred from CWD if omitted
+    --base(-b): string = "" # Base branch to branch from; defaults to the repo's current branch
+    --repo(-r): string = "" # Repository to operate on (user/repo); inferred from CWD if omitted
 ] {
     let repo_path = get-wt-repo-path $repo
     if (git-is-local-branch -C $repo_path $branch) {
@@ -469,12 +638,12 @@ def --env "wt create" [
 #
 # Examples:
 #   wt remove feat/my-feature
-#   wt remove feat/my-feature cilium/cilium
+#   wt remove feat/my-feature --repo cilium/cilium
 @category git
 @search-terms git worktree wt
 def --env "wt remove" [
     branch: string  # Branch whose worktree should be removed
-    repo?: string   # Repository to operate on (user/repo); inferred from CWD if omitted
+    --repo(-r): string = "" # Repository to operate on (user/repo); inferred from CWD if omitted
     --purge (-p)    # Also delete the local branch after removing the worktree
 ] {
     let repo_path = get-wt-repo-path $repo
@@ -508,7 +677,7 @@ def --env "wt remove" [
 def --env "wt pull" [
   pr: int             # Pull request number to check out
   remote?: string     # Remote to fetch the PR from; defaults to $WT_REMOTE_UPSTREAM
-  repo?: string       # Repository to operate on (user/repo); inferred from CWD if omitted
+  --repo(-r): string = ""       # Repository to operate on (user/repo); inferred from CWD if omitted
   --sync (-s)         # Force-sync the worktree branch to the current upstream PR head
 ] {
     let pr_head = $"refs/pull/($pr)/head"
