@@ -1,13 +1,5 @@
-[pager]
-	diff = delta
-	blame = delta
-	show = delta
-
 [interactive]
 	diffFilter = delta --color-only
-
-[alias]
-	ndiff = -c pager.diff=diffnav diff
 
 [delta]
 	navigate = true
@@ -16,7 +8,7 @@
 	features = catppuccin-frappe
 
 [merge]
-    conflictStyle = zdiff3
+	conflictStyle = zdiff3
 
 [delta "catppuccin-frappe"]
 	dark = true

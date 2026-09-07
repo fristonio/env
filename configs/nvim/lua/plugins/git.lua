@@ -213,6 +213,7 @@ require("codediff").setup({
 	},
 })
 
+vim.keymap.set("n", "<leader>ct", "<cmd>CodeDiff<CR>", { desc = "Toggle CodeDiff" })
 vim.keymap.set("n", "<leader>cd", "<cmd>CodeDiff<CR>", { desc = "Toggle CodeDiff" })
 
 -- Git history

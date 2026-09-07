@@ -1,0 +1,26 @@
+theme = "everforest-dark"
+mode = "auto"
+vcs = "git"
+watch = false
+exclude_untracked = false
+line_numbers = false
+tab_width = 4
+file_gap = 2
+hunk_gap = 1
+wrap_lines = false
+hunk_headers = true
+menu_bar = false
+sidebar = "auto"
+agent_notes = false
+transparent_background = false
+copy_decorations = false
+
+[keybindings]
+"hunk.review.nextFile" = ["ctrl+f"]
+"hunk.review.previousFile" = ["ctrl+b"]
+
+"hunk.review.nextAnnotatedFile" = ["}"]
+"hunk.review.previousAnnotatedFile" = ["{"]
+
+"hunk.review.nextAnnotatedHunk" = ["ctrl+n"]
+"hunk.review.previousAnnotatedHunk" = ["ctrl+p"]

@@ -1,6 +1,7 @@
 {
   pkgs,
   pkgsUnstable,
+  hunk,
   ...
 }:
 
@@ -33,7 +34,7 @@
     pkgs.nil
 
     pkgs.delta
-    pkgs.diffnav
+    hunk
 
     pkgsUnstable.lima
 

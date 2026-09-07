@@ -22,6 +22,8 @@
       url = "github:noctalia-dev/noctalia/legacy-v4";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+
+    hunk.url = "github:modem-dev/hunk";
   };
 
   outputs =
@@ -33,6 +35,7 @@
       darwin,
       catppuccin,
       niri-flake,
+      hunk,
       ...
     }@inputs:
     let
@@ -53,6 +56,7 @@
           nixpkgs-unstable
           home-manager
           catppuccin
+		  hunk
           ;
       };
 

@@ -100,8 +100,8 @@ let env_configs = {
     "configs/bashrc": {dest: ".bashrc", optional: true}
     "configs/vimrc": {dest: ".vimrc", optional: true}
     "configs/gitconfig": {dest: ".gitconfig", optional: true}
-    "configs/delta.gitconfig": {dest: ".config/delta.gitconfig", optional: true}
-
+    "configs/hunk.toml": {dest: ".config/hunk/config.toml"}
+    "configs/delta.gitconfig": {dest: ".config/delta.gitconfig"}
     "configs/tmux.conf": {dest: ".tmux.conf", optional: true}
 
     # Nushell configs

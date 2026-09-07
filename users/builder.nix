@@ -3,6 +3,7 @@
   nixpkgs,
   nixpkgs-unstable,
   home-manager,
+  hunk,
   catppuccin,
   ...
 }:
@@ -25,6 +26,7 @@ let
     inherit system;
     config.allowUnfree = true;
   };
+  hunk = inputs.hunk.packages.${pkgsUnstable.stdenv.hostPlatform.system}.hunk;
 
   userConfig = if userConfigAlias == "" then ./${name}.nix else ./${userConfigAlias}.nix;
   userHomeDirectory = if homeDirectory == "" then name else homeDirectory;
@@ -45,7 +47,7 @@ home-manager.lib.homeManagerConfiguration {
   ];
 
   extraSpecialArgs = {
-    inherit pkgs pkgsUnstable;
+    inherit pkgs pkgsUnstable hunk;
 
     username = name;
     homeDirectory = userHomeDirectory;

@@ -8,6 +8,7 @@
 	editor = vim
 	fileMode = false
 	autocrlf = false
+	pager = delta
 
 [pull]
 	ff = only
@@ -27,15 +28,9 @@
 [worktree]
 	useRelativePath = true
 
-[diff]
-	tool = nvimdiff
-
-[difftool]
-	prompt = false
-
-[difftool "nvimdiff"]
-	cmd = nvim -d "$LOCAL" "$REMOTE"
-
-# Config for delta.
 [include]
 	path = ~/.config/delta.gitconfig
+
+[alias]
+	hdiff = "-c core.pager=\"hunk pager\" diff"
+	hshow = "-c core.pager=\"hunk pager\" show"

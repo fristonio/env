@@ -30,6 +30,8 @@ map({ "n", "v" }, "zk", "<C-y>", { desc = "Scroll viewport up one line" })
 map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
 
+map({ "n", "v" }, "<leader>va", "ggVG", { desc = "Select whole file in visual mode" })
+
 -- Editing & Matching
 map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selected block down, and auto-indent" })
 map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selected block up, and auto-indent" })
