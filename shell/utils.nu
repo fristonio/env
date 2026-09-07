@@ -284,9 +284,11 @@ def fzf-nu [
     if not $fullscreen { $fzf_args ++= ["--height" $height] }
     if ($header | is-not-empty) { $fzf_args ++= ["--header" $header] }
     if ($footer | is-not-empty) { $fzf_args ++= ["--footer" $footer] }
-    if $min_height > 0 and not $fullscreen { $fzf_args ++= [
-        "--min-height" ($min_height | into string)
-    ] }
+    if $min_height > 0 and not $fullscreen {
+        $fzf_args ++= [
+            "--min-height" ($min_height | into string)
+        ]
+    }
     if ($preview_cmd | is-not-empty) {
         let cmd = if ($preview_cmd | str contains "{}") {
             $preview_cmd | str replace -a "{}" "{3}"

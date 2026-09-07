@@ -94,7 +94,7 @@ def --env confirm [prompt: string = "Are you sure? [y/n]: "] {
     loop {
         let event = (input listen --types [key])
         if $event.key_type == "char" {
-            let key = $event.code | str downcase
+            let key = $event.code | str lowercase
             if $key == "y" {
                 print $event.code
                 return true

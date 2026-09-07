@@ -41,6 +41,7 @@
     pkgsUnstable.helix
     pkgsUnstable.neovim
 
+    pkgsUnstable.nufmt
     pkgsUnstable.nushell
     pkgsUnstable.fzf
   ];

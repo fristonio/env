@@ -46,6 +46,7 @@
           nixpkgs-unstable
           catppuccin
           niri-flake
+          hunk
           ;
       };
 

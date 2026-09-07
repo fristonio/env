@@ -1,7 +1,5 @@
 use std/log
 
-alias vmshell = limactl shell --workdir /home/lima
-
 @category dev
 def note [] {
     mut notes_dir = ""
@@ -14,8 +12,13 @@ def note [] {
         }
     }
 
-    let month = date now | format date "%Y-%B" | str downcase
+    let month = date now | format date "%Y-%B" | str lowercase
     ^$env.EDITOR ($notes_dir | path join $"($month).md")
+}
+
+@category dev
+def --wrapped vmshell [--shell(-s): string = "nu", ...args] {
+    limactl shell --workdir /home/lima --shell $shell ...$args
 }
 
 @category dev
@@ -43,5 +46,5 @@ def setup-vm [name: string = "dev"] {
         }
     }
 
-    limactl shell $name
+    vmshell $name
 }

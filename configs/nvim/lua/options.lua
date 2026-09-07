@@ -121,6 +121,8 @@ vim.opt.fillchars:append({ vert = "║", horiz = "═" })
 -- %C: Fold icon, %=: align to right, %l: line number %s: GitSigns column
 vim.o.statuscolumn = "%C  %=%l %s"
 
+vim.g.editorconfig = true
+
 -- Configure ssh clipboard support.
 vim.g.clipboard = {
 	name = "OSC 52",

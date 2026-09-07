@@ -134,4 +134,5 @@ provision:
 
       nix --version
       nix run home-manager/release-25.11 -- switch -b backup --flake "${HOME}/.env#lima-vm-$(uname -m)"
+      nu -c "source ${HOME}/.env/shell/env.nu; source ${HOME}/.env/mod.nu; env-init"
 

@@ -18,7 +18,7 @@ in
     username = username;
 
     homeDirectory = if isDarwin then "/Users/${homeDirectory}" else "/home/${homeDirectory}";
-    stateVersion = "25.11";
+    stateVersion = "26.05";
   };
 
   programs.bash = {

@@ -308,11 +308,12 @@ def ws-pane-list [] {
 def "ws list" [
     --panes(-p)
     --interactive(-i)
+    --attach(-a)
     --preview
     --fullscreen
 ] {
     if $interactive {
-        return (ws-list-interactive $panes $preview $fullscreen)
+        return (ws-list-interactive $panes $preview $fullscreen $attach)
     }
     if $panes { ws-pane-list } else { ws-session-list }
 }
@@ -500,7 +501,12 @@ def ws-pane-resolve [name: string, allow_create: bool, --preview] {
     ws-resolve-pick $items $cols.rows $cols.headers $cols.colors $name $allow_create --preview-targets $preview_targets --preview=$preview --preview-width 40
 }
 
-def ws-list-interactive [panes: bool, preview: bool, fullscreen: bool] {
+def ws-list-interactive [
+    panes: bool
+    preview: bool
+    fullscreen: bool
+    attach: bool
+] {
     loop {
         let items = if $panes { ws-pane-list } else { ws-session-list }
         if ($items | is-empty) {
@@ -546,18 +552,31 @@ def ws-list-interactive [panes: bool, preview: bool, fullscreen: bool] {
             "delete"
         }
 
-        let result = (
-            fzf-nu $fzf_items --header $rendered.header --preview-cmd $preview_cmd --preview-width (if $panes { 40 } else { 0 }) --select-label "info" --min-height (if $preview { 20 } else { 0 }) --fullscreen=$fullscreen --actions [
+        mut actions = [
+            {key: "ctrl-d", label: "delete", action: $delete_action}
+        ]
+        if not $attach {
+            $actions ++= [
                 {key: "ctrl-i", label: "attach", action: $attach_action}
-                {key: "ctrl-d", label: "delete", action: $delete_action}
             ]
-        )
-
-        if $result.action == "cancelled" {
-            return
         }
 
+        let result = (
+            fzf-nu $fzf_items --header $rendered.header
+              --preview-cmd $preview_cmd
+              --preview-width (if $panes { 40 } else { 0 })
+              --select-label "attach"
+              --min-height (if $preview { 20 } else { 0 })
+              --fullscreen=$fullscreen
+              --actions $actions
+        )
+
+        if $result.action == "cancelled" { return }
         let outcome = $result.value
+        if $attach {
+            do $attach_action $outcome
+            return
+        }
 
         # delete/noop loop back to refresh the list; attach has already
         # happened as a side effect inside the action closure.

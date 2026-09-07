@@ -52,7 +52,7 @@ alias gl="git log --oneline --graph --abbrev-commit --decorate"
 alias nmux="SHELL=$(which nu) tmux -L nu-server $@"
 alias note="nu --config ~/.config/nushell/env.nu -c note"
 
-alias vmshell="limactl shell --workdir /home/lima"
+alias vmshell="limactl shell --workdir /home/lima --shell nu"
 
 if command -v zoxide &> /dev/null; then
   eval "$(zoxide init --cmd cd bash)"

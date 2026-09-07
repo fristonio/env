@@ -9,7 +9,7 @@
       "src": "https://github.com/saghen/blink.lib"
     },
     "codediff.nvim": {
-      "rev": "a995d12b268376eaa1a7b18885a6acf509ee7004",
+      "rev": "61521381445aab22d5f988e7d99c2d7a76ccc1a1",
       "src": "https://github.com/esmuellert/codediff.nvim"
     },
     "conform.nvim": {

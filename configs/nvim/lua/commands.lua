@@ -34,18 +34,14 @@ end, { nargs = 0, desc = "Open a terminal in vertical split" })
 
 -- nvim pack user commands
 
--- 1. Command to install/load a plugin temporarily from the command line
--- Usage: :PackAdd https://github.com/nvim-mini/mini.nvim
 vim.api.nvim_create_user_command("PackAdd", function(opts)
 	if opts.args == "" then
 		vim.notify("Please provide a plugin URL", vim.log.levels.ERROR)
 		return
 	end
 	vim.pack.add({ opts.args })
-end, { nargs = 1 })
+end, { nargs = 1, desc = "Add a new package" })
 
--- 2. Command to open the interactive plugin updater buffer
--- Usage: :PackUpdate (or :PackUpdate plugin-name)
 vim.api.nvim_create_user_command("PackUpdate", function(opts)
 	local args = vim.split(opts.args, "%s+", { trimempty = true })
 	vim.pack.update(args)
@@ -62,10 +58,9 @@ end, {
 		end
 		return names
 	end,
+	desc = "Update all or provided packages",
 })
 
--- 3. Command to delete a managed plugin
--- Usage: :PackDelete plugin-name
 vim.api.nvim_create_user_command("PackDelete", function(opts)
 	if opts.args == "" then
 		vim.notify("Please provide a plugin name to delete", vim.log.levels.ERROR)
@@ -84,10 +79,9 @@ end, {
 		end
 		return names
 	end,
+	desc = "Delete a managed plugin",
 })
 
--- 4. Command to list all managed plugins and their status
--- Usage: :PackStatus
 vim.api.nvim_create_user_command("PackStatus", function()
 	local plugins = vim.pack.get()
 	if #plugins == 0 then
@@ -100,4 +94,19 @@ vim.api.nvim_create_user_command("PackStatus", function()
 		local status = plugin.active and " [Loaded]" or " [Not Loaded]"
 		print(string.format("- %s (%s)%s", plugin.spec.name, plugin.spec.src, status))
 	end
-end, {})
+end, { desc = "List all packages" })
+
+vim.api.nvim_create_user_command("PackClean", function()
+	local plugins = vim.pack.get()
+	if #plugins == 0 then
+		print("No plugins managed by vim.pack yet.")
+		return
+	end
+
+	for _, plugin in ipairs(plugins) do
+		if not plugin.active then
+			vim.pack.del({ plugin.spec.name })
+			print(string.format("Removed plugin: %s", plugin.spec.name))
+		end
+	end
+end, { desc = "Clean all inactive packages" })

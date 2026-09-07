@@ -189,7 +189,7 @@ require("codediff").setup({
 		position = "left",
 		hidden = false,
 		auto_refresh = true,
-		indent_markers = true,
+		indent_markers = false,
 		initial_focus = "explorer",
 		view_mode = "tree",
 		flatten_dirs = true,

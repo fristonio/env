@@ -4,6 +4,7 @@
   nixpkgs-unstable,
   catppuccin,
   niri-flake,
+  hunk,
   ...
 }:
 
@@ -91,7 +92,7 @@ nix-system rec {
       };
 
       home-manager.extraSpecialArgs = {
-        inherit pkgs pkgsUnstable;
+        inherit pkgs pkgsUnstable hunk;
 
         username = user;
         homeDirectory = user;
