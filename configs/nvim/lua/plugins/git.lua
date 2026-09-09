@@ -183,6 +183,7 @@ require("codediff").setup({
 		gutter_signs = false,
 		compact_context_lines = 5,
 		compact = true,
+		max_computation_time_ms = 2000
 	},
 
 	explorer = {

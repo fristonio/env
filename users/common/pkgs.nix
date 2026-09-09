@@ -29,6 +29,7 @@
     pkgs.fd
     pkgs.ripgrep
     pkgs.zoxide
+	pkgs.lazygit
 
     pkgs.nixfmt
     pkgs.nil

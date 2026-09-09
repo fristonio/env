@@ -1,0 +1,127 @@
+gui:
+  tabWidth: 4
+  # When mouse events are captured, it's a little harder to select text: e.g.
+  # requiring you to hold the option key when on macOS.
+  mouseEvents: true
+  skipAmendWarning: false
+  skipDiscardChangeWarning: false
+  skipStashWarning: false
+  skipRewordInEditorWarning: false
+  # If true, do not show a warning when attempting to commit without any staged
+  # files; instead stage all unstaged files.
+  skipNoStagedFilesWarning: false
+  # If true, switch to a different worktree without confirmation when checking out
+  # a branch that is checked out in that worktree
+  skipSwitchWorktreeOnCheckoutWarning: false
+  sidePanelWidth: 0.3333
+  # Valid names are: 'status', 'files', 'worktrees', 'submodules', 'branches',
+  # 'remotes', 'tags', 'commits', 'reflog', 'stash'. 'files', 'branches', and
+  # 'commits' must always be included; they can't be hidden.
+  sidePanels:
+    - [status]
+    - [files, worktrees, submodules]
+    - [branches, remotes, tags]
+    - [commits, reflog]
+    - [stash]
+  # Uses Go's time format syntax: https://pkg.go.dev/time#Time.Format
+  timeFormat: 02 Jan 06
+  shortTimeFormat: 3:04PM
+  theme:
+    activeBorderColor:
+      - '#a7c080' # green
+      - 'bold'
+    inactiveBorderColor:
+      # - '#4f5b58' # bg4 (subtle border)
+      - "#859289"
+    optionsTextColor:
+      - '#7fbbb3' # blue
+    selectedLineBgColor:
+      - '#343f44' # bg3 (highlight background)
+    selectedRangeBgColor:
+      - '#343f44' # bg3
+    cherryPickedCommitFgColor:
+      - '#d699b6' # purple
+    cherryPickedCommitBgColor:
+      - '#3a464c' # bg_visual
+    markedBaseCommitFgColor:
+      - '#e67e80' # red
+    markedBaseCommitBgColor:
+      - '#3a464c' # bg_visual
+    unstagedChangesColor:
+      - '#e67e80' # red
+    defaultFgColor:
+      - '#d3c6aa' # fg
+  authorColors:
+    '*': '#d699b6'
+  showFileTree: true
+  showNumstatInFilesView: false
+  showRandomTip: false
+  showCommandLog: true
+  showBottomLine: true
+  showPanelJumps: true
+  # Nerd fonts version to use.
+  # One of: '2' | '3' | empty string (default)
+  # If empty, do not show icons.
+  nerdFontsVersion: "3"
+  showFileIcons: true
+  commitAuthorShortLength: 2
+  commitAuthorLongLength: 17
+  commitHashLength: 8
+  border: rounded
+  animateExplosion: true
+  # One of 'substring' (default) | 'fuzzy'
+  filterMode: substring
+git:
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never
+  # See https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_DiffRenderers.md
+  diffRenderers:
+    - command: delta --dark --paging=never
+  commit:
+    signOff: true
+    autoWrapCommitMessage: true
+    autoWrapWidth: 72
+  skipHookPrefix: WIP
+  autoFetch: false
+  fetchAll: false
+  autoRefresh: true
+  autoDetectExternalChanges: true
+  autoForwardBranches: none
+  autoStageResolvedConflicts: false
+  branchLogCmd: git log --graph --color=always --abbrev-commit --decorate --date=relative --pretty=medium {{branchName}} --
+  allBranchesLogCmds:
+    - git log --graph --all --color=always --abbrev-commit --decorate --date=relative  --pretty=medium
+  ignoreWhitespaceInDiffView: false
+  diffContextSize: 3
+  overrideGpg: false
+  disableForcePushing: true
+  parseEmoji: false
+  log:
+    order: topo-order
+    showGraph: always
+    showWholeGraph: false
+  # One of: 'date' (default) | 'recency' | 'alphabetical'
+  localBranchSortOrder: recency
+  remoteBranchSortOrder: date
+  # Don't truncate
+  truncateCopiedCommitHashesTo: 40
+worktree:
+  defaultPath: "./../"
+refresher:
+  # File/submodule refresh interval in seconds.
+  # Auto-refresh can be disabled via option 'git.autoRefresh'.
+  refreshInterval: 10
+  # Interval in seconds at which lazygit polls for external ref changes (commits,
+  # branch updates, checkouts made outside lazygit).
+  # Detection can be disabled via option 'git.autoDetectExternalChanges'.
+  externalChangeCheckInterval: 2
+confirmOnQuit: false
+quitOnTopLevelReturn: false
+disableStartupPopups: true
+# See https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_Command_Keybindings.md
+customCommands: []
+# See https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md#custom-pull-request-urls
+services: {}
+notARepository: quit
+promptToReturnFromSubprocess: true

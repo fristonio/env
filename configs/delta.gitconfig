@@ -4,7 +4,6 @@
 [delta]
 	navigate = true
 	line-numbers = true
-	side-by-side = true
 	features = catppuccin-frappe
 
 [merge]

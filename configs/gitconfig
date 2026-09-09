@@ -8,7 +8,10 @@
 	editor = vim
 	fileMode = false
 	autocrlf = false
-	pager = delta
+	pager = delta --side-by-side
+
+[pager]
+	log = "less -FRX"
 
 [pull]
 	ff = only

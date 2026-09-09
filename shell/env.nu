@@ -13,6 +13,7 @@ if (which eza | is-not-empty) {
 }
 
 # Setup PATH for external dependencies.
+$env.PATH ++= [($env.HOME | path join ".local/bin")]
 {
     "go": "go/bin"
     "cargo": ".cargo/bin"
@@ -147,6 +148,7 @@ let env_configs = {
     "configs/gitconfig": {dest: ".gitconfig", optional: true}
     "configs/hunk.toml": {dest: ".config/hunk/config.toml"}
     "configs/delta.gitconfig": {dest: ".config/delta.gitconfig"}
+    "configs/lazygit.yml": {dest: ".config/lazygit/config.yml"}
     "configs/tmux.conf": {dest: ".tmux.conf", optional: true}
 
     # Nushell configs

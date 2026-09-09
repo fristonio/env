@@ -909,7 +909,7 @@ def list-workspaces [--dir-limit: int = 16] {
 # Attach to `space`'s tmux session: the one existing session if there's
 # exactly one, a picker if there are several, or a freshly created session
 # (rooted at the space's path) if there are none.
-def space-attach [space: record] {
+def space-attach [space: record, --preset(-p) = ""] {
     if ($space.sessions | length) == 1 {
         ws-session-goto ($space.sessions | first | get name)
         return
@@ -945,7 +945,7 @@ def space-attach [space: record] {
     }
 
     let new_name = namegen {|n| (^tmux -L $env.WS_TMUX_SOCKET has-session -t $n | complete).exit_code != 0 }
-    tmux-setup-session $new_name {directory: $space.path}
+    tmux-setup-session $new_name {directory: $space.path} --preset $preset
     ws-session-goto $new_name
 }
 
@@ -953,7 +953,7 @@ def space-attach [space: record] {
 # checkouts, scratch dirs, known projects, and zoxide history in one picker.
 @category ws
 @search-terms tmux workspace git project zoxide
-def --env space [--attach(-a)] {
+def --env space [--attach(-a), --preset(-p) = ""] {
     let items = list-workspaces
     if ($items | is-empty) {
         print $"(ansi yellow)No spaces found(ansi reset)"
@@ -983,7 +983,7 @@ def --env space [--attach(-a)] {
     } else {
         let attach_action = {|item|
             if $item == null { return "noop" }
-            space-attach $item
+            space-attach $item --preset $preset
             "attach"
         }
         fzf-nu $fzf_items --header $rendered.header --select-label "cd" --actions [
@@ -995,7 +995,7 @@ def --env space [--attach(-a)] {
 
     let outcome = $result.value
     if $attach {
-        space-attach $outcome
+        space-attach $outcome --preset $preset
         return
     }
     if $outcome == "attach" or $outcome == "noop" { return }
