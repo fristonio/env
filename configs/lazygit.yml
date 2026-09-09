@@ -55,7 +55,7 @@ gui:
     '*': '#d699b6'
   showFileTree: true
   showNumstatInFilesView: false
-  showRandomTip: false
+  showRandomTip: true
   showCommandLog: true
   showBottomLine: true
   showPanelJumps: true

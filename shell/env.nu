@@ -13,7 +13,9 @@ if (which eza | is-not-empty) {
 }
 
 # Setup PATH for external dependencies.
-$env.PATH ++= [($env.HOME | path join ".local/bin")]
+$env.PATH ++= [
+    ($env.HOME | path join ".local/bin")
+]
 {
     "go": "go/bin"
     "cargo": ".cargo/bin"

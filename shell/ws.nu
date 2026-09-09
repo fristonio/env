@@ -377,29 +377,29 @@ def ws-pane-columns [items: list<record>] {
         headers: [
             "ID"
             "ACTIVE"
-            "TITLE"
-            "PATH"
             "COMMAND"
             "SESSION"
             "STATUS"
+            "PATH"
+            "TITLE"
         ]
         colors: [
             "dark_gray"
             null
-            "cyan"
-            "yellow"
             "blue"
             "magenta"
             null
+            "yellow"
+            "cyan"
         ]
         rows: ($items | each {|p| [
             $p.id
             (ws-state-icon $p.current $p.active)
-            $p.title
-            $p.path
             $p.command
             $p.session
             (ws-state-icon $p.current $p.session_attached)
+            $p.path
+            $p.title
         ]})
     }
 }
@@ -909,7 +909,7 @@ def list-workspaces [--dir-limit: int = 16] {
 # Attach to `space`'s tmux session: the one existing session if there's
 # exactly one, a picker if there are several, or a freshly created session
 # (rooted at the space's path) if there are none.
-def space-attach [space: record, --preset(-p) = ""] {
+def space-attach [space: record, --fullscreen(-f), --preset(-p): string = ""] {
     if ($space.sessions | length) == 1 {
         ws-session-goto ($space.sessions | first | get name)
         return
@@ -936,7 +936,9 @@ def space-attach [space: record, --preset(-p) = ""] {
             render-fzf-table $cols.rows --headers $cols.headers --colors $cols.colors
         )
         let fzf_items = (fzf-table-items $rendered.data $space.sessions)
-        let result = (fzf-nu $fzf_items --header $rendered.header --select-label "attach")
+        let result = (
+            fzf-nu $fzf_items --fullscreen=$fullscreen --header $rendered.header --select-label "attach"
+        )
         if $result.action != "selected" or $result.value == null {
             return
         }
@@ -953,7 +955,7 @@ def space-attach [space: record, --preset(-p) = ""] {
 # checkouts, scratch dirs, known projects, and zoxide history in one picker.
 @category ws
 @search-terms tmux workspace git project zoxide
-def --env space [--attach(-a), --preset(-p) = ""] {
+def --env space [--attach(-a), --fullscreen(-f), --preset(-p): string = ""] {
     let items = list-workspaces
     if ($items | is-empty) {
         print $"(ansi yellow)No spaces found(ansi reset)"
@@ -964,12 +966,18 @@ def --env space [--attach(-a), --preset(-p) = ""] {
         headers: ["" "SESSIONS" "PATH"]
         colors: [
             null
-            "yellow"
+            null
             null
         ]
         rows: ($items | each {|s| [
             (spaces-icon $s)
-            ($s.sessions | length | into string)
+            (
+              if $s.sessions == null {
+                $'(ansi dark_gray)<none>(ansi reset)'
+              } else {
+                $s.sessions | each { $'(ws-state-icon $in.current $in.attached) (ansi magenta)($in.name)(ansi reset)' } | str join ' '
+              }
+            )
             ($s.path | str replace $env.HOME "~")
         ]})
     }
@@ -979,7 +987,7 @@ def --env space [--attach(-a), --preset(-p) = ""] {
     let fzf_items = (fzf-table-items $rendered.data $items)
 
     let result = if $attach {
-        fzf-nu $fzf_items --header $rendered.header --select-label "attach"
+        fzf-nu $fzf_items --fullscreen --header $rendered.header --select-label "attach"
     } else {
         let attach_action = {|item|
             if $item == null { return "noop" }
