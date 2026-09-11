@@ -10,8 +10,10 @@
       "alt-l": "workspace::ActivatePaneRight",
 
       "cmd-t": "workspace::NewTerminal", // Remote terminal (default)
-      "cmd-T": ["workspace::NewTerminal", { "local": true }], // Local terminal
+      "cmd-T": ["workspace::NewTerminal", { "local": false }], // Local terminal
       "alt-z": "editor::ToggleSoftWrap",
+
+      "ctrl-a g": "git_panel::ToggleFocus",
     },
   },
   {
@@ -22,7 +24,22 @@
       "space t s": "outline_panel::Toggle",
       "space t d": "debug_panel::Toggle",
       "space t g": "git_panel::Toggle",
-      "space t a": "agent::Toggle",
+      "space a a": "agent::ToggleFocus",
+      "space a n": "agent::NewThread",
+    },
+  },
+  {
+    "context": "ProjectPanel && not_editing",
+    "bindings": {
+      "ctrl-v": "project_panel::OpenSplitVertical",
+      "ctrl-s": "project_panel::OpenSplitHorizontal",
+    },
+  },
+  {
+    "context": "FileFinder || (FileFinder > Picker > Editor) || (FileFinder > Picker > menu)",
+    "bindings": {
+      "ctrl-v": "pane::SplitRight",
+      "ctrl-s": "pane::SplitDown",
     },
   },
   {
@@ -50,6 +67,57 @@
     },
   },
   {
+    "context": "VimControl && ((vim_mode == normal) || (vim_mode == visual)) && !menu",
+    "bindings": {
+      "space a a": "agent::ToggleFocus",
+      "space a n": "agent::NewThread",
+      "space a N": "agent::ToggleNewThreadMenu",
+      "space a t": "agent::NewTerminalThread",
+      "space a c": "agent::AddSelectionToThread",
+      "space a d": "agent::OpenAgentDiff",
+      "space a /": "agent::ToggleSearch",
+      "space a s": "agents_sidebar::ToggleThreadSwitcher",
+      "space a m": "agent::ToggleModelSelector",
+      "space a p": "agent::ToggleProfileSelector",
+      "space a P": "agent::ManageProfiles",
+      "space a e": "agent::ToggleThinkingEffortMenu",
+      "space a f": "agent::ToggleFastMode",
+      "space a o": "agent::ToggleOptionsMenu",
+      "space a k": "agent::ManageSkills",
+
+      // Agent permissions and diff review.
+      "space a y": "agent::AllowOnce",
+      "space a Y": "agent::AllowAlways",
+      "space a x": "agent::RejectOnce",
+      "space a K": "agent::Keep",
+      "space a A": "agent::KeepAll",
+      "space a R": "agent::Reject",
+      "space a X": "agent::RejectAll",
+      "space a u": "agent::UndoLastReject",
+    },
+  },
+  {
+    "context": "AcpThread > Editor && VimControl && ((vim_mode == normal) || (vim_mode == visual)) && !menu",
+    "bindings": {
+      "ctrl-n": "agent::ScrollOutputToNextMessage",
+      "ctrl-p": "agent::ScrollOutputToPreviousMessage",
+      "ctrl-j": "agent::ScrollOutputLineDown",
+      "ctrl-k": "agent::ScrollOutputLineUp",
+      "ctrl-f": "agent::ScrollOutputPageDown",
+      "ctrl-b": "agent::ScrollOutputPageUp",
+      "ctrl-e": "agent::OpenActiveThreadAsMarkdown",
+
+      "space a v j": "agent::ScrollOutputLineDown",
+      "space a v k": "agent::ScrollOutputLineUp",
+      "space a v d": "agent::ScrollOutputPageDown",
+      "space a v u": "agent::ScrollOutputPageUp",
+      "space a v g": "agent::ScrollOutputToTop",
+      "space a v G": "agent::ScrollOutputToBottom",
+      "space a v ]": "agent::ScrollOutputToNextMessage",
+      "space a v [": "agent::ScrollOutputToPreviousMessage",
+    },
+  },
+  {
     "context": "Editor && VimControl && (vim_mode == normal) && !menu",
     "bindings": {
       "U": "vim::Redo",
@@ -59,14 +127,31 @@
       "space q": "pane::CloseActiveItem",
       "space e": "project_panel::ToggleFocus",
 
+      "space x": "pane::CloseActiveItem",
+      "space Q": "zed::Quit",
+      "space s": "workspace::Save",
+      "space S": "workspace::SaveAll",
+
+      "space w v": "pane::SplitRight",
+      "space w s": "pane::SplitDown",
+
+      "space c p": "workspace::CopyRelativePath",
+      "space c P": "workspace::CopyPath",
+
+      "space v a": "editor::SelectAll",
+
       "space f m t": "editor::Format",
 
-      "space t o": "terminal_panel::Toggle",
+      "space f e": "project_panel::ToggleFocus",
+      "space f /": "project_search::ToggleFocus",
+      "space f D": "diagnostics::Deploy",
+      "space f k": "zed::OpenKeymap",
+
+      "space t t": "terminal_panel::Toggle",
       "space t p": "project_panel::Toggle",
-      "space t s": "outline_panel::Toggle",
+      "space t o": "outline_panel::Toggle",
       "space t d": "debug_panel::Toggle",
       "space t g": "git_panel::Toggle",
-      "space t a": "agent::Toggle",
 
       "space h n": "editor::GoToHunk",
       "space h p": "editor::GoToPreviousHunk",
@@ -93,6 +178,20 @@
       "space l R": "editor::FindAllReferences",
       "space l r n": "editor::Rename",
       "space l a": "editor::ToggleCodeActions",
+      "space l t": "editor::GoToTypeDefinition",
+      "space l S": "project_symbols::Toggle",
+
+      "space g p": "editor::OpenPermalinkToLine",
+
+      "space d b": "editor::ToggleBreakpoint",
+      "space d s": "debugger::Start",
+      "space d c": "debugger::Continue",
+      "space d n": "debugger::StepOver",
+      "space d i": "debugger::StepInto",
+      "space d o": "debugger::StepOut",
+      "space d r": "debugger::Restart",
+      "space d t": "debugger::Stop",
+      "space d v": "debug_panel::ToggleFocus",
 
       "g n": "pane::ActivateNextItem",
       "g p": "pane::ActivatePreviousItem",
@@ -118,7 +217,7 @@
       "g c": [
         "action::Sequence",
         ["vim::ToggleComments", "vim::RestoreVisualSelection"],
-      ],
+    ],
 
       ">": ["action::Sequence", ["vim::Indent", "vim::RestoreVisualSelection"]],
       "<": [
@@ -139,7 +238,7 @@
     },
   },
   {
-    "context": "(Workspace || (Editor && VimControl)) && !Terminal",
+    "context": "(Workspace || (Editor && VimControl)) && !Terminal && !AcpThread",
     "bindings": {
       "ctrl-h": "workspace::ActivatePaneLeft",
       "ctrl-j": "workspace::ActivatePaneDown",
@@ -176,6 +275,23 @@
     "context": "Dock && !editing && !Terminal && !MessageEditor",
     "bindings": {
       "space q": "workspace::CloseActiveDock",
+    },
+  },
+  {
+    "context": "Dock && !menu",
+    "bindings": {
+      // A zero-pixel argument makes Zed use the UI font size as the step.
+      "ctrl-=": ["workspace::IncreaseActiveDockSize", { "px": 0 }],
+      "ctrl--": ["workspace::DecreaseActiveDockSize", { "px": 0 }],
+    },
+  },
+  {
+    // AcpThread has a default Ctrl-- binding, so override it at the more
+    // specific context to keep dock resizing consistent in the Agent Panel.
+    "context": "AcpThread && !menu",
+    "bindings": {
+      "ctrl-=": ["workspace::IncreaseActiveDockSize", { "px": 0 }],
+      "ctrl--": ["workspace::DecreaseActiveDockSize", { "px": 0 }],
     },
   },
 ]

@@ -228,7 +228,7 @@ def get-wt-repo-root [repo: string] {
 
 def get-wt-repo-path [repo?: string] {
     mut repo_path = $env.PWD
-    if $repo != null {
+    if ($repo | is-not-empty) {
         $repo_path = (get-wt-repo-root $repo)
     }
     $repo_path
@@ -568,7 +568,7 @@ def --env "wt switch" [
     }
 
     if ($remote | is-not-empty) {
-        print $"  (ansi yellow)→(ansi reset) Checking (ansi cyan)($branch)(ansi reset) from ($remote)"
+        print $"  (ansi yellow)→(ansi reset) Checking (ansi cyan)($branch)(ansi reset) from ($remote) [Repo: ($repo_path)]"
         if not (git-branch-remote -C $repo_path $branch $remote) {
             error make {msg: $"Branch '($branch)' not found on remote '($remote)'"}
         }

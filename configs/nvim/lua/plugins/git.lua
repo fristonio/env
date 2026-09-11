@@ -75,6 +75,10 @@ require("gitsigns").setup({
 	end,
 })
 
+-- View git merge conflicts inline.
+vim.pack.add({"https://github.com/akinsho/git-conflict.nvim"})
+require('git-conflict').setup({})
+
 vim.pack.add({ "https://github.com/esmuellert/codediff.nvim" })
 
 local mini_icons = require("mini.icons")

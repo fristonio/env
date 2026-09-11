@@ -9,7 +9,7 @@
       "src": "https://github.com/saghen/blink.lib"
     },
     "codediff.nvim": {
-      "rev": "61521381445aab22d5f988e7d99c2d7a76ccc1a1",
+      "rev": "4b3ad7eb99dd0f02e64bbaf562ca1e87e8c07cc9",
       "src": "https://github.com/esmuellert/codediff.nvim"
     },
     "conform.nvim": {
@@ -23,6 +23,10 @@
     "everforest-nvim": {
       "rev": "d235ca0aa6a29546e661a020e2618612acbbffbe",
       "src": "https://github.com/neanias/everforest-nvim"
+    },
+    "git-conflict.nvim": {
+      "rev": "a1badcd070d176172940eb55d9d59029dad1c5a6",
+      "src": "https://github.com/akinsho/git-conflict.nvim"
     },
     "gitsigns.nvim": {
       "rev": "25050e4ed39e628282831d4cbecb1850454ce915",

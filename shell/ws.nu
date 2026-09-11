@@ -555,7 +555,9 @@ def ws-list-interactive [
         mut actions = [
             {key: "ctrl-d", label: "delete", action: $delete_action}
         ]
+        mut select_label = "attach"
         if not $attach {
+            $select_label = "info"
             $actions ++= [
                 {key: "ctrl-i", label: "attach", action: $attach_action}
             ]
@@ -565,7 +567,7 @@ def ws-list-interactive [
             fzf-nu $fzf_items --header $rendered.header
               --preview-cmd $preview_cmd
               --preview-width (if $panes { 40 } else { 0 })
-              --select-label "attach"
+              --select-label $select_label
               --min-height (if $preview { 20 } else { 0 })
               --fullscreen=$fullscreen
               --actions $actions

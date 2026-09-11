@@ -1,18 +1,18 @@
 {
+  "agent_servers": {
+    "codex-acp": {
+      "type": "registry"
+    },
+    "claude-acp": {
+      "type": "registry"
+    }
+  },
   "auto_update": false,
   "relative_line_numbers": "enabled",
   "gutter": {
     "line_numbers": true,
   },
   "cli_default_open_behavior": "new_window",
-  "agent_servers": {
-    "codex-acp": {
-      "type": "registry",
-    },
-    "claude-acp": {
-      "type": "registry",
-    },
-  },
   "proxy": "",
   "sticky_scroll": {
     "enabled": true,
@@ -38,7 +38,7 @@
     "dock": "left",
   },
   "outline_panel": {
-    "dock": "left",
+    "dock": "right",
   },
   "debugger": {
     "dock": "right",
@@ -120,6 +120,9 @@
     "metrics": false,
   },
   "agent": {
+    "auto_compact": {
+      "threshold": "50%",
+    },
     "enabled": true,
     "button": true,
     "sidebar_side": "right",
@@ -130,12 +133,10 @@
     "enable_feedback": false,
     "single_file_review": false,
   },
-  "format_on_save": "on",
+  "format_on_save": "off",
   "auto_indent_on_paste": false,
+  "show_whitespaces": "selection",
   "languages": {
-    "YAML": {
-      "format_on_save": "off",
-    },
     "C++": {
       // "show_whitespaces": "all",
       "tab_size": 2,
