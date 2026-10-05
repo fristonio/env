@@ -39,7 +39,7 @@ user:
 # Mount type for above mounts, such as "reverse-sshfs" (from sshocker), "9p" (QEMU’s virtio-9p-pci, aka virtfs),
 # or "virtiofs" (experimental on Linux; needs `vmType: vz` on macOS).
 # Builtin default: "default" (resolved to be "9p" for QEMU since Lima v1.0 on non-Windows, "virtiofs" for vz)
-mountType: null
+mountType: "virtiofs"
 
 # Enable inotify support for mounted directories (EXPERIMENTAL)
 # Builtin default: Disabled by default

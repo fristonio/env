@@ -15,7 +15,6 @@ require("which-key").setup({
 		{ "<leader>f", group = "Finder Actions", mode = { "n", "v" } },
 		{ "<leader>p", group = "Picker Actions", mode = { "n" } },
 		{ "<leader>c", group = "Copy Actions", mode = { "n" } },
-		{ "<leader>v", group = "DiffView Actions", mode = { "n" } },
 	},
 	filter = function(mapping)
 		return mapping.desc ~= "diffview_ignore"

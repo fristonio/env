@@ -13,19 +13,23 @@ if (which eza | is-not-empty) {
 }
 
 # Setup PATH for external dependencies.
-$env.PATH ++= [
-    ($env.HOME | path join ".local/bin")
-]
-{
+let external_bin_paths = {
     "go": "go/bin"
     "cargo": ".cargo/bin"
 }
 | items {|binary, path|
     if (which $binary | is-not-empty) {
-      $env.PATH ++= [($env.HOME | path join $path)]
+        $env.HOME | path join $path
     }
-  }
-| ignore
+}
+| compact
+
+$env.PATH = (
+    $env.PATH
+    | append ($env.HOME | path join ".local/bin")
+    | append $external_bin_paths
+    | uniq
+)
 
 $env.MOD_PROMPT_INDICATOR = ($env.MOD_PROMPT_INDICATOR? | default "")
 

@@ -18,11 +18,17 @@ cmp.setup({
 	},
 	cmdline = {
 		enabled = true,
+		keymap = {
+			preset = "cmdline",
+			["<Right>"] = false,
+			["<Left>"] = false,
+		},
 		completion = {
 			menu = {
 				auto_show = true,
-				auto_show_delay_ms = 1000,
+				auto_show_delay_ms = 0,
 			},
+			ghost_text = { enabled = true },
 		},
 	},
 	sources = {
@@ -46,6 +52,7 @@ cmp.setup({
 	keymap = {
 		preset = "default",
 
+		-- C-y accepts the current selection in menu.
 		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
 		["<CR>"] = { "select_and_accept", "fallback" },
 		["<C-c>"] = { "cancel", "fallback" },
