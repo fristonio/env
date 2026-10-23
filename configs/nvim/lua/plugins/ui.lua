@@ -3,16 +3,11 @@ vim.pack.add({
 	"https://github.com/catppuccin/nvim",
 	"https://github.com/neanias/everforest-nvim",
 	"https://github.com/navarasu/onedark.nvim",
-	"https://github.com/folke/tokyonight.nvim",
+	"https://github.com/mellow-theme/mellow.nvim",
 
 	-- Statusline
 	"https://github.com/nvim-lualine/lualine.nvim",
 })
-
--- TODO: Maybe migrate to mini.icons?
--- if vim.g.have_nerd_font then
--- 	vim.pack.add({ "https://github.com/nvim-tree/nvim-web-devicons" })
--- end
 
 -- Setup statusline
 require("lualine").setup({
@@ -51,14 +46,7 @@ require("catppuccin").setup({
 
 -- OneDark theme
 require("onedark").setup({
-	style = "warm",
-})
-
--- Tokyonight theme
-require("tokyonight").setup({
-	style = "storm",
-	on_colors = function(_) end,
-	on_highlights = function(_, _) end,
+	style = "warmer",
 })
 
 -- Everforest theme

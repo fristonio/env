@@ -35,6 +35,7 @@
     pkgs.nil
 
     pkgs.delta
+    pkgs.gh
     hunk
 
     pkgsUnstable.lima

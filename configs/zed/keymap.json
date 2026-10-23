@@ -17,13 +17,20 @@
     },
   },
   {
-    "context": "EmptyPane",
+    "context": "(VimControl && !menu)",
+    "bindings": {
+      "space": null,
+    },
+  },
+  {
+    "context": "EmptyPane && (vim_mode != insert)",
     "bindings": {
       "space t o": "terminal_panel::Toggle",
       "space t p": "project_panel::Toggle",
       "space t s": "outline_panel::Toggle",
       "space t d": "debug_panel::Toggle",
       "space t g": "git_panel::Toggle",
+      "space t a": "agent::ToggleFocus",
       "space a a": "agent::ToggleFocus",
       "space a n": "agent::NewThread",
     },
@@ -43,7 +50,7 @@
     },
   },
   {
-    "context": "VimControl && !menu",
+    "context": "VimControl && (vim_mode != insert) && !menu",
     "bindings": {
       "g b": "vim::StartOfDocument",
       "g h": "vim::StartOfLine",
@@ -152,6 +159,7 @@
       "space t o": "outline_panel::Toggle",
       "space t d": "debug_panel::Toggle",
       "space t g": "git_panel::Toggle",
+      "space t a": "agent::ToggleFocus",
 
       "space h n": "editor::GoToHunk",
       "space h p": "editor::GoToPreviousHunk",
@@ -217,7 +225,7 @@
       "g c": [
         "action::Sequence",
         ["vim::ToggleComments", "vim::RestoreVisualSelection"],
-    ],
+      ],
 
       ">": ["action::Sequence", ["vim::Indent", "vim::RestoreVisualSelection"]],
       "<": [

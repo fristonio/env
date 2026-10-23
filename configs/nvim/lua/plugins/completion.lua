@@ -24,9 +24,11 @@ cmp.setup({
 			["<Left>"] = false,
 		},
 		completion = {
+			list = { selection = { preselect = false } },
 			menu = {
-				auto_show = true,
-				auto_show_delay_ms = 0,
+				auto_show = function(ctx)
+					return vim.fn.getcmdtype() == ":"
+				end,
 			},
 			ghost_text = { enabled = true },
 		},

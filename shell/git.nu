@@ -4,8 +4,31 @@ $env.WT_REMOTE_UPSTREAM = "upstream"
 
 $env.WT_PULL_REQUEST_PREFIX = "pull"
 
+# True if an SSH key is set up for GitHub (i.e. `ssh -T git@github.com`
+# successfully authenticates — GitHub always refuses the shell itself,
+# exiting 1 on success vs 255 on auth failure).
+def git-ssh-key-configured [] {
+    (ssh -o BatchMode=yes -o ConnectTimeout=5 -T git@github.com e>| complete).exit_code == 1
+}
+
+# Prefer `gh` for remote operations when no SSH key is configured but the
+# user is already logged in — falls back to the existing SSH-based behavior
+# otherwise.
+def git-use-gh [] {
+    if (git-ssh-key-configured) {
+        false
+    } else {
+        (gh auth status o+e>| complete).exit_code == 0
+    }
+}
+
 def git-repo-url [repo: string] {
-    $"git@github.com:($repo).git"
+    if (git-use-gh) {
+        gh auth setup-git o+e>| ignore
+        $"https://github.com/($repo).git"
+    } else {
+        $"git@github.com:($repo).git"
+    }
 }
 
 def git-validate-repo [repo: string] {
@@ -277,7 +300,7 @@ def wt-repo-list [] {
     | each {|git_dir| $git_dir | str trim -r -c "/" | path dirname }
     | where {|repo_path| git-is-bare $repo_path }
     | each {|repo_path| {
-        repo: ($repo_path | str replace $"($env.WT_WS_DIR)/" "")
+        repo: ($repo_path | str replace $"($env.WT_WS_DIR)/" ""), 
         path: $repo_path
         worktrees: (git-wt-checkouts $repo_path | length)
     }}

@@ -123,6 +123,7 @@ local servers = {
 	gopls = {
 		settings = {
 			gopls = {
+				memoryMode = "DegradeClosed",
 				analyses = {
 					unusedparams = true,
 				},

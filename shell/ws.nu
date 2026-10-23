@@ -266,12 +266,12 @@ def ws-session-list [] {
         {
             id: $s.id
             name: $s.name
-            windows: ($s.windows | length)
-            panes: ($s.windows | each {|w| $w.panes | length } | math sum)
-            age: ($age - ($age mod 1min))
+            windows: ($s.windows | length), 
+            panes: ($s.windows | each {|w| $w.panes | length } | math sum), 
+            age: ($age - ($age mod 1min)), 
             attached: $s.attached
-            current: ($s.id == $current_session_id)
-            path: ($s.path | str replace $env.HOME "~")
+            current: ($s.id == $current_session_id), 
+            path: ($s.path | str replace $env.HOME "~"), 
             raw_path: $s.path
         }
     }
@@ -288,7 +288,7 @@ def ws-pane-list [] {
                     window: $w.name
                     title: $p.title
                     command: $p.command
-                    path: ($p.path | str replace $env.HOME "~")
+                    path: ($p.path | str replace $env.HOME "~"), 
                     active: $p.active
                     session_attached: $s.attached
                     current: (($s.id == $current_session_id) and $p.active)

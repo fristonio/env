@@ -34,6 +34,7 @@ keybind = alt+a>r=reload_config
 
 # KeyBindings
 keybind = alt+t=toggle_quick_terminal
+keybind = cmd+shift+n=new_window
 
 # Terminal split
 keybind = alt+a>v=new_split:right

@@ -76,8 +76,8 @@ require("gitsigns").setup({
 })
 
 -- View git merge conflicts inline.
-vim.pack.add({"https://github.com/akinsho/git-conflict.nvim"})
-require('git-conflict').setup({})
+vim.pack.add({ "https://github.com/akinsho/git-conflict.nvim" })
+require("git-conflict").setup({})
 
 vim.pack.add({ "https://github.com/esmuellert/codediff.nvim" })
 
@@ -198,7 +198,7 @@ require("codediff").setup({
 		initial_focus = "explorer",
 		view_mode = "tree",
 		flatten_dirs = true,
-		focus_on_select = true,
+		focus_on_select = false,
 		line_stats = {
 			enabled = true,
 			count_untracked = true,

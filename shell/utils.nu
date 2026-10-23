@@ -201,7 +201,7 @@ def render-fzf-table [rows: list<list<any>>, --headers: list<string>, --colors: 
 def fzf-table-items [data_lines: list<string>, values: list<any>, --preview-targets: list<string>]: nothing -> list<record> {
     $data_lines | enumerate | each {|it| {
         text: $it.item
-        value: ($values | get $it.index)
+        value: ($values | get $it.index), 
         preview_arg: (if ($preview_targets | is-not-empty) { $preview_targets | get $it.index } else { "" })
     }}
 }
