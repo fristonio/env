@@ -1,6 +1,17 @@
 use std/log
 
 @category dev
+def ssh-pf [remote: string, port: int, local: int = 0] {
+    mut local_port = $local
+    if $local == 0 {
+        $local_port = (port 25000 26000)
+    }
+
+    print $"Port Forwarding: http://($remote):($port) -> http://localhost:($local_port)"
+    ^ssh -N -L $"($local_port):localhost:($port)" $remote
+}
+
+@category dev
 def note [] {
     mut notes_dir = ""
     if ($env | get -o NOTES_DIR) != null and ($env.NOTES_DIR | path exists) {

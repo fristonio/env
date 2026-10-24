@@ -4,6 +4,7 @@ vim.pack.add({
 	"https://github.com/neanias/everforest-nvim",
 	"https://github.com/navarasu/onedark.nvim",
 	"https://github.com/mellow-theme/mellow.nvim",
+	"https://github.com/shatur/neovim-ayu",
 
 	-- Statusline
 	"https://github.com/nvim-lualine/lualine.nvim",
@@ -55,7 +56,7 @@ require("everforest").setup({
 	-- dim_inactive_windows = true,
 	background = "medium",
 	on_highlights = function(hl, palette)
-		hl.DiffText = { fg = palette.bg_purple }
+		hl.DiffText = { bg = palette.bg_purple }
 	end,
 })
 

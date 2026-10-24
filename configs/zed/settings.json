@@ -121,7 +121,7 @@
   },
   "agent": {
     "auto_compact": {
-      "threshold": "50%",
+      "threshold": "40%",
     },
     "enabled": true,
     "button": true,

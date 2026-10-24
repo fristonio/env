@@ -8,13 +8,13 @@
       "rev": "fd9a48ebbe6ec30d5dfcc5b42c243941ccdca1aa",
       "src": "https://github.com/saghen/blink.lib"
     },
-    "codediff.nvim": {
-      "rev": "09d9ebef2cc5a5c04db7a349cd6c61bdf84ecc8e",
-      "src": "https://github.com/esmuellert/codediff.nvim"
-    },
     "conform.nvim": {
       "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
       "src": "https://github.com/stevearc/conform.nvim"
+    },
+    "diffview-plus.nvim": {
+      "rev": "2a2d89a07f5d5d3cef7f542b99c3e28050ca205c",
+      "src": "https://github.com/dlyongemallo/diffview-plus.nvim"
     },
     "everforest-nvim": {
       "rev": "d235ca0aa6a29546e661a020e2618612acbbffbe",
@@ -47,6 +47,10 @@
     "neotest-golang": {
       "rev": "61726ad54b6b94c73d130b65c33575d13a61fc11",
       "src": "https://github.com/fredrikaverpil/neotest-golang"
+    },
+    "neovim-ayu": {
+      "rev": "e5a9f0fa2918d6b5f57c21b3ac014314ee5e41c8",
+      "src": "https://github.com/shatur/neovim-ayu"
     },
     "nui.nvim": {
       "rev": "10fc361835c856ba4233ef5ea135b919bf3dce97",
