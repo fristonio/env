@@ -446,13 +446,13 @@ def ws-resolve-pick [
     } else { "" }
 
     let result = (
-        fzf-nu $fzf_items --header $rendered.header --query $query --allow-create=$allow_create --preview-cmd $preview_cmd --preview-width $preview_width --min-height (if $preview { 32 } else { 0 })
+        fzf-nu $fzf_items --header $rendered.header --query $query --print-query=$allow_create --preview-cmd $preview_cmd --preview-width $preview_width --min-height (if $preview { 32 } else { 0 })
     )
 
-    if $result.action == "cancelled" {
+    if $result.op == "cancel" {
         return {action: "cancelled"}
     }
-    if $result.action == "create" {
+    if $result.op == "query" {
         return {action: "create", name: $result.query}
     }
     {action: "selected", item: $result.value}
@@ -573,7 +573,7 @@ def ws-list-interactive [
               --actions $actions
         )
 
-        if $result.action == "cancelled" { return }
+        if $result.op == "cancel" { return }
         let outcome = $result.value
         if $attach {
             do $attach_action $outcome
@@ -941,7 +941,7 @@ def space-attach [space: record, --fullscreen(-f), --preset(-p): string = ""] {
         let result = (
             fzf-nu $fzf_items --fullscreen=$fullscreen --header $rendered.header --select-label "attach"
         )
-        if $result.action != "selected" or $result.value == null {
+        if $result.op != "select" or $result.value == null {
             return
         }
         ws-session-goto $result.value.name
@@ -1001,7 +1001,7 @@ def --env space [--attach(-a), --fullscreen(-f), --preset(-p): string = ""] {
         ]
     }
 
-    if $result.action == "cancelled" { return }
+    if $result.op == "cancel" { return }
 
     let outcome = $result.value
     if $attach {

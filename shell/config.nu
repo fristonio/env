@@ -120,15 +120,13 @@ def create_left_prompt [] {
 }
 
 def create_right_prompt [] {
-    let current_time = date now | format date "%H:%M:%S %p"
-    $"(ansi magenta)  (ansi blue)[(ansi green)($current_time)(ansi blue)](ansi reset)"
+  if not $nu.history-enabled {
+      $"(ansi magenta)󱚔 (ansi reset)"
+  }
 }
 
 $env.PROMPT_COMMAND = {|| create_left_prompt }
-# $env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
-$env.PROMPT_COMMAND_RIGHT = {||
-
-}
+$env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
 
 $env.PROMPT_INDICATOR = $"(ansi cyan)ᗆ (ansi reset)"
 $env.PROMPT_INDICATOR_VI_INSERT = $"(ansi cyan)ᗆ (ansi reset)"

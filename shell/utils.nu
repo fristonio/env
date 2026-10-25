@@ -212,18 +212,27 @@ def fzf-table-items [data_lines: list<string>, values: list<any>, --preview-targ
 #   preview_arg   — optional string fed to `--preview-cmd` in place of `{}`
 #
 # Returns one of:
-#   {action: "selected", value: <item.value>}
-#   {action: "create", query: <string>}   (only reachable with --allow-create)
-#   {action: "cancelled"}
+#   {op: "select", value: <item.value>}                          — plain Enter
+#   {op: "select", action: <label>, value: <closure's return>}   — a bound key
+#   {op: "query", query: <string>}      (only reachable with --print-query)
+#   {op: "cancel"}
+#
+# `op` names the operation the user performed (select/query/cancel). `action`
+# is only set when a bound key (not plain Enter) triggered the select — it's
+# that key's `label` (falling back to its key), letting a caller tell which
+# binding fired without string-matching on `value`. Each `--actions` closure
+# is expected to perform its own side effect directly (it's handed the
+# picked item's `value` and invoked right here); its return value just flows
+# back as `value` for the caller to decide what to do next — e.g. loop to
+# refresh vs. return — not to perform the action itself, which has already
+# happened.
 #
 # `--header` is static, non-selectable text shown above the list (fzf's
-# `--header`). `--allow-create` prints the typed query (fzf's `--print-query`)
-# and surfaces it as a "create" action when nothing got selected. `--actions`
-# maps extra keypresses (fzf's `--expect`) to a closure invoked with the
-# picked item's `value`; its return value becomes the "selected" value. Each
-# action's `label` (falling back to its key) and `--select-label` (describing
-# plain Enter) are used to auto-build a keybind hint footer — callers no
-# longer need to hand-roll one into `--header`. `--min-height` (fzf's
+# `--header`). `--print-query` prints the typed query (fzf's own
+# `--print-query` flag) and surfaces it as a "query" op when nothing got
+# selected. `--select-label` (describing plain Enter) and each action's
+# `label` are used to auto-build a keybind hint footer — callers no longer
+# need to hand-roll one into `--header`. `--min-height` (fzf's
 # `--min-height`) puts a floor under fzf's adaptive `--height` so a preview
 # pane doesn't get squeezed down to nothing when the list is short.
 # `--fullscreen` skips `--height`/`--min-height` altogether so fzf takes over
@@ -236,14 +245,14 @@ def fzf-nu [
     --preview-width: int = 0
     --header: string
     --query: string = ""
-    --allow-create
+    --print-query
     --actions: list<record<key: string, label: string, action: closure>>
     --select-label: string = "select"
     --min-height: int = 0
     --fullscreen
 ]: nothing -> record {
-    if ($items | is-empty) and not $allow_create {
-        return {action: "cancelled"}
+    if ($items | is-empty) and not $print_query {
+        return {op: "cancel"}
     }
 
     let fzf_input = ($items
@@ -286,7 +295,8 @@ def fzf-nu [
     if ($footer | is-not-empty) { $fzf_args ++= ["--footer" $footer] }
     if $min_height > 0 and not $fullscreen {
         $fzf_args ++= [
-            "--min-height" ($min_height | into string)
+            "--min-height"
+            ($min_height | into string)
         ]
     }
     if ($preview_cmd | is-not-empty) {
@@ -304,22 +314,22 @@ def fzf-nu [
         }
     }
     if ($expect_keys | is-not-empty) { $fzf_args ++= ["--expect" $expect_keys] }
-    if $allow_create { $fzf_args ++= ["--print-query"] }
+    if $print_query { $fzf_args ++= ["--print-query"] }
 
     let result = $fzf_input | ^fzf ...$fzf_args | complete
 
     if $result.exit_code == 130 or ($result.stdout | is-empty) {
-        return {action: "cancelled"}
+        return {op: "cancel"}
     }
 
     # `lines` (unlike `str trim -r | lines`) drops only the single trailing
     # newline fzf always appends, without collapsing a genuinely empty
     # selection line (no match) into a missing one.
     let out_lines = $result.stdout | lines
-    let query_line = if $allow_create {
+    let query_line = if $print_query {
         $out_lines | get -o 0 | default ""
     } else { "" }
-    let rest = if $allow_create {
+    let rest = if $print_query {
         $out_lines | skip 1
     } else { $out_lines }
 
@@ -338,23 +348,26 @@ def fzf-nu [
     let value = if $idx != null { ($items | get $idx | get value) } else { null }
 
     # An expect-key always wins, even if nothing was selected/matched — a
-    # cancelled/create outcome only applies when no key was pressed.
+    # cancel/query outcome only applies when no key was pressed. The matched
+    # closure performs its own side effect right here; its return value just
+    # flows back as `value` for the caller to decide what to do next.
     if ($key_pressed | is-not-empty) {
         let matched = $actions | where key == $key_pressed | first
         return {
-            action: "selected"
+            op: "select"
+            action: ($matched | get -o label | default $matched.key)
             value: (do $matched.action $value)
         }
     }
 
     if $idx == null {
-        if $allow_create and ($query_line | is-not-empty) {
-            return {action: "create", query: $query_line}
+        if $print_query and ($query_line | is-not-empty) {
+            return {op: "query", query: $query_line}
         }
-        return {action: "cancelled"}
+        return {op: "cancel"}
     }
 
-    {action: "selected", value: $value}
+    {op: "select", value: $value}
 }
 
 @category utils

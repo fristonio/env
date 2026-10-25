@@ -1,6 +1,14 @@
 $env.ENV_DIR = ($env.HOME | path join ".env")
 $env.EDITOR = "nvim"
 
+alias nutemp = exec nu --no-history
+
+use std/clip
+
+# Clipboard copy and paste using osc sequence.
+alias tcopy = clip copy52
+alias tpaste = clip paste52
+
 alias l = ls -a
 alias ll = ls -la
 
@@ -65,8 +73,9 @@ def "mod commands" [] {
     let names = $mod_module.commands | get name
     help commands
     | where name in $names
-    | select name category params input_output search_terms description
-    | insert source $mod_module.file
+    | select name category params input_output description
+    | update params { |it| $it.params | where $it.name != "--help(-h)" }
+    | insert source ($mod_module.file | str replace $env.HOME "~")
 }
 alias "mod cmds" = mod commands
 
@@ -120,17 +129,21 @@ def --env confirm [prompt: string = "Are you sure? [y/n]: "] {
 }
 
 @category env
-def --env cmds [base: string = "", --pick(-p)] {
+def --env cmds [base: string = "", --all(-a), --pick(-p)] {
     let all_cmds = help commands
-    | where $it.command_type == "custom" and $it.category != ""
+    | where $all or ($it.command_type == "custom" and $it.category != "")
     | where ($base | is-empty) or ($it.name == $base) or ($it.name | str starts-with $"($base) ")
     | select name category params input_output search_terms description
+    # Remove help parameters from the commands to reduce noise.
+    | update params { |it| $it.params | where $it.name != "--help(-h)" }
 
     if $pick {
         (
             $all_cmds
             | update description {|c| $c.description | str replace -ra '\s*\n\s*' ' ' | str trim }
-            | input list --fuzzy --no-separator --display {|c| $"($c.name)  [($c.category)]  ($c.description)" }
+            | input list --fuzzy --no-separator --display {
+              |c| $"(ansi blue)($c.name)(ansi reset)  (ansi green)[($c.category)](ansi reset) (ansi grey)($c.description)(ansi reset)"
+            }
         )
     } else {
         return $all_cmds

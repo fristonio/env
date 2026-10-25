@@ -55,8 +55,10 @@ export def env-init [] {
 # name is validated against the flake's actual outputs first, and the target
 # platform is sanity-checked against the current host, so this can't fire the
 # wrong rebuild command against the wrong machine.
+#
+# Usage: nix-switch lima-vm-aarch64/macbook/pacman/ubuntu-x86_64
 export def nix-switch [
-    name: string # configuration name, e.g. lima-vm-aarch64, macbook, pacman
+    name: string # Flake name from flake.nix
 ] {
     let kind = resolve-switch-target $name
     let flake_ref = $"($env.ENV_ROOT_DIR)#($name)"

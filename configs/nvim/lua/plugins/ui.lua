@@ -54,7 +54,8 @@ require("onedark").setup({
 require("everforest").setup({
 	-- TODO: Dimming doesn't work correctly.
 	-- dim_inactive_windows = true,
-	background = "medium",
+	background = "hard",
+	float_style = "bright",
 	on_highlights = function(hl, palette)
 		hl.DiffText = { bg = palette.bg_purple }
 	end,

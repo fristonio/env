@@ -327,7 +327,7 @@ def wt-pick-repo [repos: list<record>, actions?: list<record<key: string, label:
     let fzf_items = (fzf-table-items $rendered.data $repos)
 
     let result = (fzf-nu $fzf_items --header $rendered.header --actions $actions)
-    if $result.action == "selected" { $result.value } else { null }
+    if $result.op == "select" { $result.value } else { null }
 }
 
 # Interactive browser for a repo's worktrees: an fzf-nu picker with actions
@@ -391,7 +391,7 @@ def --env wt-list-interactive [repo_path: string] {
             ]
         )
 
-        if $result.action == "cancelled" {
+        if $result.op == "cancel" {
             return
         }
 
