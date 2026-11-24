@@ -1,11 +1,12 @@
-theme = "everforest-dark"
+# theme = "everforest-dark"
+theme = "catppuccin-mocha"
 mode = "auto"
 vcs = "git"
 watch = false
 exclude_untracked = false
 line_numbers = true
 tab_width = 4
-file_gap = 2
+file_gap = 3
 hunk_gap = 1
 wrap_lines = false
 hunk_headers = true
@@ -14,6 +15,7 @@ sidebar = true
 agent_notes = false
 transparent_background = false
 copy_decorations = false
+prompt_save_view_preferences = false
 
 [keybindings]
 "hunk.review.nextFile" = ["ctrl+f"]

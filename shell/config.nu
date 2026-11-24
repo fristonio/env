@@ -95,7 +95,6 @@ $env.config.keybindings = ($env.config.keybindings | append [
 
 # Create the prompt
 def create_left_prompt [] {
-    # let host = (sys host).hostname
     let host = whoami
     let main_prompt = $"(ansi blue)[(ansi cyan)($host) (ansi magenta)(ansi reset)(ansi blue)](ansi reset)"
 
@@ -120,9 +119,17 @@ def create_left_prompt [] {
 }
 
 def create_right_prompt [] {
-  if not $nu.history-enabled {
-      $"(ansi magenta)󱚔 (ansi reset)"
+  mut indicator = ""
+  if ($env.SSH_TTY? | is-not-empty) {
+    let host = (sys host).hostname
+    $indicator = $"(ansi yellow)󱘖 (ansi magenta)($host) (ansi reset)"
   }
+
+  if not $nu.history-enabled {
+      $indicator ++= $"(ansi magenta)󱚔 (ansi reset)"
+  }
+
+  return $indicator
 }
 
 $env.PROMPT_COMMAND = {|| create_left_prompt }

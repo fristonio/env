@@ -49,7 +49,7 @@ def git-is-bare [path: string] {
 def git-validate-worktree [path: string = "."] {
     let repo_check = git -C $path rev-parse --is-inside-work-tree | complete
     if $repo_check.exit_code != 0 {
-        return (error make {msg: "Not a git repository worktree"})
+        return (error make {msg: $"Not a git repository worktree: ($path)"})
     }
 }
 
@@ -225,6 +225,7 @@ def git-log-pr-merge-commits [
     git log "FETCH_HEAD^1..FETCH_HEAD^2" --oneline
 }
 
+# Assumes that the provided worktree path is valid, will fail otherwise.
 def git-wt-info [path: string = ".", status: bool = false] {
     git-validate-worktree $path
 
@@ -575,7 +576,7 @@ def --env "wt switch" [
     let repo_path = get-wt-repo-path $repo
     git-validate-bare $repo_path
 
-    let wt_dir = get-wt-path $branch $repo
+    let wt_dir = get-wt-path $branch $repo_path
     if ($wt_dir | path exists) {
         print $"  (ansi yellow)→(ansi reset) Worktree already exists, switching to (ansi cyan)($branch)(ansi reset)"
         git-validate-worktree $wt_dir
@@ -640,7 +641,7 @@ def --env "wt create" [
         error make {msg: $"Worktree directory '($wt_dir)' already exists"}
     }
 
-    let base_branch = if $base != null {
+    let base_branch = if ($base | is-not-empty) {
         $base
     } else {
         git -C $repo_path branch --show-current | str trim

@@ -51,8 +51,8 @@ gui:
       - '#e67e80' # red
     defaultFgColor:
       - '#d3c6aa' # fg
-  authorColors:
-    '*': '#d699b6'
+    authorColors:
+      '*': '#d699b6'
   showFileTree: true
   showNumstatInFilesView: false
   showRandomTip: true

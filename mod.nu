@@ -63,6 +63,8 @@ export def nix-switch [
     let kind = resolve-switch-target $name
     let flake_ref = $"($env.ENV_ROOT_DIR)#($name)"
 
+    log info $"Resolved nix flake refrerence: ($flake_ref)"
+
     # The flake is referenced locally (git+file), which only sees
     # tracked/staged files — stage everything first so new files aren't
     # silently invisible to the build, matching the old Makefile's `switch`.

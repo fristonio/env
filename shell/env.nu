@@ -34,8 +34,8 @@ let external_bin_paths = {
 
 $env.PATH = (
     $env.PATH
-    | append ($env.HOME | path join ".local/bin")
-    | append $external_bin_paths
+    | prepend ($env.HOME | path join ".local/bin")
+    | prepend $external_bin_paths
     | uniq
 )
 
