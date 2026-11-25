@@ -32,5 +32,5 @@
     # Required for some settings like homebrew to know what user to apply to.
     primaryUser = username;
   };
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }

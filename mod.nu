@@ -3,7 +3,7 @@
 use std/log
 
 export-env {
-  $env.ENV_ROOT_DIR = $env.FILE_PWD
+    $env.ENV_ROOT_DIR = $env.FILE_PWD
 }
 
 # Names currently exposed under a flake output attribute (e.g.
@@ -36,10 +36,14 @@ def resolve-switch-target [name: string] {
         let available = $candidates
         | each {|c| $"  ($c.kind): ($c.names | str join ', ')"}
         | str join "\n"
-        error make {msg: $"No flake configuration named '($name)'. Available:\n($available)"}
+        error make {
+            msg: $"No flake configuration named '($name)'. Available:\n($available)"
+        }
     }
     if ($matches | length) > 1 {
-        error make {msg: $"'($name)' exists in multiple flake outputs: ($matches | str join ', ')"}
+        error make {
+            msg: $"'($name)' exists in multiple flake outputs: ($matches | str join ', ')"
+        }
     }
 
     $matches | first
@@ -75,14 +79,18 @@ export def nix-switch [
     match $kind {
         "darwin" => {
             if $nu.os-info.name != "macos" {
-                error make {msg: $"'($name)' is a darwin configuration but this host is running ($nu.os-info.name)"}
+                error make {
+                    msg: $"'($name)' is a darwin configuration but this host is running ($nu.os-info.name)"
+                }
             }
             log info $"Switching darwin configuration: ($name)"
             sudo darwin-rebuild switch --flake $flake_ref
         }
         "nixos" => {
             if not ("/etc/NIXOS" | path exists) {
-                error make {msg: $"'($name)' is a nixos configuration but this host is not running NixOS"}
+                error make {
+                    msg: $"'($name)' is a nixos configuration but this host is not running NixOS"
+                }
             }
             log info $"Switching nixos configuration: ($name)"
             sudo nixos-rebuild switch --flake $flake_ref

@@ -22,8 +22,6 @@
       url = "github:noctalia-dev/noctalia/legacy-v4";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-
-    hunk.url = "github:modem-dev/hunk";
   };
 
   outputs =
@@ -35,7 +33,6 @@
       darwin,
       catppuccin,
       niri-flake,
-      hunk,
       ...
     }@inputs:
     let
@@ -46,7 +43,6 @@
           nixpkgs-unstable
           catppuccin
           niri-flake
-          hunk
           ;
       };
 
@@ -57,7 +53,6 @@
           nixpkgs-unstable
           home-manager
           catppuccin
-          hunk
           ;
       };
 
@@ -78,7 +73,7 @@
       };
 
       # For first time configuration on darwin systems.
-      # nix run nix-darwin/nix-darwin-25.11#darwin-rebuild -- switch
+      # nix run nix-darwin/nix-darwin-26.05#darwin-rebuild -- switch
       #
       # Once instantiated darwin-rebuild can be used to activate the configuration.
       # darwin-rebuild switch --flake .#macbook

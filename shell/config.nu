@@ -119,17 +119,17 @@ def create_left_prompt [] {
 }
 
 def create_right_prompt [] {
-  mut indicator = ""
-  if ($env.SSH_TTY? | is-not-empty) {
-    let host = (sys host).hostname
-    $indicator = $"(ansi yellow)󱘖 (ansi magenta)($host) (ansi reset)"
-  }
+    mut indicator = ""
+    if ($env.SSH_TTY? | is-not-empty) {
+        let host = (sys host).hostname
+        $indicator = $"(ansi yellow)󱘖 (ansi magenta)($host) (ansi reset)"
+    }
 
-  if not $nu.history-enabled {
-      $indicator ++= $"(ansi magenta)󱚔 (ansi reset)"
-  }
+    if not $nu.history-enabled {
+        $indicator ++= $"(ansi magenta)󱚔 (ansi reset)"
+    }
 
-  return $indicator
+    return $indicator
 }
 
 $env.PROMPT_COMMAND = {|| create_left_prompt }

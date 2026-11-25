@@ -86,7 +86,9 @@ def tmux-setup-session [name: string, config?: record, --preset: string = ""] {
     } else if ($preset | is-not-empty) {
         let preset_windows = $tmux_layout_presets | get -o $preset
         if $preset_windows == null {
-            error make {msg: $"Unknown preset '($preset)' — available: ($tmux_layout_presets | columns | str join ', ')"}
+            error make {
+                msg: $"Unknown preset '($preset)' — available: ($tmux_layout_presets | columns | str join ', ')"
+            }
         }
         $preset_windows
     } else {

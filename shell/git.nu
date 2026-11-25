@@ -193,7 +193,9 @@ def git-pull-sync [branch: string, worktree?: string, --dir(-C): string = "."] {
     if ($worktree | is-not-empty) and ($worktree | path exists) {
         let wt_branch = git -C $worktree branch --show-current | str trim
         if $wt_branch != $branch {
-            error make {msg: $"Branch '($branch)' does not match current worktree branch '($wt_branch)'"}
+            error make {
+                msg: $"Branch '($branch)' does not match current worktree branch '($wt_branch)'"
+            }
         }
 
         print $"Syncing worktree '($worktree)' from ($remote)/($merge_ref)..."
@@ -502,7 +504,9 @@ def --env "wt list" [
     if not (git-is-bare $repo_path) {
         let repos = (wt-repo-list)
         if ($repos | is-empty) {
-            error make {msg: $"No repositories found under ($env.WT_WS_DIR) — run 'wt repo init' first"}
+            error make {
+                msg: $"No repositories found under ($env.WT_WS_DIR) — run 'wt repo init' first"
+            }
         }
         let picked = (wt-pick-repo $repos)
         if $picked == null {
@@ -576,7 +580,7 @@ def --env "wt switch" [
     let repo_path = get-wt-repo-path $repo
     git-validate-bare $repo_path
 
-    let wt_dir = get-wt-path $branch $repo_path
+    let wt_dir = get-wt-path $branch $repo
     if ($wt_dir | path exists) {
         print $"  (ansi yellow)→(ansi reset) Worktree already exists, switching to (ansi cyan)($branch)(ansi reset)"
         git-validate-worktree $wt_dir

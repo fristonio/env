@@ -49,6 +49,7 @@ fi
 alias gs="git status"
 alias gl="git log --oneline --graph --abbrev-commit --decorate"
 
+alias nsh="exec nu"
 alias nmux="SHELL=$(which nu) tmux -L nu-server $@"
 alias note="nu --config ~/.config/nushell/env.nu -c note"
 

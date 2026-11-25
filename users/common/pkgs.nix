@@ -1,7 +1,6 @@
 {
   pkgs,
   pkgsUnstable,
-  hunk,
   ...
 }:
 
@@ -36,7 +35,6 @@
 
     pkgs.delta
     pkgs.gh
-    hunk
 
     pkgsUnstable.lima
 
@@ -46,5 +44,7 @@
     pkgsUnstable.nufmt
     pkgsUnstable.nushell
     pkgsUnstable.fzf
+
+    pkgsUnstable.hunk
   ];
 }

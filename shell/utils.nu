@@ -295,8 +295,7 @@ def fzf-nu [
     if ($footer | is-not-empty) { $fzf_args ++= ["--footer" $footer] }
     if $min_height > 0 and not $fullscreen {
         $fzf_args ++= [
-            "--min-height"
-            ($min_height | into string)
+            "--min-height" ($min_height | into string)
         ]
     }
     if ($preview_cmd | is-not-empty) {

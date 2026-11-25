@@ -35,9 +35,14 @@ let external_bin_paths = {
 $env.PATH = (
     $env.PATH
     | prepend ($env.HOME | path join ".local/bin")
+    | prepend ($env.HOME | path join ".pi/agent/bin")
     | prepend $external_bin_paths
     | uniq
 )
+
+if "REX_BIN_DIR" in $env {
+    $env.PATH = $env.PATH | append $env.REX_BIN_DIR
+}
 
 $env.MOD_PROMPT_INDICATOR = ($env.MOD_PROMPT_INDICATOR? | default "")
 
@@ -74,7 +79,7 @@ def "mod commands" [] {
     help commands
     | where name in $names
     | select name category params input_output description
-    | update params { |it| $it.params | where $it.name != "--help(-h)" }
+    | update params {|it| $it.params | where $it.name != "--help(-h)" }
     | insert source ($mod_module.file | str replace $env.HOME "~")
 }
 alias "mod cmds" = mod commands
@@ -135,7 +140,7 @@ def --env cmds [base: string = "", --all(-a), --pick(-p)] {
     | where ($base | is-empty) or ($it.name == $base) or ($it.name | str starts-with $"($base) ")
     | select name category params input_output search_terms description
     # Remove help parameters from the commands to reduce noise.
-    | update params { |it| $it.params | where $it.name != "--help(-h)" }
+    | update params {|it| $it.params | where $it.name != "--help(-h)" }
 
     if $pick {
         (
@@ -207,6 +212,7 @@ let env_configs = {
 
     # Terminal config
     "configs/ghostty/config": {dest: ".config/ghostty/config"}
+    "configs/rex/": {dest: ".config/rex"}
 }
 
 # Initializes any user autloads required for nushell
