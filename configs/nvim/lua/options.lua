@@ -127,6 +127,13 @@ vim.o.statuscolumn = "%C  %=%l %s"
 vim.g.editorconfig = true
 
 -- Configure ssh clipboard support.
+local function paste_from_register()
+  return {
+    vim.fn.split(vim.fn.getreg(""), "\n"),
+    vim.fn.getregtype(""),
+  }
+end
+
 vim.g.clipboard = {
 	name = "OSC 52",
 	copy = {
@@ -134,7 +141,17 @@ vim.g.clipboard = {
 		["*"] = require("vim.ui.clipboard.osc52").copy("*"),
 	},
 	paste = {
-		["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-		["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+		-- FIXME: Workaround for rex which doesn't properly support OSC52 roundtrip.
+		--
+		-- For now paste using neovim register without triggering the OSC52 roundtrip
+		-- This avoids `Waiting for OSC52 response from terminal` hang when pasting.
+		--
+		-- ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+		-- ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+
+		["+"] = paste_from_register,
+		["*"] = paste_from_register,
 	},
 }
+vim.opt.clipboard = "unnamedplus"
+

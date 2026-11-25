@@ -135,11 +135,11 @@ def --env confirm [prompt: string = "Are you sure? [y/n]: "] {
 
 @category env
 def --env cmds [base: string = "", --all(-a), --pick(-p)] {
+    # Remove help parameters from the commands to reduce noise.
     let all_cmds = help commands
     | where $all or ($it.command_type == "custom" and $it.category != "")
     | where ($base | is-empty) or ($it.name == $base) or ($it.name | str starts-with $"($base) ")
     | select name category params input_output search_terms description
-    # Remove help parameters from the commands to reduce noise.
     | update params {|it| $it.params | where $it.name != "--help(-h)" }
 
     if $pick {
