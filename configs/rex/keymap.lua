@@ -10,6 +10,7 @@ bind_key(";", "client.palette.toggle")
 
 rex.bind("cmd+e", "client.sidebar.toggle")
 rex.bind("cmd+shift+n", "session.new.on_host")
+rex.bind("cmd+/", "session.switch")
 
 -- Move around panes in a window with: Alt+hljk
 rex.bind("alt+h", "pane.focus", { direction = "left" })
@@ -35,7 +36,7 @@ bind_key("z", "pane.zoom")
 
 -- Open/Close new tabs(windows)
 bind_key("c", "client.tab.new")
-bind_key("ctrl+w", "client.tab.close")
+bind_key("w", "client.tab.close")
 
 bind_key(".", "client.tab.rename")
 
@@ -48,8 +49,13 @@ bind_key("n", "client.tab.next")
 bind_key("ctrl+n", "client.tab.next")
 
 -- Session management
-bind_key("space", "session.switch")
+bind_key("ctrl+c", "session.new")
 bind_key(",", "session.rename")
+
+bind_key("space", "session.switch")
 
 -- Copy mode configuration
 bind_key("ctrl+v", "pane.copy_mode.enter")
+
+-- Custom Actions
+bind_key("g", "display_popup", { command = { "lazygit" } })

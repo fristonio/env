@@ -93,10 +93,16 @@ $env.config.keybindings = ($env.config.keybindings | append [
   }
 ])
 
+$env.SHELL_OS_ICON = match (uname | get operating-system) {
+    $s if ($s | str contains "Linux") => ""
+    $s if ($s | str contains "Darwin") => ""
+    _ => ""
+}
+
 # Create the prompt
 def create_left_prompt [] {
-    let host = whoami
-    let main_prompt = $"(ansi blue)[(ansi cyan)($host) (ansi magenta)(ansi reset)(ansi blue)](ansi reset)"
+    let where = $env.WHERE_AM_I? | default (whoami)
+    let main_prompt = $"(ansi blue)[(ansi cyan)($where) (ansi magenta)($env.SHELL_OS_ICON)(ansi reset)(ansi blue)](ansi reset)"
 
     mut cmd_indicator = $"(ansi blue)$(ansi reset)"
     if $env.LAST_EXIT_CODE != 0 {
@@ -121,15 +127,15 @@ def create_left_prompt [] {
 def create_right_prompt [] {
     mut indicator = ""
     if ($env.SSH_TTY? | is-not-empty) {
-        let host = (sys host).hostname
-        $indicator = $"(ansi yellow)󱘖 (ansi magenta)($host) (ansi reset)"
+        $indicator = $"(ansi yellow)󱘖 (ansi reset)"
     }
 
     if not $nu.history-enabled {
         $indicator ++= $"(ansi magenta)󱚔 (ansi reset)"
     }
 
-    return $indicator
+    let time = (date now | format date $"(ansi cyan)%d/%m(ansi reset) (ansi green)%H:%M:%S(ansi reset)")
+    return $"($indicator) (ansi blue)[(ansi reset)($time)(ansi blue)](ansi reset)"
 }
 
 $env.PROMPT_COMMAND = {|| create_left_prompt }
