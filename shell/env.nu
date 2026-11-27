@@ -205,7 +205,6 @@ let env_configs = {
     }
 
     # Editor configs
-    "configs/helix/config.toml": {dest: ".config/helix/config.toml"}
     "configs/nvim": {dest: ".config/nvim"}
     "configs/zed/settings.json": {dest: ".config/zed/settings.json"}
     "configs/zed/keymap.json": {dest: ".config/zed/keymap.json"}

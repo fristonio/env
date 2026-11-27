@@ -41,12 +41,4 @@ in
   };
 
   xdg.enable = true;
-
-  # Manging dotfiles through symlinks for faster feedback loop.
-  # xdg.configFile = {
-  #   "helix" = {
-  #     source = configPath "helix";
-  #     recursive = true;
-  #   };
-  # };
 }

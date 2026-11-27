@@ -38,7 +38,6 @@
 
     pkgsUnstable.lima
 
-    pkgsUnstable.helix
     pkgsUnstable.neovim
 
     pkgsUnstable.nufmt
