@@ -139,7 +139,10 @@ def create_right_prompt [] {
 }
 
 $env.PROMPT_COMMAND = {|| create_left_prompt }
-$env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
+$env.PROMPT_COMMAND_RIGHT = {||}
+
+# FIXME: Terminal resize bug in prompt when using right prompt.
+# $env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
 
 $env.PROMPT_INDICATOR = $"(ansi cyan)ᗆ (ansi reset)"
 $env.PROMPT_INDICATOR_VI_INSERT = $"(ansi cyan)ᗆ (ansi reset)"

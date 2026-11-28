@@ -9,6 +9,7 @@
 	fileMode = false
 	autocrlf = false
 	pager = delta --side-by-side
+	untrackedCache = true
 
 [pager]
 	log = "less -FRX"
@@ -40,3 +41,8 @@
 
 [feature]
 	manyFiles = true
+
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+

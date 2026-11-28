@@ -11,6 +11,7 @@ bind_key(";", "client.palette.toggle")
 rex.bind("cmd+e", "client.sidebar.toggle")
 rex.bind("cmd+shift+n", "session.new.on_host")
 rex.bind("cmd+/", "session.switch")
+rex.bind("cmd+shift+/", "pane.go_to")
 
 -- Move around panes in a window with: Alt+hljk
 rex.bind("alt+h", "pane.focus", { direction = "left" })
@@ -33,6 +34,7 @@ bind_key("shift+k", "pane.resize", { direction = "up" })
 -- Pane management
 bind_key("x", "pane.close")
 bind_key("z", "pane.zoom")
+bind_key("f", "pane.float")
 
 -- Open/Close new tabs(windows)
 bind_key("c", "client.tab.new")

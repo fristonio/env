@@ -62,6 +62,14 @@ snacks.setup({
 	picker = {
 		enabled = true,
 		ui_select = true, -- vim.ui.select using snacks
+		win = {
+			input = {
+				keys = {
+					["<Up>"] = { "history_back", mode = { "i", "n" } },
+					["<Down>"] = { "history_forward", mode = { "i", "n" } },
+				},
+			},
+		},
 		layouts = {
 			custom_ivy = layouts.ivy(),
 			custom_select = layouts.select(),
